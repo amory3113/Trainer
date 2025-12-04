@@ -1,6 +1,5 @@
 package com.example.trainer.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
