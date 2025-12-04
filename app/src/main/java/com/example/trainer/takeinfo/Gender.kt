@@ -18,14 +18,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.trainer.Logic.Models.Gender
+import com.example.trainer.ui.theme.ButtonBlue
+import com.example.trainer.ui.theme.LightBlue
 import com.example.trainer.ui.theme.TrainerTheme
 
 @Composable
 fun GenderScreen(
-    onNextClick: () -> Unit
+    viewModel: OnboardingViewModel? = null,
+    onNextClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
-    // Временная переменная для хранения выбранного пола
-    val (selectedGender, setSelectedGender) = remember { mutableStateOf<String?>(null) }
+
+    val (selectedGender, setSelectedGender) = remember { mutableStateOf<Gender?>(null) }
 
     Box(
         modifier = Modifier
@@ -33,13 +38,14 @@ fun GenderScreen(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color.White,
-                        Color(0xFF87CEEB)
+                        LightBlue,
+                        Color.White
                     ),
                     startY = 0f,
                     endY = Float.POSITIVE_INFINITY
                 )
             )
+            .safeDrawingPadding()
     ) {
         Column(
             modifier = Modifier
@@ -61,7 +67,7 @@ fun GenderScreen(
                 text = "Укажите ваш пол:",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 24.dp, top = 20.dp, end = 24.dp),
+                    .padding(start = 8.dp, top = 20.dp, end = 40.dp),
                 color = Color.Black,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Medium,
@@ -72,65 +78,97 @@ fun GenderScreen(
             Spacer(modifier = Modifier.height(60.dp))
 
             Button(
-                onClick = { setSelectedGender("male") },
+                onClick = { setSelectedGender(Gender.MALE) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp)
                     .height(56.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (selectedGender == "male") Color(0xFF2196F3) else Color.White
+                    containerColor = if (selectedGender == Gender.MALE) ButtonBlue else Color.White
                 )
             ) {
                 Text(
                     text = "Мужской",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
-                    color = if (selectedGender == "male") Color.White else Color.Black
+                    color = if (selectedGender == Gender.MALE) Color.White else Color.Black
                 )
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-                onClick = { setSelectedGender("female") },
+                onClick = { setSelectedGender(Gender.FEMALE) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp)
                     .height(56.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (selectedGender == "female") Color(0xFF2196F3) else Color.White
+                    containerColor = if (selectedGender == Gender.FEMALE) ButtonBlue else Color.White
                 )
             ) {
                 Text(
                     text = "Женский",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
-                    color = if (selectedGender == "female") Color.White else Color.Black
+                    color = if (selectedGender == Gender.FEMALE) Color.White else Color.Black
                 )
             }
         }
-        Button(
-            onClick = {
-                onNextClick()
-            },
+
+        Row(
             modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 16.dp, bottom = 26.dp)
-                .height(56.dp)
-                .width(170.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2196F3)
-            ),
-            shape = RoundedCornerShape(12.dp)
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(bottom = 26.dp, start = 16.dp, end = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "Далее",
-                color = Color.White,
-                fontSize = 25.sp,
-                fontWeight = FontWeight.Medium
-            )
+
+            Button(
+                onClick = { onBackClick() },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent
+                ),
+                shape = RoundedCornerShape(12.dp),
+                elevation = ButtonDefaults.buttonElevation(0.dp)
+            ) {
+                Text(
+                    text = "Назад",
+                    color = ButtonBlue,
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+
+            Button(
+                onClick = {
+                    if (selectedGender != null) {
+                        viewModel?.setGender(selectedGender)
+                        println("DEBUG: Сохранен пол: $selectedGender")
+                        onNextClick()
+                    }
+                },
+                enabled = selectedGender != null,
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = ButtonBlue
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(
+                    text = "Далее",
+                    color = Color.White,
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
         }
     }
 }
@@ -139,6 +177,6 @@ fun GenderScreen(
 @Composable
 fun GenderPreview() {
     TrainerTheme {
-        GenderScreen(onNextClick = {})
+        GenderScreen(onNextClick = {}, onBackClick = {})
     }
 }

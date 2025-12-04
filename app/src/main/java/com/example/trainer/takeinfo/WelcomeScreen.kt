@@ -16,6 +16,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.trainer.ui.theme.ButtonBlue
+import com.example.trainer.ui.theme.LightBlue
 import com.example.trainer.ui.theme.TrainerTheme
 
 
@@ -29,13 +31,14 @@ fun WelcomeScreen(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color.White,
-                        Color(0xFF87CEEB)
+                        LightBlue,
+                        Color.White
                     ),
                     startY = 0f,
                     endY = Float.POSITIVE_INFINITY
                 )
             )
+            .safeDrawingPadding()
     ) {
 
         Column(
@@ -52,39 +55,37 @@ fun WelcomeScreen(
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Start,
             lineHeight = 44.sp
-        )
-            Text(
-                text = "Эта программа поможет вам достичь ваших фитнес-целей с помощью персонализированных тренировок и рекомендаций по питанию.",
-                modifier = Modifier
-                    .padding(start = 8.dp, top = 10.dp, end = 24.dp),
-                color = Color.Black,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.Start,
-                lineHeight = 28.sp
-            )
-        }
+        ) }
 
-        Button(
-            onClick = {
-                onNextClick()
-            },
+
+        Row(
             modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 16.dp, bottom = 26.dp)
-                .height(56.dp)
-                .width(170.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2196F3)
-            ),
-            shape = RoundedCornerShape(12.dp)
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(bottom = 26.dp, start = 16.dp, end = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "Далее",
-                color = Color.White,
-                fontSize = 25.sp,
-                fontWeight = FontWeight.Medium
-            )
+            Spacer(modifier = Modifier.weight(1f))
+
+            Button(
+                onClick = {
+                    onNextClick()
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = ButtonBlue
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(
+                    text = "Далее",
+                    color = Color.White,
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
         }
     }
 }
