@@ -12,7 +12,7 @@ object NutritionCalculator {
         weight: Double, // кг
         height: Double, // см
         age: Int,
-        activityLevel: ActivityLevel, // Результат ActivityAnalyzer
+        activityLevel: ActivityLevel,
         goal: Goal
     ): NutritionPlan {
 
