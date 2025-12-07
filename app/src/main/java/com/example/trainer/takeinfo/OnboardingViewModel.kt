@@ -3,18 +3,21 @@ package com.example.trainer.takeinfo
 import androidx.lifecycle.ViewModel
 import com.example.trainer.Logic.ActivityAnalyzer
 import com.example.trainer.Logic.HealthAssessor
+import androidx.lifecycle.viewModelScope
 import com.example.trainer.Logic.Models.ActivityLevel
 import com.example.trainer.Logic.Models.Gender // Импорт
 import com.example.trainer.Logic.Models.Goal   // Импорт
 import com.example.trainer.Logic.Models.HealthResult
+import com.example.trainer.data.UserRepository
 import com.example.trainer.Logic.Models.HealthStatus
 import com.example.trainer.Logic.Models.NutritionPlan // Импорт
 import com.example.trainer.Logic.Models.WorkoutLocation
 import com.example.trainer.Logic.NutritionCalculator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
-class OnboardingViewModel : ViewModel() {
+class OnboardingViewModel(private val repository: UserRepository) : ViewModel() {
 
     // --- ДАННЫЕ ПОЛЬЗОВАТЕЛЯ ---
     private var userGender: Gender? = null
@@ -112,5 +115,30 @@ class OnboardingViewModel : ViewModel() {
         _workoutLocation.value = location // Используем .value
         _workoutFrequency.value = frequency // Используем .value
         println("DEBUG: Тренировки -> Место: $location, Раз в неделю: $frequency")
+    }
+
+    fun saveFinalDataToDatabase() {
+        // Запускаем в фоновом потоке (viewModelScope)
+        viewModelScope.launch {
+            // Проверяем, что всё необходимое есть (на всякий случай)
+            if (userGender != null && _userGoal.value != null && _nutritionPlan.value != null) {
+
+                repository.saveUserProfile(
+                    gender = userGender!!,
+                    age = userAge,
+                    weight = userWeight,
+                    height = userHeight,
+                    goal = _userGoal.value!!,
+                    activityLevel = _activityLevelResult.value,
+                    healthResult = _healthResult.value, // Может быть null, и это ок
+                    workoutLocation = _workoutLocation.value ?: WorkoutLocation.HOME, // Дефолт если что
+                    workoutFrequency = _workoutFrequency.value,
+                    nutritionPlan = _nutritionPlan.value!!
+                )
+                println("DATABASE: Все данные успешно сохранены в Room!")
+            } else {
+                println("DATABASE ERROR: Чего-то не хватает для сохранения.")
+            }
+        }
     }
 }

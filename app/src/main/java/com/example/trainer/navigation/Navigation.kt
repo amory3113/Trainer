@@ -8,6 +8,7 @@ import androidx.navigation.navigation
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.trainer.data.UserRepository
 import com.example.trainer.takeinfo.WelcomeScreen
 import com.example.trainer.takeinfo.GenderScreen
 import com.example.trainer.takeinfo.TakeCelScreen
@@ -17,9 +18,12 @@ import com.example.trainer.takeinfo.MoreHealthQuest
 import com.example.trainer.takeinfo.ActivityLevel
 import com.example.trainer.takeinfo.Feeling
 import com.example.trainer.takeinfo.LoadScreen
-import com.example.trainer.GeneralScreen.Profile
+import com.example.trainer.GeneralScreen.Profile.Profile
 import android.annotation.SuppressLint
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.trainer.takeinfo.OnboardingViewModel
+import com.example.trainer.GeneralScreen.MainScreen
 
 object Routes {
     const val WELCOME = "welcome"
@@ -33,10 +37,11 @@ object Routes {
     const val FEELING = "feeling"
     const val LOAD_SCREEN = "load_screen"
     const val PROFILE = "profile"
+    const val MAIN = "main_screen"
 }
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(repository: UserRepository) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -52,7 +57,7 @@ fun AppNavigation() {
         ) {
 
             composable(Routes.TAKE_CEL) {
-                val viewModel = getOnboardingViewModel(navController)
+                val viewModel = getOnboardingViewModel(navController, repository)
                 TakeCelScreen(
                     viewModel = viewModel,
                     onNextClick = { navController.navigate(Routes.GENDER) },
@@ -61,7 +66,7 @@ fun AppNavigation() {
             }
 
             composable(Routes.GENDER) {
-                val viewModel = getOnboardingViewModel(navController)
+                val viewModel = getOnboardingViewModel(navController, repository)
                 GenderScreen(
                     viewModel = viewModel,
                     onNextClick = { navController.navigate(Routes.INFO) },
@@ -70,7 +75,7 @@ fun AppNavigation() {
             }
 
             composable(Routes.INFO) {
-                val viewModel = getOnboardingViewModel(navController)
+                val viewModel = getOnboardingViewModel(navController, repository)
                 TakeInfo(
                     viewModel = viewModel,
                     onNextClick = { navController.navigate(Routes.HEALTH_QUESTION) },
@@ -81,7 +86,7 @@ fun AppNavigation() {
             // Экран 1 Здоровья
             composable(Routes.HEALTH_QUESTION) {
                 // Получаем общий ViewModel
-                val viewModel = getOnboardingViewModel(navController)
+                val viewModel = getOnboardingViewModel(navController, repository)
 
                 HealthQuestion(
                     viewModel = viewModel,
@@ -94,7 +99,7 @@ fun AppNavigation() {
 
             // Экран 2 Здоровья
             composable(Routes.MORE_HEALTH_QUEST) {
-                val viewModel = getOnboardingViewModel(navController)
+                val viewModel = getOnboardingViewModel(navController, repository)
 
                 MoreHealthQuest(
                     viewModel = viewModel,
@@ -103,7 +108,7 @@ fun AppNavigation() {
             }
 
             composable(Routes.ACTIVITY_LEVEL) {
-                val viewModel = getOnboardingViewModel(navController)
+                val viewModel = getOnboardingViewModel(navController, repository)
                 ActivityLevel(
                      viewModel = viewModel,
                     onNextClick = { navController.navigate(Routes.FEELING) },
@@ -112,7 +117,7 @@ fun AppNavigation() {
             }
 
             composable(Routes.FEELING) {
-                val viewModel = getOnboardingViewModel(navController)
+                val viewModel = getOnboardingViewModel(navController, repository)
                 Feeling(
                     viewModel = viewModel,
                     onNextClick = { navController.navigate(Routes.LOAD_SCREEN) },
@@ -120,12 +125,12 @@ fun AppNavigation() {
                 )
             }
             composable(Routes.LOAD_SCREEN) {
-                val viewModel = getOnboardingViewModel(navController)
+                val viewModel = getOnboardingViewModel(navController, repository)
                 LoadScreen(
                     viewModel = viewModel,
                     onPlanReady = {
-                        // Очищаем историю и идем в Профиль
-                        navController.navigate(Routes.PROFILE) {
+                        viewModel.saveFinalDataToDatabase()
+                        navController.navigate(Routes.MAIN) {
                             popUpTo(Routes.WELCOME) { inclusive = true }
                         }
                     }
@@ -136,17 +141,23 @@ fun AppNavigation() {
         // --- КОНЕЦ ОБЩЕЙ ЗОНЫ ---
 
 
-        composable(Routes.PROFILE) {
-            Profile()
+        composable(Routes.MAIN) {
+            MainScreen(repository = repository)
         }
     }
 }
 
 @SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
-fun getOnboardingViewModel(navController: NavController): OnboardingViewModel {
+fun getOnboardingViewModel(navController: NavController, repository: UserRepository): OnboardingViewModel {
     val navBackStackEntry = remember(navController) {
         navController.getBackStackEntry(Routes.ONBOARDING_GRAPH)
     }
-    return viewModel(navBackStackEntry)
+
+    val factory = object : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return OnboardingViewModel(repository) as T
+        }
+    }
+    return viewModel(navBackStackEntry, factory = factory)
 }
