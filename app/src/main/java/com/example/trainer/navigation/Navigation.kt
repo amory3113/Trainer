@@ -41,11 +41,11 @@ object Routes {
 }
 
 @Composable
-fun AppNavigation(repository: UserRepository) {
+fun AppNavigation(repository: UserRepository, startDestination: String) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Routes.WELCOME
+        startDestination = startDestination
     ) {
         // Стартовый экран (отдельно)
         composable(Routes.WELCOME) { WelcomeScreen( onNextClick = { navController.navigate(Routes.TAKE_CEL) }) }
