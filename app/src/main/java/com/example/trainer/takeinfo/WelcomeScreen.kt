@@ -47,7 +47,7 @@ fun WelcomeScreen(
                 .fillMaxSize()
         ) {
             Text(
-            text = "Добро пожаловать в программу персональных тренировок!",
+            text = "Witamy w programie treningu personalnego!",
             modifier = Modifier
                 .padding(start = 8.dp, top = 40.dp, end = 24.dp),
             color = Color.Black,

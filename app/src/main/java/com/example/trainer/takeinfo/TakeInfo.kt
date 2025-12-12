@@ -73,7 +73,7 @@ fun TakeInfo(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "Расскажите о себе",
+                text = "Opowiedz nam o sobie",
                 modifier = Modifier.padding(top = 0.dp),
                 color = Color.Black,
                 fontSize = 30.sp,
@@ -83,7 +83,7 @@ fun TakeInfo(
             )
 
             Text(
-                text = "Введите ваши данные:",
+                text = "Wprowadź swoje dane:",
                 modifier = Modifier.padding(top = 20.dp),
                 color = Color.Black,
                 fontSize = 16.sp,
@@ -95,7 +95,7 @@ fun TakeInfo(
             OutlinedTextField(
                 value = age,
                 onValueChange = { age = it },
-                label = { Text("Возраст (лет)") },
+                label = { Text("Wiek (lata)") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
@@ -115,7 +115,7 @@ fun TakeInfo(
             OutlinedTextField(
                 value = height,
                 onValueChange = { height = it },
-                label = { Text("Рост (см)") },
+                label = { Text("Wysokość (cm)") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
@@ -135,7 +135,7 @@ fun TakeInfo(
             OutlinedTextField(
                 value = weight,
                 onValueChange = { weight = it },
-                label = { Text("Вес (кг)") },
+                label = { Text("Waga (kg)") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
