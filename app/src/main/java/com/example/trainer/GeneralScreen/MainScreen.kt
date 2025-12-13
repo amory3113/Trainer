@@ -27,6 +27,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.trainer.GeneralScreen.Home.HomeScreen
+import com.example.trainer.GeneralScreen.Home.HomeViewModel
+import com.example.trainer.GeneralScreen.Home.HomeViewModelFactory
 import com.example.trainer.GeneralScreen.Profile.Profile // Твой экран профиля
 import com.example.trainer.GeneralScreen.Profile.ProfileViewModel
 import com.example.trainer.GeneralScreen.Profile.ProfileViewModelFactory
@@ -110,7 +112,12 @@ fun MainScreen(repository: UserRepository) {
             startDestination = BottomBarScreen.Home.route,
             modifier = Modifier.padding(innerPadding) // Важно! Отступ, чтобы меню не перекрывало контент
         ) {
-            composable(BottomBarScreen.Home.route) { HomeScreen() }
+            composable(BottomBarScreen.Home.route) {
+                val viewModel: HomeViewModel = viewModel(
+                    factory = HomeViewModelFactory(repository)
+                )
+                HomeScreen(viewModel = viewModel)
+            }
             composable(BottomBarScreen.Workout.route) { WorkoutScreen() }
             composable(BottomBarScreen.Stats.route) { StatsScreen() }
             composable(BottomBarScreen.Profile.route) {
