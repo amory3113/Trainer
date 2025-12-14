@@ -33,6 +33,8 @@ import com.example.trainer.GeneralScreen.Profile.Profile // Твой экран 
 import com.example.trainer.GeneralScreen.Profile.ProfileViewModel
 import com.example.trainer.GeneralScreen.Profile.ProfileViewModelFactory
 import com.example.trainer.GeneralScreen.Stats.StatsScreen
+import com.example.trainer.GeneralScreen.Stats.StatsViewModel
+import com.example.trainer.GeneralScreen.Stats.StatsViewModelFactory
 import com.example.trainer.GeneralScreen.Workout.WorkoutScreen
 import com.example.trainer.data.UserRepository
 
@@ -119,7 +121,12 @@ fun MainScreen(repository: UserRepository) {
                 HomeScreen(viewModel = viewModel)
             }
             composable(BottomBarScreen.Workout.route) { WorkoutScreen() }
-            composable(BottomBarScreen.Stats.route) { StatsScreen() }
+            composable(BottomBarScreen.Stats.route) {
+                val viewModel: StatsViewModel = viewModel(
+                    factory = StatsViewModelFactory(repository)
+                )
+                StatsScreen(viewModel = viewModel)
+            }
             composable(BottomBarScreen.Profile.route) {
                 val viewModel: ProfileViewModel = viewModel(
                 factory = ProfileViewModelFactory(repository) )
