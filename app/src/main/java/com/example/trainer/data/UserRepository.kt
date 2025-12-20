@@ -44,6 +44,30 @@ class UserRepository(private val userDao: UserDao) {
 
         // 2. Отправляем в базу
         userDao.insertUser(userEntity)
+
+        val initialWeight = WeightEntity(
+            weight = weight.toFloat(),
+            date = System.currentTimeMillis()
+        )
+        userDao.insertWeight(initialWeight)
+    }
+
+
+    // Добавить новый вес
+    suspend fun addWeightEntry(weight: Float) {
+        val entry = WeightEntity(weight = weight, date = System.currentTimeMillis())
+        userDao.insertWeight(entry)
+
+        // Также обновляем текущий вес в профиле пользователя!
+        val currentUser = userDao.getLastUser()
+        if (currentUser != null) {
+            val updatedUser = currentUser.copy(weight = weight.toDouble())
+            userDao.insertUser(updatedUser)
+        }
+    }
+
+    suspend fun getWeightHistory(): List<WeightEntity> {
+        return userDao.getAllWeights()
     }
 
     // Функция для получения профиля (для Главного экрана)

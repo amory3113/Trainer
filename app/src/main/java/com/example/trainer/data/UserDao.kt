@@ -24,4 +24,16 @@ interface UserDao {
     // Пригодится для кнопки "Начать заново" в настройках.
     @Query("DELETE FROM user_profile")
     suspend fun clearTable()
+
+    // --- ИСТОРИЯ ВЕСА ---
+    @Insert
+    suspend fun insertWeight(weight: WeightEntity)
+
+    // Получить всю историю (от старых к новым)
+    @Query("SELECT * FROM weight_history ORDER BY date ASC")
+    suspend fun getAllWeights(): List<WeightEntity>
+
+    // Получить последний вес (для обновления профиля)
+    @Query("SELECT * FROM weight_history ORDER BY date DESC LIMIT 1")
+    suspend fun getLastWeight(): WeightEntity?
 }

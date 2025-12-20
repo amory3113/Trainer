@@ -15,17 +15,29 @@ class StatsViewModel(private val repository: UserRepository) : ViewModel() {
     private val _userProfile = MutableStateFlow<UserEntity?>(null)
     val userProfile = _userProfile.asStateFlow()
 
-    // Фейковые данные для графика (позже прикрутим реальную базу)
-    // Просто чтобы показать красивую кривую
-    val weightHistory = listOf(82f, 81.5f, 81.2f, 80.8f, 80.5f, 79.9f, 79.5f)
+    // Теперь здесь реальные данные из базы
+    private val _weightHistory = MutableStateFlow<List<Float>>(emptyList())
+    val weightHistory = _weightHistory.asStateFlow()
 
     init {
         loadData()
     }
 
-    private fun loadData() {
+    fun loadData() { // Сделал public, чтобы вызывать при обновлении
         viewModelScope.launch {
             _userProfile.value = repository.getUserProfile()
+
+            // Загружаем историю и берем только значения веса для графика
+            val history = repository.getWeightHistory()
+            _weightHistory.value = history.map { it.weight }
+        }
+    }
+
+    // Функция добавления нового веса
+    fun addNewWeight(newWeight: Float) {
+        viewModelScope.launch {
+            repository.addWeightEntry(newWeight)
+            loadData() // Перезагружаем данные, чтобы обновить график и цифру
         }
     }
 

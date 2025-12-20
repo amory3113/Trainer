@@ -25,13 +25,23 @@ fun LineChart(
             .fillMaxWidth()
             .height(200.dp)
     ) {
+
+        if(dataPoints.size == 1){
+            drawCircle(
+                color = lineColor,
+                radius = 6.dp.toPx(),
+                center = Offset(size.width / 2, size.height / 2)
+            )
+            return@Canvas
+        }
+
         val distance = size.width / (dataPoints.size - 1)
         val maxVal = dataPoints.maxOrNull() ?: 1f
         val minVal = dataPoints.minOrNull() ?: 0f
 
         // Нормализуем высоту, чтобы график выглядел красиво
         // (чтобы линия не была прижата к краям)
-        val range = maxVal - minVal
+        val range = if(maxVal - minVal == 0f) 1f else (maxVal - minVal)
         val heightPadding = size.height * 0.2f // 20% отступа сверху и снизу
         val drawingHeight = size.height - (heightPadding * 2)
 
