@@ -26,27 +26,36 @@ class HomeViewModel(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
-        loadUserProfile()
+        loadData()
     }
 
-    private fun loadUserProfile() {
+    // Эта функция теперь загружает И профиль, И съеденное за сегодня
+    fun loadData() {
         viewModelScope.launch {
             val profile = userRepository.getUserProfile()
+            val todayNutrition = userRepository.getTodayNutrition() // <-- БЕРЕМ ИЗ БАЗЫ
+
             _uiState.value = _uiState.value.copy(
                 userProfile = profile,
+                // Если записи нет (null), значит 0, иначе берем из базы
+                caloriesEaten = todayNutrition?.calories ?: 0,
+                proteinEaten = todayNutrition?.protein ?: 0,
+                fatEaten = todayNutrition?.fat ?: 0,
+                carbsEaten = todayNutrition?.carbs ?: 0,
                 isLoading = false
             )
         }
     }
 
-    // Функция для симуляции добавления еды (пока нет базы продуктов)
+    // Функция добавления теперь пишет в базу
     fun addMockFood() {
-        _uiState.value = _uiState.value.copy(
-            caloriesEaten = _uiState.value.caloriesEaten + 500,
-            proteinEaten = _uiState.value.proteinEaten + 30,
-            fatEaten = _uiState.value.fatEaten + 15,
-            carbsEaten = _uiState.value.carbsEaten + 50
-        )
+        viewModelScope.launch {
+            // Добавляем тестовый обед: 500 ккал, 30 белка, 15 жира, 50 углей
+            userRepository.addFood(500, 30, 15, 50)
+
+            // ВАЖНО: После записи в базу, нужно обновить экран (перечитать данные)
+            loadData()
+        }
     }
 
     // Вспомогательные функции для расчета остатков и прогресса

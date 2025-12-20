@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface UserDao {
@@ -33,7 +34,19 @@ interface UserDao {
     @Query("SELECT * FROM weight_history ORDER BY date ASC")
     suspend fun getAllWeights(): List<WeightEntity>
 
-    // Получить последний вес (для обновления профиля)
-    @Query("SELECT * FROM weight_history ORDER BY date DESC LIMIT 1")
-    suspend fun getLastWeight(): WeightEntity?
+    // --- НОВОЕ: ПИТАНИЕ ---
+
+    // Ищем запись в промежутке времени (начало дня - конец дня)
+    @Query("SELECT * FROM nutrition_history WHERE date >= :start AND date <= :end LIMIT 1")
+    suspend fun getNutritionForDate(start: Long, end: Long): NutritionEntity?
+
+    // Получить всю историю (для экрана статистики)
+    @Query("SELECT * FROM nutrition_history ORDER BY date DESC")
+    suspend fun getAllNutrition(): List<NutritionEntity>
+
+    @Insert
+    suspend fun insertNutrition(nutrition: NutritionEntity)
+
+    @Update
+    suspend fun updateNutrition(nutrition: NutritionEntity)
 }
