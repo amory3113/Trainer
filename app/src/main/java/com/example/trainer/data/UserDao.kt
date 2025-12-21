@@ -52,4 +52,8 @@ interface UserDao {
 
     @Update
     suspend fun updateUser(user: UserEntity)
+
+    // Эта функция будет сама сообщать, если пользователь изменился
+    @Query("SELECT * FROM user_profile ORDER BY id DESC LIMIT 1")
+    fun getUserFlow(): kotlinx.coroutines.flow.Flow<UserEntity?>
 }

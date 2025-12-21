@@ -26,18 +26,33 @@ class HomeViewModel(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
-        loadData()
+        // Запускаем прослушку изменений профиля
+        viewModelScope.launch {
+            userRepository.userFlow.collect { user ->
+                // Как только пришел новый пользователь (или обновился старый),
+                // мы обновляем состояние экрана
+                if (user != null) {
+                    _uiState.value = _uiState.value.copy(
+                        userProfile = user,
+                        isLoading = false
+                    )
+                    // Важно: При смене профиля (цели) нужно пересчитать и остатки
+                    // Но так как Compose реактивный, он сам перерисует UI с новыми цифрами
+                }
+            }
+        }
+
+        // Питание загружаем отдельно (можно тоже сделать через Flow, но пока оставим так)
+        loadNutritionData()
     }
 
-    // Эта функция теперь загружает И профиль, И съеденное за сегодня
-    fun loadData() {
+    // Переименовал loadData в loadNutritionData, чтобы не путаться
+    // Теперь она грузит ТОЛЬКО еду, профиль обновляется сам через Flow выше
+    fun loadNutritionData() {
         viewModelScope.launch {
-            val profile = userRepository.getUserProfile()
-            val todayNutrition = userRepository.getTodayNutrition() // <-- БЕРЕМ ИЗ БАЗЫ
+            val todayNutrition = userRepository.getTodayNutrition()
 
             _uiState.value = _uiState.value.copy(
-                userProfile = profile,
-                // Если записи нет (null), значит 0, иначе берем из базы
                 caloriesEaten = todayNutrition?.calories ?: 0,
                 proteinEaten = todayNutrition?.protein ?: 0,
                 fatEaten = todayNutrition?.fat ?: 0,
@@ -51,7 +66,7 @@ class HomeViewModel(
     fun addFood(kcal: Int, protein: Int, fat: Int, carbs: Int) {
         viewModelScope.launch {
             userRepository.addFood(kcal, protein, fat, carbs)
-            loadData() // Обновляем экран
+            loadNutritionData() // Обновляем экран
         }
     }
 

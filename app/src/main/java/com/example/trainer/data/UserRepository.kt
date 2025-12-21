@@ -125,6 +125,8 @@ class UserRepository(private val userDao: UserDao) {
         return userDao.getAllNutrition()
     }
 
+    val userFlow: kotlinx.coroutines.flow.Flow<UserEntity?> = userDao.getUserFlow()
+
     // Вспомогательная функция для получения начала и конца текущего дня
     private fun getDayRange(): Pair<Long, Long> {
         val calendar = Calendar.getInstance()
