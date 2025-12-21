@@ -76,6 +76,10 @@ class UserRepository(private val userDao: UserDao) {
         return userDao.getLastUser()
     }
 
+    suspend fun updateUser(user: UserEntity) {
+        userDao.updateUser(user)
+    }
+
     // Очистка (для кнопки "Сброс")
     suspend fun clearData() {
         userDao.clearTable()

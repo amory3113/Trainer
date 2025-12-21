@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.runtime.*
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -19,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +35,11 @@ fun Profile(
 ) {
     val userProfile by viewModel.userProfile.collectAsState() ?: remember { androidx.compose.runtime.mutableStateOf(null) }
     val scrollState = rememberScrollState()
+
+    // --- НОВОЕ: Состояния для управления диалогом ---
+    var showDialog by remember { mutableStateOf(false) }
+    var editType by remember { mutableStateOf(EditType.WEIGHT) } // По умолчанию Вес
+    var editValue by remember { mutableStateOf("") }
 
     GradientBackground {
         if (userProfile == null) {
@@ -61,14 +66,17 @@ fun Profile(
                         icon = Icons.Default.AccessibilityNew,
                         title = "Параметры тела",
                         value = "${userProfile!!.height} см / ${userProfile!!.weight} кг",
-                        onClick = { /* Тут будет открытие диалога редактирования */ }
+                        onClick = { editType = EditType.WEIGHT
+                            editValue = userProfile!!.weight.toString()
+                            showDialog = true
+                        }
                     )
                     Divider(color = Color.LightGray.copy(alpha = 0.3f))
                     ProfileOptionItem(
                         icon = Icons.Default.Cake,
                         title = "Возраст",
                         value = "${userProfile!!.age} лет",
-                        onClick = { }
+                        onClick = { /* Возраст обычно не меняют часто, можно оставить пустым или добавить позже */ }
                     )
                     Divider(color = Color.LightGray.copy(alpha = 0.3f))
                     ProfileOptionItem(
@@ -88,14 +96,20 @@ fun Profile(
                         icon = Icons.Default.Flag,
                         title = "Цель",
                         value = formatGoal(userProfile!!.goal),
-                        onClick = { }
+                        onClick = { editType = EditType.GOAL
+                            editValue = userProfile!!.goal
+                            showDialog = true
+                        }
                     )
                     Divider(color = Color.LightGray.copy(alpha = 0.3f))
                     ProfileOptionItem(
                         icon = Icons.Default.FitnessCenter,
                         title = "Активность",
                         value = formatActivity(userProfile!!.activityLevel),
-                        onClick = { }
+                        onClick = { editType = EditType.ACTIVITY
+                            editValue = userProfile!!.activityLevel
+                            showDialog = true
+                        }
                     )
                 }
 
@@ -133,6 +147,18 @@ fun Profile(
                 Spacer(modifier = Modifier.height(100.dp)) // Отступ для нижнего меню
             }
         }
+    }
+    // --- НОВОЕ: ВЫЗОВ ДИАЛОГА ---
+    if (showDialog) {
+        EditProfileDialog(
+            type = editType,
+            currentValue = editValue,
+            onDismiss = { showDialog = false },
+            onConfirm = { newValue ->
+                viewModel.updateProfile(editType, newValue) // Отправляем во ViewModel
+                showDialog = false
+            }
+        )
     }
 }
 

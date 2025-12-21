@@ -49,4 +49,7 @@ interface UserDao {
 
     @Update
     suspend fun updateNutrition(nutrition: NutritionEntity)
+
+    @Update
+    suspend fun updateUser(user: UserEntity)
 }
