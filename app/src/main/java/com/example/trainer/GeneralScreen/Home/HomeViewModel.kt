@@ -47,14 +47,11 @@ class HomeViewModel(
         }
     }
 
-    // Функция добавления теперь пишет в базу
-    fun addMockFood() {
+    // Старую addMockFood можно удалить или переименовать
+    fun addFood(kcal: Int, protein: Int, fat: Int, carbs: Int) {
         viewModelScope.launch {
-            // Добавляем тестовый обед: 500 ккал, 30 белка, 15 жира, 50 углей
-            userRepository.addFood(500, 30, 15, 50)
-
-            // ВАЖНО: После записи в базу, нужно обновить экран (перечитать данные)
-            loadData()
+            userRepository.addFood(kcal, protein, fat, carbs)
+            loadData() // Обновляем экран
         }
     }
 

@@ -3,6 +3,7 @@ package com.example.trainer.GeneralScreen.Stats
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.trainer.data.NutritionEntity
 import com.example.trainer.data.UserEntity
 import com.example.trainer.data.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +20,10 @@ class StatsViewModel(private val repository: UserRepository) : ViewModel() {
     private val _weightHistory = MutableStateFlow<List<Float>>(emptyList())
     val weightHistory = _weightHistory.asStateFlow()
 
+    // Добавляем поток для истории питания
+    private val _nutritionHistory = MutableStateFlow<List<NutritionEntity>>(emptyList())
+    val nutritionHistory = _nutritionHistory.asStateFlow()
+
     init {
         loadData()
     }
@@ -27,9 +32,13 @@ class StatsViewModel(private val repository: UserRepository) : ViewModel() {
         viewModelScope.launch {
             _userProfile.value = repository.getUserProfile()
 
-            // Загружаем историю и берем только значения веса для графика
-            val history = repository.getWeightHistory()
-            _weightHistory.value = history.map { it.weight }
+            // Вес
+            val wHistory = repository.getWeightHistory()
+            _weightHistory.value = wHistory.map { it.weight }
+
+            // Питание (НОВОЕ)
+            val nHistory = repository.getNutritionHistory()
+            _nutritionHistory.value = nHistory
         }
     }
 

@@ -10,13 +10,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.trainer.ui.theme.GradientBackground
 import java.text.SimpleDateFormat
 import java.util.*
@@ -28,6 +30,9 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    // Состояние для показа диалога
+    var showFoodDialog by remember { mutableStateOf(false) }
+
     GradientBackground {
         if (uiState.isLoading) {
             Box(
@@ -37,6 +42,7 @@ fun HomeScreen(
                 CircularProgressIndicator()
             }
         } else {
+            Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = modifier
                     .fillMaxSize()
@@ -77,12 +83,29 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Деталь Д: Кнопка быстрого добавления
-                AddFoodButton(
-                    onClick = { viewModel.addMockFood() }
-                )
+                Spacer(modifier = Modifier.height(80.dp))
+                }
+                FloatingActionButton(
+                    onClick = { showFoodDialog = true },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd) // В правом нижнем углу
+                        .padding(16.dp),
+                    containerColor = Color(0xFF2196F3)
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Добавить еду", tint = Color.White)
+                }
             }
         }
+    }
+    // ВЫЗОВ ДИАЛОГА
+    if (showFoodDialog) {
+        AddFoodDialog(
+            onDismiss = { showFoodDialog = false },
+            onConfirm = { k, p, f, c ->
+                viewModel.addFood(k, p, f, c) // Вызываем новую функцию
+                showFoodDialog = false
+            }
+        )
     }
 }
 

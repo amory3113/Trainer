@@ -1,156 +1,162 @@
 package com.example.trainer.GeneralScreen.Stats
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.trainer.data.NutritionEntity
 import com.example.trainer.ui.theme.GradientBackground
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun StatsScreen(viewModel: StatsViewModel) {
-    val user by viewModel.userProfile.collectAsState()
-    val weightHistory by viewModel.weightHistory.collectAsState() // Читаем историю
-    val bmi = viewModel.calculateBMI()
-
-    var showDialog by remember { mutableStateOf(false) }
+    // Состояние для переключения вкладок
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    val tabs = listOf("Вес и ИМТ", "История питания")
 
     GradientBackground {
-        if (user == null) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        } else {
-            Box(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = "Мой прогресс",
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 16.dp)
-                )
+        Column(modifier = Modifier.fillMaxSize()) {
 
-                // 1. Карточка ТЕКУЩИЙ ВЕС
+            // Заголовок экрана
+            Text(
+                text = "Мой прогресс",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
+            )
+
+            // ПАНЕЛЬ ВКЛАДОК
+            TabRow(
+                selectedTabIndex = selectedTabIndex,
+                containerColor = Color.Transparent,
+                contentColor = Color(0xFF2196F3),
+                divider = {},
+                indicator = { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
+                        color = Color(0xFF2196F3)
+                    )
+                }
+            ) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(
+                        selected = selectedTabIndex == index,
+                        onClick = { selectedTabIndex = index },
+                        text = { Text(title, fontWeight = FontWeight.Medium) }
+                    )
+                }
+            }
+
+            // КОНТЕНТ ВКЛАДОК
+            when (selectedTabIndex) {
+                0 -> WeightTabContent(viewModel)
+                1 -> NutritionTabContent(viewModel)
+            }
+        }
+    }
+}
+
+// --- ВКЛАДКА 1: ВЕС (Твой старый StatsScreen переехал сюда) ---
+@Composable
+fun WeightTabContent(viewModel: StatsViewModel) {
+    val user by viewModel.userProfile.collectAsState()
+    val weightHistory by viewModel.weightHistory.collectAsState()
+    val bmi = viewModel.calculateBMI()
+    var showDialog by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            if (user != null) {
+                // Карточка веса
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.cardElevation(4.dp)
+                    elevation = CardDefaults.cardElevation(2.dp)
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(24.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column {
-                            Text("Текущий вес", color = Color.Gray, fontSize = 14.sp)
-                            Text(
-                                text = "${user!!.weight} кг",
-                                fontSize = 36.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF2196F3)
-                            )
-                        }
-                        // Сюда можно добавить мини-индикатор изменений (например "-2кг")
+                    Column(modifier = Modifier.padding(24.dp)) {
+                        Text("Текущий вес", color = Color.Gray)
+                        Text(
+                            text = "${user!!.weight} кг",
+                            fontSize = 36.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF2196F3)
+                        )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                // 2. Карточка ИМТ (BMI)
+                // Карточка ИМТ
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.cardElevation(4.dp)
+                    elevation = CardDefaults.cardElevation(2.dp)
                 ) {
                     Column(modifier = Modifier.padding(24.dp)) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.Bottom
-                        ) {
-                            Text("Индекс массы (ИМТ)", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                            Text(String.format("%.1f", bmi), fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                        }
-
+                        Text("Индекс массы (ИМТ)", fontWeight = FontWeight.Bold)
+                        Text(
+                            text = String.format("%.1f", bmi),
+                            fontSize = 24.sp
+                        )
                         Text(
                             text = viewModel.getBmiStatus(bmi),
                             fontSize = 14.sp,
                             color = Color.Gray,
                             modifier = Modifier.padding(vertical = 4.dp)
                         )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        // Наша цветная полоска
                         BmiGauge(bmi = bmi)
                     }
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // 3. График веса
-                Text(
-                    text = "История веса",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 12.dp)
-                )
+                // График
+                Text("История измерений", fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(8.dp))
 
-                // Если истории нет - покажи заглушку
                 if (weightHistory.isEmpty()) {
-                    Text("Нет данных. Взвесьтесь!", color = Color.Gray)
+                    Text("Нет данных.", color = Color.Gray)
                 } else {
                     LineChart(dataPoints = weightHistory)
                 }
-            }
 
-                // ПЛАВАЮЩАЯ КНОПКА (Снизу справа)
-                FloatingActionButton(
-                    onClick = { showDialog = true },
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(16.dp),
-                    containerColor = Color(0xFF2196F3)
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = "Добавить вес", tint = Color.White)
-                }
+                // Отступ снизу чтобы кнопку не перекрывало
+                Spacer(modifier = Modifier.height(80.dp))
             }
+        }
+
+        // Кнопка добавления веса
+        FloatingActionButton(
+            onClick = { showDialog = true },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            containerColor = Color(0xFF2196F3)
+        ) {
+            Icon(Icons.Default.Add, contentDescription = "Добавить", tint = Color.White)
         }
     }
 
-    // САМ ДИАЛОГ
     if (showDialog) {
         AddWeightDialog(
             onDismiss = { showDialog = false },
@@ -159,6 +165,70 @@ fun StatsScreen(viewModel: StatsViewModel) {
                 showDialog = false
             }
         )
+    }
+}
+
+// --- ВКЛАДКА 2: ПИТАНИЕ (Список съеденного) ---
+@Composable
+fun NutritionTabContent(viewModel: StatsViewModel) {
+    val nutritionList by viewModel.nutritionHistory.collectAsState()
+
+    if (nutritionList.isEmpty()) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("История питания пуста", color = Color.Gray)
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(nutritionList) { item ->
+                NutritionHistoryItem(item)
+            }
+        }
+    }
+}
+
+@Composable
+fun NutritionHistoryItem(item: NutritionEntity) {
+    val dateFormat = SimpleDateFormat("dd MMMM", Locale.getDefault())
+
+    Card(
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(2.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Дата
+            Text(
+                text = dateFormat.format(Date(item.date)),
+                color = Color.Gray,
+                fontSize = 14.sp
+            )
+
+            // Калории и БЖУ
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    text = "${item.calories} ккал",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF2196F3)
+                )
+                Text(
+                    text = "Б:${item.protein}  Ж:${item.fat}  У:${item.carbs}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Black.copy(alpha = 0.6f)
+                )
+            }
+        }
     }
 }
 
@@ -171,8 +241,7 @@ fun AddWeightDialog(onDismiss: () -> Unit, onConfirm: (Float) -> Unit) {
         title = { Text("Новое взвешивание") },
         text = {
             Column {
-                Text("Введите ваш текущий вес:")
-                Spacer(modifier = Modifier.height(8.dp))
+                Text("Введите текущий вес:")
                 OutlinedTextField(
                     value = text,
                     onValueChange = { text = it },
@@ -185,9 +254,7 @@ fun AddWeightDialog(onDismiss: () -> Unit, onConfirm: (Float) -> Unit) {
         confirmButton = {
             Button(onClick = {
                 val weight = text.toFloatOrNull()
-                if (weight != null) {
-                    onConfirm(weight)
-                }
+                if (weight != null) onConfirm(weight)
             }) {
                 Text("Сохранить")
             }
