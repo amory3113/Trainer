@@ -67,8 +67,13 @@ class UserRepository(private val userDao: UserDao) {
         }
     }
 
-    suspend fun getWeightHistory(): List<WeightEntity> {
-        return userDao.getAllWeights()
+//    suspend fun getWeightHistory(): List<WeightEntity> {
+//        return userDao.getAllWeights()
+//    }
+
+    // Возвращаем поток (Flow), который будет автоматически обновляться при изменениях в таблице
+    fun getWeightHistoryFlow(): kotlinx.coroutines.flow.Flow<List<WeightEntity>> {
+        return userDao.getAllWeightsFlow()
     }
 
     // Функция для получения профиля (для Главного экрана)

@@ -10,6 +10,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.MonitorWeight
+import androidx.compose.material.icons.filled.Height
 import androidx.compose.runtime.*
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material3.*
@@ -60,30 +62,50 @@ fun Profile(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // 2. БЛОК "МОЕ ТЕЛО"
+                // 2. БЛОК "МОЕ ТЕЛО" (НОВЫЙ КОД)
                 SectionTitle("Мои данные")
                 CardSection {
+                    // ВЕС (Оставляем кликабельным)
                     ProfileOptionItem(
-                        icon = Icons.Default.AccessibilityNew,
-                        title = "Параметры тела",
-                        value = "${userProfile!!.height} см / ${userProfile!!.weight} кг",
-                        onClick = { editType = EditType.WEIGHT
+                        icon = Icons.Default.MonitorWeight, // Новая иконка весов
+                        title = "Вес",
+                        value = "${userProfile!!.weight} кг",
+                        onClick = {
+                            editType = EditType.WEIGHT
                             editValue = userProfile!!.weight.toString()
                             showDialog = true
                         }
                     )
                     Divider(color = Color.LightGray.copy(alpha = 0.3f))
+
+                    // РОСТ (Делаем отдельной строкой)
+                    // Пока делаем не кликабельным (showArrow = false),
+                    // так как рост у взрослых меняется редко.
+                    ProfileOptionItem(
+                        icon = Icons.Default.Height, // Новая иконка роста
+                        title = "Рост",
+                        value = "${userProfile!!.height} см",
+                        showArrow = false,
+                        onClick = null
+                    )
+                    Divider(color = Color.LightGray.copy(alpha = 0.3f))
+
+                    // ВОЗРАСТ
                     ProfileOptionItem(
                         icon = Icons.Default.Cake,
                         title = "Возраст",
                         value = "${userProfile!!.age} лет",
-                        onClick = { /* Возраст обычно не меняют часто, можно оставить пустым или добавить позже */ }
+                        showArrow = false, // Тоже пока без редактирования
+                        onClick = null
                     )
                     Divider(color = Color.LightGray.copy(alpha = 0.3f))
+
+                    // ПОЛ
                     ProfileOptionItem(
                         icon = Icons.Default.Transgender,
                         title = "Пол",
                         value = formatGender(userProfile!!.gender),
-                        showArrow = false // Пол обычно менять нельзя
+                        showArrow = false
                     )
                 }
 

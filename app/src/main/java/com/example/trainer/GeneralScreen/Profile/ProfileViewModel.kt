@@ -20,8 +20,12 @@ class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
     val userProfile = _userProfile.asStateFlow()
 
     init {
-        // Как только ViewModel создалась - сразу грузим данные
-        loadUserProfile()
+        // ИСПРАВЛЕНИЕ: Подписываемся на поток изменений
+        viewModelScope.launch {
+            repository.userFlow.collect { user ->
+                _userProfile.value = user
+            }
+        }
     }
 
     private fun loadUserProfile() {
@@ -85,9 +89,6 @@ class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
 
             // 4. Сохраняем в базу
             repository.updateUser(updatedUser) // Нам нужен метод updateUser в DAO/Repo
-
-            // 5. Обновляем экран
-            loadUserProfile()
         }
     }
 }

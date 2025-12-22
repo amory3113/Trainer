@@ -32,7 +32,7 @@ interface UserDao {
 
     // Получить всю историю (от старых к новым)
     @Query("SELECT * FROM weight_history ORDER BY date ASC")
-    suspend fun getAllWeights(): List<WeightEntity>
+    fun getAllWeightsFlow(): kotlinx.coroutines.flow.Flow<List<WeightEntity>>
 
     // --- НОВОЕ: ПИТАНИЕ ---
 

@@ -25,28 +25,50 @@ class StatsViewModel(private val repository: UserRepository) : ViewModel() {
     val nutritionHistory = _nutritionHistory.asStateFlow()
 
     init {
-        loadData()
+        // 1. ПОДПИСКА НА ПРОФИЛЬ (Главное исправление)
+        // Теперь мы не просто загружаем 1 раз, а "слушаем" базу вечно
+        viewModelScope.launch {
+            repository.userFlow.collect { user ->
+                _userProfile.value = user
+            }
+        }
+
+        // 2. Подписка на историю веса (как мы делали в прошлый раз)
+        viewModelScope.launch {
+            repository.getWeightHistoryFlow().collect { listEntities ->
+                _weightHistory.value = listEntities.map { it.weight }
+            }
+        }
+
+        // 3. Питание (можно оставить так или тоже переделать на flow, если захочешь)
+        loadNutritionData()
     }
 
-    fun loadData() { // Сделал public, чтобы вызывать при обновлении
+    fun loadNutritionData() {
         viewModelScope.launch {
-            _userProfile.value = repository.getUserProfile()
-
-            // Вес
-            val wHistory = repository.getWeightHistory()
-            _weightHistory.value = wHistory.map { it.weight }
-
-            // Питание (НОВОЕ)
             val nHistory = repository.getNutritionHistory()
             _nutritionHistory.value = nHistory
         }
     }
 
+//    fun loadData() { // Сделал public, чтобы вызывать при обновлении
+//        viewModelScope.launch {
+//            _userProfile.value = repository.getUserProfile()
+//
+//            // Вес
+//            val wHistory = repository.getWeightHistory()
+//            _weightHistory.value = wHistory.map { it.weight }
+//
+//            // Питание (НОВОЕ)
+//            val nHistory = repository.getNutritionHistory()
+//            _nutritionHistory.value = nHistory
+//        }
+//    }
+
     // Функция добавления нового веса
     fun addNewWeight(newWeight: Float) {
         viewModelScope.launch {
             repository.addWeightEntry(newWeight)
-            loadData() // Перезагружаем данные, чтобы обновить график и цифру
         }
     }
 
