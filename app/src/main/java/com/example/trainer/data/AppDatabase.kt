@@ -4,15 +4,37 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+// Импортируем наши новые файлы
+import com.example.trainer.data.Exercise.ExerciseEntity
+import com.example.trainer.data.Exercise.WorkoutTemplateEntity
+import com.example.trainer.data.Exercise.WorkoutExerciseEntity
+import com.example.trainer.data.Exercise.ScheduleEntity
+import com.example.trainer.data.Exercise.ExerciseDao
+import com.example.trainer.data.Exercise.WorkoutDao
 
-// 1. Указываем, какие таблицы есть (UserEntity) и версию базы (1)
-@Database(entities = [UserEntity::class, WeightEntity::class, NutritionEntity::class], version = 3, exportSchema = false)
+// 1. Добавляем новые классы в список entities
+@Database(
+    entities = [
+        UserEntity::class,
+        WeightEntity::class,
+        NutritionEntity::class,
+        // Новые:
+        ExerciseEntity::class,
+        WorkoutTemplateEntity::class,
+        WorkoutExerciseEntity::class,
+        ScheduleEntity::class
+    ],
+    version = 4, // <-- ВАЖНО: Увеличили версию!
+    exportSchema = false
+)
 abstract class AppDatabase : RoomDatabase() {
 
-    // 2. Даем доступ к пульту управления (Dao)
     abstract fun userDao(): UserDao
 
-    // 3. Стандартный код для создания Singleton (Копипаст для любого Room проекта)
+    // 2. Добавляем доступ к новым DAO
+    abstract fun exerciseDao(): ExerciseDao
+    abstract fun workoutDao(): WorkoutDao
+
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
@@ -22,9 +44,9 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "trainer_database" // Имя файла на телефоне
+                    "trainer_database"
                 )
-                    .fallbackToDestructiveMigration() // Раскомментируй, если будешь менять структуру таблицы и захочешь просто удалять старую
+                    .fallbackToDestructiveMigration() // Это удалит старую базу при обновлении версии. Для разработки ОК.
                     .build()
                 INSTANCE = instance
                 instance
