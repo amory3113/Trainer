@@ -12,8 +12,17 @@ interface WorkoutDao {
 
     // --- РАБОТА С ШАБЛОНАМИ (ПРОГРАММАМИ) ---
 
+    @androidx.room.Transaction // Важно! Гарантирует целостность сборки данных
     @Query("SELECT * FROM workout_templates")
-    fun getAllTemplates(): Flow<List<WorkoutTemplateEntity>>
+    fun getWorkoutsWithExercises(): Flow<List<WorkoutWithExercises>>
+
+    // Удалить программу по ID
+    @Query("DELETE FROM workout_templates WHERE id = :workoutId")
+    suspend fun deleteTemplateById(workoutId: Int)
+
+    // Очистить расписание от этой программы (где она была назначена)
+    @Query("UPDATE schedule SET workoutId = NULL, workoutName = NULL WHERE workoutId = :workoutId")
+    suspend fun removeWorkoutFromSchedule(workoutId: Int)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTemplate(template: WorkoutTemplateEntity): Long // Возвращает ID новой программы

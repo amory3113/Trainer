@@ -37,6 +37,7 @@ import com.example.trainer.GeneralScreen.Stats.StatsViewModel
 import com.example.trainer.GeneralScreen.Stats.StatsViewModelFactory
 import com.example.trainer.GeneralScreen.Workout.WorkoutScreen
 import com.example.trainer.data.UserRepository
+import com.example.trainer.navigation.Routes
 
 // Описываем пункты меню
 sealed class BottomBarScreen(
@@ -51,7 +52,7 @@ sealed class BottomBarScreen(
 }
 
 @Composable
-fun MainScreen(repository: UserRepository) {
+fun MainScreen(repository: UserRepository, navController: androidx.navigation.NavController) {
     // У этого экрана свой СОБСТВЕННЫЙ контроллер навигации (для вкладок)
     val bottomNavController = rememberNavController()
 
@@ -120,7 +121,11 @@ fun MainScreen(repository: UserRepository) {
                 )
                 HomeScreen(viewModel = viewModel)
             }
-            composable(BottomBarScreen.Workout.route) { WorkoutScreen() }
+
+            composable(BottomBarScreen.Workout.route) {
+                WorkoutScreen(onNavigateToCreate = { navController.navigate(Routes.CREATE_WORKOUT) })
+            }
+
             composable(BottomBarScreen.Stats.route) {
                 val viewModel: StatsViewModel = viewModel(
                     factory = StatsViewModelFactory(repository)

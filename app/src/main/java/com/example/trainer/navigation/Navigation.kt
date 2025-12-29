@@ -18,12 +18,12 @@ import com.example.trainer.takeinfo.MoreHealthQuest
 import com.example.trainer.takeinfo.ActivityLevel
 import com.example.trainer.takeinfo.Feeling
 import com.example.trainer.takeinfo.LoadScreen
-import com.example.trainer.GeneralScreen.Profile.Profile
 import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.trainer.takeinfo.OnboardingViewModel
 import com.example.trainer.GeneralScreen.MainScreen
+import com.example.trainer.GeneralScreen.Workout.CreateWorkoutScreen
 
 object Routes {
     const val WELCOME = "welcome"
@@ -36,8 +36,8 @@ object Routes {
     const val ACTIVITY_LEVEL = "activity_level"
     const val FEELING = "feeling"
     const val LOAD_SCREEN = "load_screen"
-    const val PROFILE = "profile"
     const val MAIN = "main_screen"
+    const val CREATE_WORKOUT = "create_workout"
 }
 
 @Composable
@@ -138,11 +138,28 @@ fun AppNavigation(repository: UserRepository, startDestination: String) {
             }
 
         }
-        // --- КОНЕЦ ОБЩЕЙ ЗОНЫ ---
-
 
         composable(Routes.MAIN) {
-            MainScreen(repository = repository)
+            MainScreen(repository = repository, navController = navController)
+        }
+
+        // 2. Экран создания (НОВЫЙ)
+        composable(Routes.CREATE_WORKOUT) {
+            // Нам нужно создать ViewModel здесь.
+            // В идеале использовать Hilt, но мы делаем вручную:
+            val context = androidx.compose.ui.platform.LocalContext.current
+            val db = com.example.trainer.data.AppDatabase.getDatabase(context)
+            val workoutRepo = com.example.trainer.data.Exercise.WorkoutRepository(db.workoutDao())
+
+            val workoutViewModel: com.example.trainer.GeneralScreen.Workout.WorkoutViewModel =
+                androidx.lifecycle.viewmodel.compose.viewModel(
+                    factory = com.example.trainer.GeneralScreen.Workout.WorkoutViewModelFactory(workoutRepo, db.exerciseDao())
+                )
+
+            CreateWorkoutScreen(
+                viewModel = workoutViewModel,
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }
