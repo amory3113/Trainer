@@ -116,14 +116,23 @@ fun MainScreen(repository: UserRepository, navController: androidx.navigation.Na
             modifier = Modifier.padding(innerPadding) // Важно! Отступ, чтобы меню не перекрывало контент
         ) {
             composable(BottomBarScreen.Home.route) {
+                // 1. Получаем доступ к базе данных и создаем репозиторий (если еще нет)
+                val context = androidx.compose.ui.platform.LocalContext.current
+                val db = com.example.trainer.data.AppDatabase.getDatabase(context)
+                val workoutRepo = com.example.trainer.data.Exercise.WorkoutRepository(db.workoutDao())
+
+                // 2. Создаем ViewModel с новой фабрикой
                 val viewModel: HomeViewModel = viewModel(
-                    factory = HomeViewModelFactory(repository)
+                    factory = HomeViewModelFactory(repository, workoutRepo) // Передаем workoutRepo
                 )
                 HomeScreen(viewModel = viewModel)
             }
 
             composable(BottomBarScreen.Workout.route) {
-                WorkoutScreen(onNavigateToCreate = { navController.navigate(Routes.CREATE_WORKOUT) })
+                WorkoutScreen(onNavigateToCreate = { id ->
+                    // ВАЖНО: Мы используем id, который пришел из WorkoutScreen
+                    // Если id = -1, создается новая. Если id > 0, редактируется старая.
+                    navController.navigate("create_workout?workoutId=$id") })
             }
 
             composable(BottomBarScreen.Stats.route) {

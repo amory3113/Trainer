@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.AlertDialog
@@ -30,18 +31,15 @@ import com.example.trainer.data.Exercise.WorkoutWithExercises
 import com.example.trainer.ui.theme.GradientBackground
 
 @Composable
-fun WorkoutScreen(onNavigateToCreate: () -> Unit) {
-    // 1. Получаем доступ к базе
+fun WorkoutScreen(onNavigateToCreate: (Int) -> Unit) {
     val context = LocalContext.current
     val database = AppDatabase.getDatabase(context)
     val repository = remember { WorkoutRepository(database.workoutDao()) }
 
-    // ИСПРАВЛЕНИЕ 1: Мы добавили ExerciseDao в фабрику (так как мы обновили ViewModel ранее)
     val viewModel: WorkoutViewModel = viewModel(
         factory = WorkoutViewModelFactory(repository, database.exerciseDao())
     )
 
-    // Состояние вкладок
     var selectedTab by remember { mutableIntStateOf(0) }
     val tabs = listOf("Мои программы", "Расписание")
 
@@ -71,7 +69,6 @@ fun WorkoutScreen(onNavigateToCreate: () -> Unit) {
 
             // КОНТЕНТ
             when (selectedTab) {
-                // ИСПРАВЛЕНИЕ 2: Передаем функцию навигации внутрь вкладки
                 0 -> MyProgramsTab(viewModel, onNavigateToCreate)
                 1 -> ScheduleTab(viewModel)
             }
@@ -83,11 +80,10 @@ fun WorkoutScreen(onNavigateToCreate: () -> Unit) {
 @Composable
 fun MyProgramsTab(
     viewModel: WorkoutViewModel,
-    onNavigateToCreate: () -> Unit // ИСПРАВЛЕНИЕ 3: Принимаем этот параметр здесь
+    onNavigateToCreate: (Int) -> Unit
 ) {
     val templates by viewModel.templates.collectAsState()
 
-    // Состояния для диалога подтверждения
     var showDeleteDialog by remember { mutableStateOf(false) }
     var workoutToDelete by remember { mutableStateOf<WorkoutTemplateEntity?>(null) }
 
@@ -125,23 +121,24 @@ fun MyProgramsTab(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(templates) { item ->
-                    WorkoutCard(item = item,
+                    WorkoutCard(
+                        item = item,
+                        onEditClick = { onNavigateToCreate(item.template.id) },
                         onDeleteClick = {
-                            workoutToDelete = item.template // Запоминаем, что хотим удалить
-                            showDeleteDialog = true         // Показываем диалог
+                            workoutToDelete = item.template
+                            showDeleteDialog = true
                         }
                     )
                 }
             }
         }
 
-        // Кнопка создания (+)
         FloatingActionButton(
-            onClick = { onNavigateToCreate() }, // Теперь эта переменная видна!
+            onClick = { onNavigateToCreate(-1) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
-                .padding(bottom = 80.dp), // Отступ от нижнего меню
+                .padding(bottom = 80.dp),
             containerColor = Color(0xFF2196F3)
         ) {
             Icon(Icons.Default.Add, contentDescription = "Создать", tint = Color.White)
@@ -150,7 +147,11 @@ fun MyProgramsTab(
 }
 
 @Composable
-fun WorkoutCard(item: WorkoutWithExercises, onDeleteClick: () -> Unit) {
+fun WorkoutCard(
+    item: WorkoutWithExercises,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -158,7 +159,9 @@ fun WorkoutCard(item: WorkoutWithExercises, onDeleteClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(2.dp)
     ) {
         Row(
-            modifier = Modifier.padding(16.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -168,16 +171,16 @@ fun WorkoutCard(item: WorkoutWithExercises, onDeleteClick: () -> Unit) {
                 modifier = Modifier.size(32.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Column ( modifier = Modifier.weight(1f))
-            {
+
+            // Колонка с текстом занимает всё свободное место (weight 1f)
+            Column(modifier = Modifier.weight(1f)) {
                 // Название программы
                 Text(item.template.name, fontSize = 18.sp, fontWeight = FontWeight.Bold)
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // СПИСОК УПРАЖНЕНИЙ (Вместо описания)
+                // СПИСОК УПРАЖНЕНИЙ
                 if (item.exercises.isNotEmpty()) {
-                    // Берем имена, соединяем через запятую
                     val exercisesList = item.exercises.joinToString(separator = ", ") { it.name }
                     Text(
                         text = exercisesList,
@@ -189,30 +192,41 @@ fun WorkoutCard(item: WorkoutWithExercises, onDeleteClick: () -> Unit) {
                     Text("Нет упражнений", fontSize = 14.sp, color = Color.Gray)
                 }
             }
-            IconButton(onClick = onDeleteClick) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Удалить",
-                    tint = Color.LightGray // Делаем серым, чтобы не бросалось в глаза
-                )
-            }
-        }
-    }
-}
 
-// --- ИЗМЕНЕННАЯ ВКЛАДКА 2: РАСПИСАНИЕ ---
+            // Кнопки действий (справа от текста)
+            Row {
+                // Карандаш
+                IconButton(onClick = onEditClick) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Редактировать",
+                        tint = Color(0xFF2196F3)
+                    )
+                }
+                // Корзина
+                IconButton(onClick = onDeleteClick) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Удалить",
+                        tint = Color.LightGray
+                    )
+                }
+            }
+        } // Закрываем Row
+    } // Закрываем Card
+} // Закрываем функцию WorkoutCard (ЭТОЙ СКОБКИ НЕ ХВАТАЛО)
+
+// --- ВКЛАДКА 2: РАСПИСАНИЕ ---
 @Composable
 fun ScheduleTab(viewModel: WorkoutViewModel) {
     val schedule by viewModel.schedule.collectAsState()
-    val allTemplates by viewModel.templates.collectAsState() // Список всех программ для выбора
+    val allTemplates by viewModel.templates.collectAsState()
 
-    // Состояние диалога выбора
     var showDialog by remember { mutableStateOf(false) }
     var selectedDayIndex by remember { mutableIntStateOf(-1) }
 
     val daysOfWeek = listOf("Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье")
 
-    // Диалог выбора тренировки
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
@@ -230,7 +244,7 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
                                     showDialog = false
                                 }
                                 .padding(12.dp),
-                            color = Color.White,
+                            color = Color.Red, // Поменял на Red, чтобы было видно (White на белом фоне не видно)
                             fontSize = 18.sp
                         )
                         HorizontalDivider()
@@ -282,12 +296,12 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
 fun ScheduleDayCard(
     dayName: String,
     item: ScheduleEntity?,
-    onClick: () -> Unit // Добавили клик
+    onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() }, // Карточка теперь кликабельна
+            .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(1.dp)
@@ -300,14 +314,12 @@ fun ScheduleDayCard(
             Text(dayName, fontWeight = FontWeight.Medium, fontSize = 16.sp)
 
             if (item != null && item.workoutName != null) {
-                // Если тренировка есть - показываем название синим
                 Text(
                     text = item.workoutName,
                     color = Color(0xFF2196F3),
                     fontWeight = FontWeight.Bold
                 )
             } else {
-                // Если тренировки нет - пишем "Выходной / Назначить" серым
                 Text("Выходной / Назначить", color = Color.Gray, fontSize = 14.sp)
             }
         }

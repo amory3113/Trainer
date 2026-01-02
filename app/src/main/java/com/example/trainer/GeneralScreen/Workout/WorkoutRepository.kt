@@ -21,6 +21,15 @@ class WorkoutRepository(private val workoutDao: WorkoutDao) {
         workoutDao.insertSchedule(item)
     }
 
+    // Получить данные для редактирования
+    suspend fun getTemplateById(id: Int) = workoutDao.getTemplateById(id)
+    suspend fun getExercisesForTemplate(id: Int) = workoutDao.getExercisesForWorkoutList(id)
+
+    suspend fun updateWorkout(workoutId: Int, newName: String, exercises: List<WorkoutExerciseEntity>) {
+        // Используем нашу новую транзакцию
+        workoutDao.updateWorkoutTransaction(workoutId, newName, exercises)
+    }
+
     // Очистить день (сделать выходным)
     suspend fun clearDay(dayOfWeek: Int) {
         workoutDao.clearDay(dayOfWeek)
@@ -34,4 +43,6 @@ class WorkoutRepository(private val workoutDao: WorkoutDao) {
     suspend fun insertWorkoutExercise(entity: WorkoutExerciseEntity) {
         workoutDao.insertWorkoutExercise(entity)
     }
+
+
 }

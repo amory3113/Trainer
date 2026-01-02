@@ -28,7 +28,7 @@ fun CreateWorkoutScreen(
     viewModel: WorkoutViewModel,
     onBack: () -> Unit
 ) {
-    var workoutName by remember { mutableStateOf("") }
+    val workoutName by viewModel.workoutName.collectAsState()
     var showExerciseSelector by remember { mutableStateOf(false) }
 
     val selectedExercises by viewModel.selectedExercises.collectAsState()
@@ -78,7 +78,7 @@ fun CreateWorkoutScreen(
                     // 1. НАЗВАНИЕ ТРЕНИРОВКИ (Вот тут пользователь называет её)
                     OutlinedTextField(
                         value = workoutName,
-                        onValueChange = { workoutName = it },
+                        onValueChange = { viewModel.onNameChange(it) },
                         label = { Text("Название (например: День Груди)") },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
@@ -122,7 +122,7 @@ fun CreateWorkoutScreen(
                         }
 
                         Button(
-                            onClick = { viewModel.saveWorkout(workoutName) { onBack() } },
+                            onClick = { viewModel.saveWorkout { onBack() } },
                             modifier = Modifier.weight(1f).height(50.dp),
                             enabled = selectedExercises.isNotEmpty(),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),

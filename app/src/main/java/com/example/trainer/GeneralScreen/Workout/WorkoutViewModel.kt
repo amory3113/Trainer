@@ -21,6 +21,14 @@ class WorkoutViewModel(
     private val exerciseDao: com.example.trainer.data.Exercise.ExerciseDao
 ) : ViewModel() {
 
+
+    // ID тренировки, которую мы сейчас редактируем (null = создание новой)
+    private var currentEditingId: Int? = null
+
+    // Название тренировки (вынесли в StateFlow, чтобы экран видел изменения при загрузке)
+    private val _workoutName = MutableStateFlow("")
+    val workoutName = _workoutName.asStateFlow()
+
     // --- ДАННЫЕ ---
     private val _templates = MutableStateFlow<List<WorkoutWithExercises>>(emptyList())
     val templates = _templates.asStateFlow()
@@ -74,20 +82,37 @@ class WorkoutViewModel(
         _selectedExercises.value = currentList
     }
 
-    // Сохранить программу
-    fun saveWorkout(name: String, onSuccess: () -> Unit) {
+    // --- СОХРАНЕНИЕ (ОБНОВЛЕННОЕ) ---
+    fun saveWorkout(onSuccess: () -> Unit) {
         viewModelScope.launch {
-            val templateName = if (name.isBlank()) "Моя тренировка" else name
-            val templateId = repository.createTemplate(templateName, "Пользовательская")
+            val nameToSave = if (_workoutName.value.isBlank()) "Новая тренировка" else _workoutName.value
 
-            _selectedExercises.value.forEachIndexed { index, exercise ->
-                val link = WorkoutExerciseEntity(
-                    workoutId = templateId.toInt(),
-                    exerciseId = exercise.id,
-                    sets = 3, reps = 10, order = index
-                )
-                repository.insertWorkoutExercise(link)
+            // Если ID есть -> ОБНОВЛЯЕМ, иначе -> СОЗДАЕМ
+            val targetId = currentEditingId
+
+            if (targetId != null) {
+                // РЕДАКТИРОВАНИЕ
+                val exerciseLinks = _selectedExercises.value.mapIndexed { index, exercise ->
+                    WorkoutExerciseEntity(
+                        workoutId = targetId,
+                        exerciseId = exercise.id,
+                        sets = 3, reps = 10, order = index
+                    )
+                }
+                repository.updateWorkout(targetId, nameToSave, exerciseLinks)
+            } else {
+                // СОЗДАНИЕ НОВОЙ
+                val newId = repository.createTemplate(nameToSave, "Пользовательская")
+                _selectedExercises.value.forEachIndexed { index, exercise ->
+                    val link = WorkoutExerciseEntity(
+                        workoutId = newId.toInt(),
+                        exerciseId = exercise.id,
+                        sets = 3, reps = 10, order = index
+                    )
+                    repository.insertWorkoutExercise(link)
+                }
             }
+
             clearSelection()
             onSuccess()
         }
@@ -95,6 +120,8 @@ class WorkoutViewModel(
 
     fun clearSelection() {
         _selectedExercises.value = emptyList()
+        _workoutName.value = ""
+        currentEditingId = null
         _selectedCategory.value = null
     }
 
@@ -117,6 +144,32 @@ class WorkoutViewModel(
             repository.deleteWorkout(workoutId)
         }
     }
+
+    fun onNameChange(newName: String) {
+        _workoutName.value = newName
+    }
+
+    // --- ЗАГРУЗКА ДЛЯ РЕДАКТИРОВАНИЯ ---
+    fun loadWorkoutForEdit(workoutId: Int) {
+        if (workoutId == -1) {
+            // Режим создания: сбрасываем всё
+            clearSelection()
+            return
+        }
+
+        viewModelScope.launch {
+            val template = repository.getTemplateById(workoutId)
+            val exercises = repository.getExercisesForTemplate(workoutId)
+
+            if (template != null) {
+                currentEditingId = workoutId
+                _workoutName.value = template.name
+                _selectedExercises.value = exercises
+            }
+        }
+    }
+
+
 }
 
 class WorkoutViewModelFactory(

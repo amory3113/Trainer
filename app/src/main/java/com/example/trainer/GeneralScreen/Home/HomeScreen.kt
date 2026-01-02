@@ -6,6 +6,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Weekend
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -50,7 +55,7 @@ fun HomeScreen(
                     .padding(16.dp)
             ) {
                 // Деталь А: Шапка
-                HeaderSection()
+                HeaderSection(dayName = viewModel.getTodayName())
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -79,7 +84,7 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Деталь Г: Блок тренировки
-                WorkoutSection()
+                WorkoutSection(workoutName = uiState.todayWorkoutName)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -109,11 +114,12 @@ fun HomeScreen(
     }
 }
 
+// --- ОБНОВЛЕННАЯ ШАПКА ---
 @Composable
-private fun HeaderSection() {
+private fun HeaderSection(dayName: String) {
     Column {
         Text(
-            text = getGreeting(),
+            text = "Dzisiaj, $dayName", // Теперь день динамический
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
@@ -204,80 +210,102 @@ private fun NutrientsSection(
     }
 }
 
+// --- УМНАЯ СЕКЦИЯ ТРЕНИРОВКИ ---
 @Composable
-private fun WorkoutSection() {
+private fun WorkoutSection(workoutName: String?) {
+    if (workoutName != null) {
+        // Если тренировка есть
+        ActiveWorkoutCard(name = workoutName)
+    } else {
+        // Если выходной
+        RestDayCard()
+    }
+}
+
+@Composable
+fun ActiveWorkoutCard(name: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White.copy(alpha = 0.7f)
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Можно добавить иконку
-            Text(
-                text = "💪",
-                fontSize = 32.sp
-            )
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .background(Color(0xFFE3F2FD), CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.FitnessCenter,
+                    contentDescription = null,
+                    tint = Color(0xFF2196F3),
+                    modifier = Modifier.size(24.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = "По плану:", fontSize = 14.sp, color = Color.Gray)
                 Text(
-                    text = "Тренировка на сегодня",
-                    fontSize = 16.sp,
+                    text = name,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "День 1: Верх тела",
-                    fontSize = 14.sp,
-                    color = Color.Gray
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Не выполнено",
-                    fontSize = 12.sp,
-                    color = Color(0xFFFF5722)
-                )
             }
+
+            Icon(
+                imageVector = Icons.Default.PlayArrow,
+                contentDescription = "Start",
+                tint = Color(0xFF4CAF50),
+                modifier = Modifier.size(32.dp)
+            )
         }
     }
 }
 
 @Composable
-private fun AddFoodButton(onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF2196F3)
-        ),
-        shape = RoundedCornerShape(16.dp)
+fun RestDayCard() {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(2.dp)
     ) {
-        Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = "Добавить еду",
-            tint = Color.White
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = "Добавить прием пищи (тест)",
-            color = Color.White,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium
-        )
+        Row(
+            modifier = Modifier.padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .background(Color(0xFFE8F5E9), CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Weekend, // Или LocalCafe
+                    contentDescription = null,
+                    tint = Color(0xFF4CAF50),
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column {
+                Text(text = "Выходной", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(text = "Отдых важен для роста", fontSize = 14.sp, color = Color.Gray)
+            }
+        }
     }
 }
+
 
 // Вспомогательные функции
 private fun getGreeting(): String {

@@ -19,11 +19,16 @@ import com.example.trainer.takeinfo.ActivityLevel
 import com.example.trainer.takeinfo.Feeling
 import com.example.trainer.takeinfo.LoadScreen
 import android.annotation.SuppressLint
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import com.example.trainer.GeneralScreen.BottomBarScreen
 import com.example.trainer.takeinfo.OnboardingViewModel
 import com.example.trainer.GeneralScreen.MainScreen
 import com.example.trainer.GeneralScreen.Workout.CreateWorkoutScreen
+import com.example.trainer.GeneralScreen.Workout.WorkoutScreen
 
 object Routes {
     const val WELCOME = "welcome"
@@ -37,7 +42,7 @@ object Routes {
     const val FEELING = "feeling"
     const val LOAD_SCREEN = "load_screen"
     const val MAIN = "main_screen"
-    const val CREATE_WORKOUT = "create_workout"
+    const val CREATE_WORKOUT = "create_workout?workoutId={workoutId}"
 }
 
 @Composable
@@ -144,9 +149,17 @@ fun AppNavigation(repository: UserRepository, startDestination: String) {
         }
 
         // 2. Экран создания (НОВЫЙ)
-        composable(Routes.CREATE_WORKOUT) {
-            // Нам нужно создать ViewModel здесь.
-            // В идеале использовать Hilt, но мы делаем вручную:
+        composable(
+            Routes.CREATE_WORKOUT,
+            arguments = listOf(
+                navArgument("workoutId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) { backStackEntry ->
+            val workoutId = backStackEntry.arguments?.getInt("workoutId") ?: -1
+
             val context = androidx.compose.ui.platform.LocalContext.current
             val db = com.example.trainer.data.AppDatabase.getDatabase(context)
             val workoutRepo = com.example.trainer.data.Exercise.WorkoutRepository(db.workoutDao())
@@ -155,6 +168,10 @@ fun AppNavigation(repository: UserRepository, startDestination: String) {
                 androidx.lifecycle.viewmodel.compose.viewModel(
                     factory = com.example.trainer.GeneralScreen.Workout.WorkoutViewModelFactory(workoutRepo, db.exerciseDao())
                 )
+
+            LaunchedEffect(workoutId) {
+                workoutViewModel.loadWorkoutForEdit(workoutId)
+            }
 
             CreateWorkoutScreen(
                 viewModel = workoutViewModel,
