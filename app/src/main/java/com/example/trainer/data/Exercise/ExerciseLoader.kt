@@ -31,7 +31,9 @@ object ExerciseLoader {
                     imageName = item.getString("imageName"),
                     description = item.getString("description"),
                     // Если вдруг в JSON забыли поле upDown, подставим "UP" по умолчанию
-                    upDown = item.optString("upDown", "UP")
+                    upDown = item.optString("upDown", "UP"),
+                    // Если поля нет, считаем что это тренажер (чтобы не сломать старое)
+                    equipment = item.optString("equipment", "machine")
                 )
                 exerciseList.add(exercise)
             }

@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trainer.data.Exercise.ExerciseEntity
 import com.example.trainer.ui.theme.GradientBackground
+import com.example.trainer.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -197,7 +198,23 @@ fun SelectExercisesView(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Checkbox(checked = isSelected, onCheckedChange = { onToggle(exercise) })
+
                     Spacer(modifier = Modifier.width(16.dp))
+
+                    // --- ДОБАВЛЯЕМ КАРТИНКУ СЮДА ---
+                    val context = androidx.compose.ui.platform.LocalContext.current
+                    // Получаем ID картинки по имени из базы
+                    val imageRes = getDrawableIdByName(context, exercise.imageName)
+
+                    androidx.compose.foundation.Image(
+                        painter = androidx.compose.ui.res.painterResource(id = imageRes),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(50.dp) // Размер картинки
+                            .padding(end = 16.dp) // Отступ справа до текста
+                    )
+                    // -------------------------------
+
                     Column {
                         Text(exercise.name, fontWeight = FontWeight.Bold)
                         Text(translateCategory(exercise.muscleGroup), fontSize = 12.sp, color = Color.Gray)
@@ -218,10 +235,25 @@ fun SimpleExerciseItem(exercise: ExerciseEntity, onDelete: () -> Unit) {
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            // horizontalArrangement = Arrangement.SpaceBetween, <-- УБЕРИ ЭТО (будет мешать)
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // --- ДОБАВЛЯЕМ КАРТИНКУ ---
+            val context = androidx.compose.ui.platform.LocalContext.current
+            val imageRes = getDrawableIdByName(context, exercise.imageName)
+
+            androidx.compose.foundation.Image(
+                painter = androidx.compose.ui.res.painterResource(id = imageRes),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(end = 12.dp)
+            )
+            // --------------------------
+
+            // Название (добавь weight(1f), чтобы занять всё место до кнопки удаления)
             Text(exercise.name, modifier = Modifier.weight(1f))
+
             IconButton(onClick = onDelete) {
                 Icon(Icons.Default.Delete, contentDescription = "Удалить", tint = Color.Gray)
             }
@@ -242,4 +274,18 @@ fun translateCategory(cat: String): String {
         "DOWN" -> "Низ тела"
         else -> cat
     }
+}
+
+// --- В САМЫЙ НИЗ ФАЙЛА, ВНЕ КЛАССОВ ---
+
+@Composable
+fun getDrawableIdByName(context: android.content.Context, name: String?): Int {
+    if (name.isNullOrEmpty()) return R.drawable.ic_launcher_foreground // Заглушка
+
+    val resId = context.resources.getIdentifier(
+        name,
+        "drawable",
+        context.packageName
+    )
+    return if (resId != 0) resId else R.drawable.ic_launcher_foreground // Заглушка, если картинки нет
 }

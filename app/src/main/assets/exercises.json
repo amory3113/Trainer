@@ -1,37 +1,130 @@
 [
   {
+    "name": "Отжимания от пола",
+    "muscleGroup": "CHEST",
+    "imageName": "pushups",
+    "description": "Классическое упражнение для груди и трицепса.",
+    "upDown": "UP",
+    "equipment": "bodyweight"
+  },
+  {
     "name": "Жим штанги лежа",
     "muscleGroup": "CHEST",
     "imageName": "bench_press",
-    "description": "Базовое упражнение для грудных мышц. Лягте на скамью, опустите штангу до касания груди и мощно выжмите вверх.",
-    "upDown": "UP"
+    "description": "Базовое упражнение для развития силы грудных мышц.",
+    "upDown": "UP",
+    "equipment": "barbell"
+  },
+  {
+    "name": "Жим гантелей лежа",
+    "muscleGroup": "CHEST",
+    "imageName": "dumbbell_press",
+    "description": "Альтернатива штанге, позволяет лучше растянуть мышцы.",
+    "upDown": "UP",
+    "equipment": "dumbbells"
+  },
+  {
+    "name": "Приседания (собственный вес)",
+    "muscleGroup": "LEGS",
+    "imageName": "body_squat",
+    "description": "Базовое движение для ног и ягодиц.",
+    "upDown": "DOWN",
+    "equipment": "bodyweight"
   },
   {
     "name": "Приседания со штангой",
     "muscleGroup": "LEGS",
-    "imageName": "squat",
-    "description": "Король упражнений для ног. Держите спину ровно, приседайте до параллели бедра с полом.",
-    "upDown": "DOWN"
+    "imageName": "barbell_squat",
+    "description": "Король упражнений для набора массы ног.",
+    "upDown": "DOWN",
+    "equipment": "barbell"
+  },
+  {
+    "name": "Выпады с гантелями",
+    "muscleGroup": "LEGS",
+    "imageName": "lunges",
+    "description": "Отличное упражнение для ягодиц и квадрицепсов.",
+    "upDown": "DOWN",
+    "equipment": "dumbbells"
+  },
+  {
+    "name": "Подтягивания",
+    "muscleGroup": "BACK",
+    "imageName": "pullups",
+    "description": "Лучшее упражнение для ширины спины.",
+    "upDown": "UP",
+    "equipment": "bodyweight"
   },
   {
     "name": "Тяга верхнего блока",
     "muscleGroup": "BACK",
     "imageName": "lat_pulldown",
-    "description": "Упражнение для ширины спины. Тяните рукоять к верху груди, сводя лопатки.",
-    "upDown": "UP"
+    "description": "Аналог подтягиваний на тренажере.",
+    "upDown": "UP",
+    "equipment": "machine"
   },
   {
-    "name": "Сгибания на бицепс",
-    "muscleGroup": "ARMS",
-    "imageName": "bicep_curl",
-    "description": "Изолированное упражнение для рук. Не раскачивайте корпус, работайте только предплечьями.",
-    "upDown": "UP"
+    "name": "Тяга гантели в наклоне",
+    "muscleGroup": "BACK",
+    "imageName": "dumbbell_row",
+    "description": "Упражнение для толщины спины.",
+    "upDown": "UP",
+    "equipment": "dumbbells"
+  },
+  {
+    "name": "Жим гантелей сидя",
+    "muscleGroup": "SHOULDERS",
+    "imageName": "shoulder_press",
+    "description": "База для дельтовидных мышц.",
+    "upDown": "UP",
+    "equipment": "dumbbells"
+  },
+  {
+    "name": "Махи гантелями в стороны",
+    "muscleGroup": "SHOULDERS",
+    "imageName": "lateral_raises",
+    "description": "Изоляция для средней дельты (ширина плеч).",
+    "upDown": "UP",
+    "equipment": "dumbbells"
   },
   {
     "name": "Планка",
     "muscleGroup": "ABS",
     "imageName": "plank",
-    "description": "Статическое упражнение для кора. Держите тело прямой линией, напрягите пресс.",
-    "upDown": "UP"
+    "description": "Статика для кора.",
+    "upDown": "UP",
+    "equipment": "bodyweight"
+  },
+  {
+    "name": "Скручивания",
+    "muscleGroup": "ABS",
+    "imageName": "crunches",
+    "description": "Классика для пресса.",
+    "upDown": "UP",
+    "equipment": "bodyweight"
+  },
+  {
+    "name": "Сгибания на бицепс (гантели)",
+    "muscleGroup": "ARMS",
+    "imageName": "bicep_curl",
+    "description": "База для бицепса.",
+    "upDown": "UP",
+    "equipment": "dumbbells"
+  },
+  {
+    "name": "Разгибания на трицепс (блок)",
+    "muscleGroup": "ARMS",
+    "imageName": "tricep_pushdown",
+    "description": "Изоляция для трицепса.",
+    "upDown": "UP",
+    "equipment": "machine"
+  },
+  {
+    "name": "Берпи",
+    "muscleGroup": "CARDIO",
+    "imageName": "burpee",
+    "description": "Интенсивное упражнение для всего тела.",
+    "upDown": "FULL",
+    "equipment": "bodyweight"
   }
 ]
