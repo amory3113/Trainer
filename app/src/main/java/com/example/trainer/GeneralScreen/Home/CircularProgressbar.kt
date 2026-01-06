@@ -50,9 +50,7 @@ fun CircularProgressbar(
         contentAlignment = Alignment.Center,
         modifier = modifier.size(size)
     ) {
-        // Рисуем круг
         Canvas(modifier = Modifier.size(size)) {
-            // Задний план (серый круг)
             drawArc(
                 color = backgroundColor,
                 startAngle = -90f,
@@ -61,7 +59,6 @@ fun CircularProgressbar(
                 style = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round)
             )
 
-            // Передний план (цветная дуга прогресса)
             drawArc(
                 color = progressColor,
                 startAngle = -90f,
@@ -71,7 +68,6 @@ fun CircularProgressbar(
             )
         }
 
-        // Текст в центре
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = remainingCalories.toString(),
@@ -80,12 +76,12 @@ fun CircularProgressbar(
                 color = Color.Black
             )
             Text(
-                text = "Осталось",
+                text = "Pozostałę",
                 fontSize = 16.sp,
                 color = Color.Gray
             )
             Text(
-                text = "из $calories ккал",
+                text = " $calories kalorie",
                 fontSize = 14.sp,
                 color = Color.Gray
             )

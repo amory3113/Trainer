@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class WeightEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val weight: Float,
-    val date: Long // Будем хранить время в миллисекундах
+    val date: Long
 )

@@ -16,31 +16,24 @@ class StatsViewModel(private val repository: UserRepository) : ViewModel() {
     private val _userProfile = MutableStateFlow<UserEntity?>(null)
     val userProfile = _userProfile.asStateFlow()
 
-    // Теперь здесь реальные данные из базы
     private val _weightHistory = MutableStateFlow<List<Float>>(emptyList())
     val weightHistory = _weightHistory.asStateFlow()
 
-    // Добавляем поток для истории питания
     private val _nutritionHistory = MutableStateFlow<List<NutritionEntity>>(emptyList())
     val nutritionHistory = _nutritionHistory.asStateFlow()
 
     init {
-        // 1. ПОДПИСКА НА ПРОФИЛЬ (Главное исправление)
-        // Теперь мы не просто загружаем 1 раз, а "слушаем" базу вечно
         viewModelScope.launch {
             repository.userFlow.collect { user ->
                 _userProfile.value = user
             }
         }
 
-        // 2. Подписка на историю веса (как мы делали в прошлый раз)
         viewModelScope.launch {
             repository.getWeightHistoryFlow().collect { listEntities ->
                 _weightHistory.value = listEntities.map { it.weight }
             }
         }
-
-        // 3. Питание (можно оставить так или тоже переделать на flow, если захочешь)
         loadNutritionData()
     }
 
@@ -50,42 +43,24 @@ class StatsViewModel(private val repository: UserRepository) : ViewModel() {
             _nutritionHistory.value = nHistory
         }
     }
-
-//    fun loadData() { // Сделал public, чтобы вызывать при обновлении
-//        viewModelScope.launch {
-//            _userProfile.value = repository.getUserProfile()
-//
-//            // Вес
-//            val wHistory = repository.getWeightHistory()
-//            _weightHistory.value = wHistory.map { it.weight }
-//
-//            // Питание (НОВОЕ)
-//            val nHistory = repository.getNutritionHistory()
-//            _nutritionHistory.value = nHistory
-//        }
-//    }
-
-    // Функция добавления нового веса
     fun addNewWeight(newWeight: Float) {
         viewModelScope.launch {
             repository.addWeightEntry(newWeight)
         }
     }
 
-    // Расчет ИМТ (Индекс Массы Тела)
     fun calculateBMI(): Double {
         val user = _userProfile.value ?: return 0.0
-        val heightM = user.height / 100.0 // переводим см в метры
+        val heightM = user.height / 100.0
         return if (heightM > 0) user.weight / heightM.pow(2) else 0.0
     }
 
-    // Текстовая интерпретация ИМТ
     fun getBmiStatus(bmi: Double): String {
         return when {
-            bmi < 18.5 -> "Дефицит массы"
-            bmi < 25.0 -> "Норма"
-            bmi < 30.0 -> "Избыточный вес"
-            else -> "Ожирение"
+            bmi < 18.5 -> "Deficyt wagi"
+            bmi < 25.0 -> "Norma"
+            bmi < 30.0 -> "Nadwaga"
+            else -> "Otyłość"
         }
     }
 }

@@ -52,15 +52,12 @@ fun AppNavigation(repository: UserRepository, startDestination: String) {
         navController = navController,
         startDestination = startDestination
     ) {
-        // Стартовый экран (отдельно)
         composable(Routes.WELCOME) { WelcomeScreen( onNextClick = { navController.navigate(Routes.TAKE_CEL) }) }
 
-        // --- НАЧАЛО ОБЩЕЙ ЗОНЫ (Где живет ViewModel) ---
         navigation(
             startDestination = Routes.TAKE_CEL,
-            route = Routes.ONBOARDING_GRAPH // Это имя "комнаты", где лежит рюкзак
+            route = Routes.ONBOARDING_GRAPH
         ) {
-
             composable(Routes.TAKE_CEL) {
                 val viewModel = getOnboardingViewModel(navController, repository)
                 TakeCelScreen(
@@ -88,21 +85,17 @@ fun AppNavigation(repository: UserRepository, startDestination: String) {
                 )
             }
 
-            // Экран 1 Здоровья
             composable(Routes.HEALTH_QUESTION) {
-                // Получаем общий ViewModel
                 val viewModel = getOnboardingViewModel(navController, repository)
 
                 HealthQuestion(
                     viewModel = viewModel,
                     onNextClick = { navController.navigate(Routes.MORE_HEALTH_QUEST) },
-                    // Если "Нет ограничений", сразу идем к Активности
                     onNoLimitations = { navController.navigate(Routes.ACTIVITY_LEVEL) },
                     onBackClick = { navController.popBackStack() }
                 )
             }
 
-            // Экран 2 Здоровья
             composable(Routes.MORE_HEALTH_QUEST) {
                 val viewModel = getOnboardingViewModel(navController, repository)
 
@@ -148,7 +141,6 @@ fun AppNavigation(repository: UserRepository, startDestination: String) {
             MainScreen(repository = repository, navController = navController)
         }
 
-        // 2. Экран создания (НОВЫЙ)
         composable(
             Routes.CREATE_WORKOUT,
             arguments = listOf(

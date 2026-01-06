@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey
             entity = WorkoutTemplateEntity::class,
             parentColumns = ["id"],
             childColumns = ["workoutId"],
-            onDelete = ForeignKey.CASCADE // Удалим программу -> удалятся и упражнения из неё
+            onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = ExerciseEntity::class,
@@ -22,9 +22,9 @@ import androidx.room.PrimaryKey
 )
 data class WorkoutExerciseEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val workoutId: Int,         // Ссылка на программу
-    val exerciseId: Int,        // Ссылка на упражнение
-    val sets: Int = 3,          // Подходы по умолчанию
-    val reps: Int = 10,         // Повторы по умолчанию
-    val order: Int = 0          // Порядок упражнения в списке (1-е, 2-е...)
+    val workoutId: Int,
+    val exerciseId: Int,
+    val sets: Int = 3,
+    val reps: Int = 10,
+    val order: Int = 0
 )

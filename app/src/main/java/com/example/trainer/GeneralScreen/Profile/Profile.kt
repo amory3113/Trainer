@@ -56,20 +56,16 @@ fun Profile(
                     .padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // 1. ШАПКА ПРОФИЛЯ
                 ProfileHeader(userProfile!!)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // 2. БЛОК "МОЕ ТЕЛО"
-                // 2. БЛОК "МОЕ ТЕЛО" (НОВЫЙ КОД)
-                SectionTitle("Мои данные")
+                SectionTitle("Moje dane")
                 CardSection {
-                    // ВЕС (Оставляем кликабельным)
                     ProfileOptionItem(
-                        icon = Icons.Default.MonitorWeight, // Новая иконка весов
-                        title = "Вес",
-                        value = "${userProfile!!.weight} кг",
+                        icon = Icons.Default.MonitorWeight,
+                        title = "Waga",
+                        value = "${userProfile!!.weight} kg",
                         onClick = {
                             editType = EditType.WEIGHT
                             editValue = userProfile!!.weight.toString()
@@ -78,32 +74,27 @@ fun Profile(
                     )
                     Divider(color = Color.LightGray.copy(alpha = 0.3f))
 
-                    // РОСТ (Делаем отдельной строкой)
-                    // Пока делаем не кликабельным (showArrow = false),
-                    // так как рост у взрослых меняется редко.
                     ProfileOptionItem(
-                        icon = Icons.Default.Height, // Новая иконка роста
-                        title = "Рост",
-                        value = "${userProfile!!.height} см",
+                        icon = Icons.Default.Height,
+                        title = "Wysokość",
+                        value = "${userProfile!!.height} cm",
                         showArrow = false,
                         onClick = null
                     )
                     Divider(color = Color.LightGray.copy(alpha = 0.3f))
 
-                    // ВОЗРАСТ
                     ProfileOptionItem(
                         icon = Icons.Default.Cake,
-                        title = "Возраст",
-                        value = "${userProfile!!.age} лет",
-                        showArrow = false, // Тоже пока без редактирования
+                        title = "Wiek",
+                        value = "${userProfile!!.age} lat",
+                        showArrow = false,
                         onClick = null
                     )
                     Divider(color = Color.LightGray.copy(alpha = 0.3f))
 
-                    // ПОЛ
                     ProfileOptionItem(
                         icon = Icons.Default.Transgender,
-                        title = "Пол",
+                        title = "Płeć",
                         value = formatGender(userProfile!!.gender),
                         showArrow = false
                     )
@@ -111,8 +102,7 @@ fun Profile(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // 3. БЛОК "ПРОГРАММА"
-                SectionTitle("Настройки программы")
+                SectionTitle("Ustawienia programu")
                 CardSection {
                     ProfileOptionItem(
                         icon = Icons.Default.Flag,
@@ -126,7 +116,7 @@ fun Profile(
                     Divider(color = Color.LightGray.copy(alpha = 0.3f))
                     ProfileOptionItem(
                         icon = Icons.Default.FitnessCenter,
-                        title = "Активность",
+                        title = "Aktywnosc",
                         value = formatActivity(userProfile!!.activityLevel),
                         onClick = { editType = EditType.ACTIVITY
                             editValue = userProfile!!.activityLevel
@@ -138,19 +128,18 @@ fun Profile(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // 4. БЛОК "ПРИЛОЖЕНИЕ"
-                SectionTitle("Приложение")
+                SectionTitle("Aplikacja")
                 CardSection {
                     ProfileOptionItem(
                         icon = Icons.Default.Info,
-                        title = "О приложении",
-                        value = "Версия 1.0 (Диплом)",
+                        title = "O aplikacji",
+                        value = "Wersja 1.0",
                         showArrow = false
                     )
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // 5. КНОПКА СБРОСА (ВЫХОДА)
                 OutlinedButton(
                     onClick = {
                         viewModel.clearData { onLogout() }
@@ -163,41 +152,37 @@ fun Profile(
                 ) {
                     Icon(imageVector = Icons.Outlined.Logout, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Сбросить прогресс и выйти")
+                    Text("Zresetuj postęp i wyjdź")
                 }
 
-                Spacer(modifier = Modifier.height(100.dp)) // Отступ для нижнего меню
+                Spacer(modifier = Modifier.height(100.dp))
             }
         }
     }
-    // --- НОВОЕ: ВЫЗОВ ДИАЛОГА ---
     if (showDialog) {
         EditProfileDialog(
             type = editType,
             currentValue = editValue,
             onDismiss = { showDialog = false },
             onConfirm = { newValue ->
-                viewModel.updateProfile(editType, newValue) // Отправляем во ViewModel
+                viewModel.updateProfile(editType, newValue)
                 showDialog = false
             }
         )
     }
 }
 
-// --- КОМПОНЕНТЫ (Можно вынести в отдельные файлы, но для удобства оставил тут) ---
-
 @Composable
 fun ProfileHeader(user: UserEntity) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Аватарка с обводкой
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(110.dp)
                 .border(2.dp, Color(0xFF2196F3), CircleShape)
-                .padding(4.dp) // Отступ между обводкой и фото
+                .padding(4.dp)
                 .clip(CircleShape)
                 .background(Color.LightGray)
         ) {
@@ -212,16 +197,16 @@ fun ProfileHeader(user: UserEntity) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Пользователь", // Можно добавить поле Имя в базу, но пока так
+            text = "Użytkownik",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
         )
-        Text(
-            text = "Ваш ID: ${user.id}",
-            fontSize = 14.sp,
-            color = Color.Gray
-        )
+//        Text(
+//            text = "Ваш ID: ${user.id}",
+//            fontSize = 14.sp,
+//            color = Color.Gray
+//        )
     }
 }
 
@@ -269,7 +254,6 @@ fun ProfileOptionItem(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            // Иконка слева
             Icon(
                 imageVector = icon,
                 contentDescription = null,
@@ -277,7 +261,6 @@ fun ProfileOptionItem(
                 modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
-            // Заголовок
             Text(
                 text = title,
                 fontSize = 16.sp,
@@ -286,14 +269,12 @@ fun ProfileOptionItem(
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            // Значение (серое)
             Text(
                 text = value,
                 fontSize = 14.sp,
                 color = Color.Gray,
                 fontWeight = FontWeight.Medium
             )
-            // Стрелочка
             if (showArrow) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
@@ -306,30 +287,28 @@ fun ProfileOptionItem(
         }
     }
 }
-
-// --- Вспомогательные функции форматирования ---
 fun formatGender(gender: String): String {
     return when(gender) {
-        "MALE" -> "Мужской"
-        "FEMALE" -> "Женский"
+        "MALE" -> "Mężczyzna"
+        "FEMALE" -> "Kobieta"
         else -> gender
     }
 }
 
 fun formatGoal(goal: String): String {
     return when(goal) {
-        "WEIGHT_LOSS" -> "Похудение"
-        "MUSCLE_GAIN" -> "Набор массы"
-        "MAINTAIN_FITNESS" -> "Поддержка"
+        "WEIGHT_LOSS" -> "Utrata wagi"
+        "MUSCLE_GAIN" -> "Przyrost masy"
+        "MAINTAIN_FITNESS" -> "Utrzymanie formy"
         else -> goal
     }
 }
 
 fun formatActivity(activity: String): String {
     return when(activity) {
-        "BEGINNER" -> "Низкая"
-        "INTERMEDIATE" -> "Средняя"
-        "ADVANCED" -> "Высокая"
+        "BEGINNER" -> "Niska"
+        "INTERMEDIATE" -> "Średnia"
+        "ADVANCED" -> "Wysoka"
         else -> activity
     }
 }

@@ -72,6 +72,9 @@ fun WorkoutScreen(onNavigateToCreate: (Int) -> Unit) {
             }
 
             // КОНТЕНТ
+            Box(modifier = Modifier.weight(1f)){
+
+            }
             when (selectedTab) {
                 0 -> MyProgramsTab(viewModel, onNavigateToCreate)
                 1 -> ScheduleTab(viewModel)
@@ -135,14 +138,14 @@ fun MyProgramsTab(
                     )
                 }
             }
+
         }
 
         FloatingActionButton(
             onClick = { onNavigateToCreate(-1) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(16.dp)
-                .padding(bottom = 80.dp),
+                .padding(16.dp),
             containerColor = Color(0xFF2196F3)
         ) {
             Icon(Icons.Default.Add, contentDescription = "Создать", tint = Color.White)

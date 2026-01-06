@@ -34,8 +34,6 @@ fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
-    // Состояние для показа диалога
     var showFoodDialog by remember { mutableStateOf(false) }
 
     GradientBackground {
@@ -54,12 +52,10 @@ fun HomeScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(16.dp)
             ) {
-                // Деталь А: Шапка
                 HeaderSection(dayName = viewModel.getTodayName())
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Деталь Б: Круг калорий
                 CaloriesCircleSection(
                     calories = uiState.userProfile?.targetCalories ?: 0,
                     remainingCalories = viewModel.getCaloriesRemaining(),
@@ -68,7 +64,6 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Деталь В: Панель БЖУ
                 NutrientsSection(
                     proteinCurrent = uiState.proteinEaten,
                     proteinTarget = uiState.userProfile?.proteinGrams ?: 0,
@@ -82,8 +77,6 @@ fun HomeScreen(
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
-
-                // Деталь Г: Блок тренировки
                 WorkoutSection(workoutName = uiState.todayWorkoutName)
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -93,33 +86,31 @@ fun HomeScreen(
                 FloatingActionButton(
                     onClick = { showFoodDialog = true },
                     modifier = Modifier
-                        .align(Alignment.BottomEnd) // В правом нижнем углу
+                        .align(Alignment.BottomEnd)
                         .padding(16.dp),
                     containerColor = Color(0xFF2196F3)
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "Добавить еду", tint = Color.White)
+                    Icon(Icons.Default.Add, contentDescription = "Dodaj jedzenie", tint = Color.White)
                 }
             }
         }
     }
-    // ВЫЗОВ ДИАЛОГА
     if (showFoodDialog) {
         AddFoodDialog(
             onDismiss = { showFoodDialog = false },
             onConfirm = { k, p, f, c ->
-                viewModel.addFood(k, p, f, c) // Вызываем новую функцию
+                viewModel.addFood(k, p, f, c)
                 showFoodDialog = false
             }
         )
     }
 }
 
-// --- ОБНОВЛЕННАЯ ШАПКА ---
 @Composable
 private fun HeaderSection(dayName: String) {
     Column {
         Text(
-            text = "Dzisiaj, $dayName", // Теперь день динамический
+            text = "Dzisiaj, $dayName",
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
@@ -165,31 +156,28 @@ private fun NutrientsSection(
 ) {
     Column {
         Text(
-            text = "Нутриенты",
+            text = "Składniki odżywcze",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
             modifier = Modifier.padding(bottom = 12.dp)
         )
 
-        // Используем Row, чтобы выстроить их в линию
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp) // Отступ между столбиками
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Белки
             NutrientBar(
-                name = "Белки",
+                name = "Białka",
                 current = proteinCurrent,
                 target = proteinTarget,
                 progress = proteinProgress,
                 color = Color(0xFF9C27B0),
-                modifier = Modifier.weight(1f) // Занимает 1/3 ширины
+                modifier = Modifier.weight(1f)
             )
 
-            // Жиры
             NutrientBar(
-                name = "Жиры",
+                name = "Tłuszcze",
                 current = fatCurrent,
                 target = fatTarget,
                 progress = fatProgress,
@@ -197,9 +185,8 @@ private fun NutrientsSection(
                 modifier = Modifier.weight(1f)
             )
 
-            // Углеводы
             NutrientBar(
-                name = "Углеводы",
+                name = "Węglowodany",
                 current = carbsCurrent,
                 target = carbsTarget,
                 progress = carbsProgress,
@@ -210,14 +197,11 @@ private fun NutrientsSection(
     }
 }
 
-// --- УМНАЯ СЕКЦИЯ ТРЕНИРОВКИ ---
 @Composable
 private fun WorkoutSection(workoutName: String?) {
     if (workoutName != null) {
-        // Если тренировка есть
         ActiveWorkoutCard(name = workoutName)
     } else {
-        // Если выходной
         RestDayCard()
     }
 }
@@ -251,7 +235,7 @@ fun ActiveWorkoutCard(name: String) {
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = "По плану:", fontSize = 14.sp, color = Color.Gray)
+                Text(text = "Zgodnie z planem:", fontSize = 14.sp, color = Color.Gray)
                 Text(
                     text = name,
                     fontSize = 20.sp,
@@ -289,7 +273,7 @@ fun RestDayCard() {
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Icons.Default.Weekend, // Или LocalCafe
+                    imageVector = Icons.Default.Weekend,
                     contentDescription = null,
                     tint = Color(0xFF4CAF50),
                     modifier = Modifier.size(24.dp)
@@ -299,15 +283,13 @@ fun RestDayCard() {
             Spacer(modifier = Modifier.width(16.dp))
 
             Column {
-                Text(text = "Выходной", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Text(text = "Отдых важен для роста", fontSize = 14.sp, color = Color.Gray)
+                Text(text = "Dzień wolny", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(text = "Odpoczynek jest ważny dla wzrostu mięśni.", fontSize = 14.sp, color = Color.Gray)
             }
         }
     }
 }
 
-
-// Вспомогательные функции
 private fun getGreeting(): String {
     val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
     return when (hour) {

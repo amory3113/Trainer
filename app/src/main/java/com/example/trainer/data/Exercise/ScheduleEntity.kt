@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "schedule")
 data class ScheduleEntity(
-    @PrimaryKey val dayOfWeek: Int, // 1 = Понедельник, 7 = Воскресенье
-    val workoutId: Int?,            // Ссылка на программу (null = выходной)
-    val workoutName: String?        // Копия названия, чтобы быстрее отображать
+    @PrimaryKey val dayOfWeek: Int,
+    val workoutId: Int?,
+    val workoutName: String?
 )

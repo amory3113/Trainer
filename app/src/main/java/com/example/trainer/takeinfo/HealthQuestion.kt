@@ -66,7 +66,7 @@ fun HealthQuestion(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "Важный вопрос о здоровье",
+                text = "Ważne pytanie o zdrowie",
                 modifier = Modifier.padding(top = 40.dp, bottom = 24.dp),
                 color = Color.Black,
                 fontSize = 30.sp,
@@ -76,7 +76,7 @@ fun HealthQuestion(
             )
 
             Text(
-                text = "Есть ли у вас какие-либо серьезные ограничения, травмы или хронические заболевания, о которых вы знаете?",
+                text = "Czy wiesz o jakichś poważnych ograniczeniach, urazach lub przewlekłych chorobach?",
                 modifier = Modifier.padding(bottom = 40.dp),
                 color = Color.Black,
                 fontSize = 18.sp,
@@ -84,7 +84,6 @@ fun HealthQuestion(
                 lineHeight = 24.sp
             )
 
-            // No limitations option
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -102,7 +101,7 @@ fun HealthQuestion(
                     .clickable { selectedOption = "no" }
             ) {
                 Text(
-                    text = "Нет, у меня нет ограничений",
+                    text = "Nie, nie mam żadnych ograniczeń.",
                     modifier = Modifier.align(Alignment.Center),
                     color = if (selectedOption == "no") Color.White else Color.Black,
                     fontSize = 18.sp,
@@ -110,7 +109,6 @@ fun HealthQuestion(
                 )
             }
 
-            // Yes limitations option
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -127,7 +125,7 @@ fun HealthQuestion(
                     .clickable { selectedOption = "yes" }
             ) {
                 Text(
-                    text = "Да, у меня есть ограничения",
+                    text = "Tak, mam ograniczenia.",
                     modifier = Modifier.align(Alignment.Center),
                     color = if (selectedOption == "yes") Color.White else Color.Black,
                     fontSize = 18.sp,
@@ -155,7 +153,7 @@ fun HealthQuestion(
                 elevation = ButtonDefaults.buttonElevation(0.dp)
             ) {
                 Text(
-                    text = "Назад",
+                    text = "Z powrotem",
                     color = Color(0xFF2196F3),
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Medium
@@ -166,12 +164,10 @@ fun HealthQuestion(
                 onClick = {
                     when (selectedOption) {
                         "no" -> {
-                            // ЕСЛИ ВЫБРАЛИ "НЕТ ОГРАНИЧЕНИЙ":
-                            viewModel?.setHealthyStatus() // <--- 2. ДОБАВЬ ЭТО (Вызов ViewModel)
+                            viewModel?.setHealthyStatus()
                             onNoLimitations()
                         }
                         "yes" -> {
-                            // Если есть ограничения, просто идем на опросник
                             onNextClick()
                         }
                     }
@@ -186,7 +182,7 @@ fun HealthQuestion(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = "Далее",
+                    text = "Następny",
                     color = Color.White,
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Medium

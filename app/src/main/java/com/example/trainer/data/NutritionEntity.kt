@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "nutrition_history")
 data class NutritionEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val date: Long,      // Дата (без времени, чтобы группировать по дням)
+    val date: Long,
     val calories: Int,
     val protein: Int,
     val fat: Int,

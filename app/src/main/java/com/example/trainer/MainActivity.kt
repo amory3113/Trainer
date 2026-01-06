@@ -26,15 +26,10 @@ class MainActivity : ComponentActivity() {
         val database = AppDatabase.getDatabase(applicationContext)
         val repository = UserRepository(database.userDao())
 
-        // Получаем доступ к новому DAO упражнений
         val exerciseDao = database.exerciseDao()
 
-        // --- ЗАГРУЗКА УПРАЖНЕНИЙ (Один раз при первом старте) ---
         lifecycleScope.launch {
-            // 1. Спрашиваем базу: сколько там упражнений?
             val count = exerciseDao.getCount()
-
-            // 2. Если 0 (база пустая), значит это первый запуск
             if (count == 0) {
                 println("DEBUG: База пустая, загружаем упражнения из JSON...")
                 val exercises = ExerciseLoader.loadExercises(applicationContext)
@@ -48,29 +43,23 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TrainerTheme {
-                // 1. Проверяем состояние пользователя асинхронно
-                // initialValue = null, значит мы еще не знаем, куда идти
                 val startRoute = produceState<String?>(initialValue = null) {
-                    // Этот код выполняется в фоновом потоке
                     val user = repository.getUserProfile()
                     if (user != null) {
-                        value = Routes.MAIN // Если пользователь есть -> Главный экран
+                        value = Routes.MAIN
                     } else {
-                        value = Routes.WELCOME // Если нет -> Онбординг
+                        value = Routes.WELCOME
                     }
                 }
 
-                // 2. Логика отображения
                 if (startRoute.value == null) {
-                    // ПОКА ГРУЗИМСЯ: Показываем крутилку или пустой экран
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
                     }
                 } else {
-                    // ЗАГРУЗИЛИСЬ: Запускаем навигацию с правильной точки
                     AppNavigation(
                         repository = repository,
-                        startDestination = startRoute.value!! // Передаем вычисленный маршрут
+                        startDestination = startRoute.value!!
                     )
                 }
             }

@@ -41,11 +41,8 @@ fun Feeling(
     onNextClick: () -> Unit,
     onBackClick: () -> Unit = {}
 ) {
-    // Храним сразу в правильных типах данных
     var selectedLocation by remember { mutableStateOf<WorkoutLocation?>(null) }
-    var selectedFrequency by remember { mutableStateOf<Int?>(null) } // Храним число
-
-    // Проверка: можно идти дальше, только если всё выбрано
+    var selectedFrequency by remember { mutableStateOf<Int?>(null) }
     val isFormComplete = selectedLocation != null && selectedFrequency != null
 
     Box(
@@ -71,16 +68,15 @@ fun Feeling(
             Spacer(modifier = Modifier.height(80.dp))
 
             Text(
-                text = "Предпочтения",
+                text = "Preferencje",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 modifier = Modifier.padding(bottom = 40.dp)
             )
 
-            // Location preference
             Text(
-                text = "Где вам удобнее заниматься?",
+                text = "Gdzie jest Ci wygodniej się uczyć?",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color.Black,
@@ -91,16 +87,13 @@ fun Feeling(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Кнопка ДОМА
                 LocationButton(
-                    text = "Дома",
+                    text = "W domu",
                     isSelected = selectedLocation == WorkoutLocation.HOME,
                     onClick = { selectedLocation = WorkoutLocation.HOME }
                 )
-
-                // Кнопка ЗАЛ
                 LocationButton(
-                    text = "В зале",
+                    text = "W silownie",
                     isSelected = selectedLocation == WorkoutLocation.GYM,
                     onClick = { selectedLocation = WorkoutLocation.GYM }
                 )
@@ -108,9 +101,8 @@ fun Feeling(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Training frequency
             Text(
-                text = "Сколько раз в неделю вы готовы тренироваться?",
+                text = "Ile razy w tygodniu jesteś w stanie trenować?",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color.Black,
@@ -119,12 +111,12 @@ fun Feeling(
 
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    FreqButton("2 раза", 2, selectedFrequency) { selectedFrequency = 2 }
-                    FreqButton("3 раза", 3, selectedFrequency) { selectedFrequency = 3 }
+                    FreqButton("2 razy", 2, selectedFrequency) { selectedFrequency = 2 }
+                    FreqButton("3 razy", 3, selectedFrequency) { selectedFrequency = 3 }
                 }
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    FreqButton("4 раза", 4, selectedFrequency) { selectedFrequency = 4 }
-                    FreqButton("5+ раз", 5, selectedFrequency) { selectedFrequency = 5 }
+                    FreqButton("4 razy", 4, selectedFrequency) { selectedFrequency = 4 }
+                    FreqButton("5+ razy", 5, selectedFrequency) { selectedFrequency = 5 }
                 }
             }
         }
@@ -148,7 +140,7 @@ fun Feeling(
                 elevation = ButtonDefaults.buttonElevation(0.dp)
             ) {
                 Text(
-                    text = "Назад",
+                    text = "Z powrotem",
                     color = Color(0xFF2196F3),
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Medium
@@ -172,7 +164,7 @@ fun Feeling(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = "Рассчитать мой план",
+                    text = "Oblicz mój plan",
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium

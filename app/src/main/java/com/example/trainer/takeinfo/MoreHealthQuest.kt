@@ -73,7 +73,7 @@ fun MoreHealthQuest(
                 .padding(bottom = 100.dp)
         ) {
             Text(
-                text = "Уточним ваше состояние",
+                text = "Wyjaśnijmy Twój stan",
                 modifier = Modifier.padding(top = 40.dp, bottom = 16.dp),
                 color = Color.Black,
                 fontSize = 30.sp,
@@ -83,7 +83,7 @@ fun MoreHealthQuest(
             )
 
             Text(
-                text = "Пожалуйста, оцените следующие пункты, чтобы мы могли подобрать безопасные упражнения.",
+                text = "Oceń poniższe punkty, abyśmy mogli wybrać bezpieczne ćwiczenia.",
                 modifier = Modifier.padding(bottom = 32.dp),
                 color = Color.Black,
                 fontSize = 16.sp,
@@ -91,42 +91,37 @@ fun MoreHealthQuest(
                 lineHeight = 20.sp
             )
 
-            // Question 1
             QuestionSection(
-                question = "Хронические заболевания (диабет, гипертония)?",
-                options = listOf("Нет", "Мелкие", "Серьезные"),
+                question = "Choroby przewlekłe (cukrzyca, nadciśnienie)?",
+                options = listOf("Nie", "Nieznaczne", "Poważne"),
                 selectedOption = question1,
                 onOptionSelected = { question1 = it }
             )
 
-            // Question 2
             QuestionSection(
-                question = "Боли в суставах/спине или недавние травмы?",
-                options = listOf("Нет", "Иногда", "Серьезные или недавние"),
+                question = "Bóle stawów/pleców lub niedawne urazy?",
+                options = listOf("Nie", "Czasami", "Poważne lub niedawne"),
                 selectedOption = question2,
                 onOptionSelected = { question2 = it }
             )
 
-            // Question 3
             QuestionSection(
-                question = "Заболевания сердца или системы кровообращения?",
-                options = listOf("Нет", "Легкие", "Серьезные"),
+                question = "Choroby serca i układu krążenia?",
+                options = listOf("Nie", "Łagodne", "Poważne"),
                 selectedOption = question3,
                 onOptionSelected = { question3 = it }
             )
 
-            // Question 4
             QuestionSection(
-                question = "Рекомендации врача избегать определенных активностей?",
-                options = listOf("Нет", "Частичные", "Полные"),
+                question = "Czy lekarz zaleca unikanie pewnych czynności?",
+                options = listOf("Nie", "Częściowo", "Całkowicie"),
                 selectedOption = question4,
                 onOptionSelected = { question4 = it }
             )
 
-            // Question 5
             QuestionSection(
-                question = "Как часто вы устаете при повседневных делах?",
-                options = listOf("Редко", "Часто", "Постоянно"),
+                question = "Jak często odczuwasz zmęczenie podczas codziennych czynności?",
+                options = listOf("Rzadko", "Często", "Ciągle"),
                 selectedOption = question5,
                 onOptionSelected = { question5 = it }
             )
@@ -160,16 +155,14 @@ fun MoreHealthQuest(
 
             Button(
                 onClick = {
-                    // Превращаем ответы в цифры (0, 1 или 3)
                     fun parse(answer: String?): Int {
                         return when (answer) {
-                            "Нет", "Редко" -> 0
-                            "Мелкие", "Иногда", "Легкие", "Частичные", "Часто" -> 1
-                            else -> 3 // "Серьезные", "Постоянно", "Полные"
+                            "Nie", "Rzadko" -> 0
+                            "Niewielkie", "Czasami", "Łagodne", "Częściowe", "Często" -> 1
+                            else -> 3
                         }
                     }
 
-                    // Сохраняем во ViewModel
                     viewModel?.saveHealthData(
                         chronic = parse(question1),
                         injuries = parse(question2),
@@ -188,7 +181,7 @@ fun MoreHealthQuest(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = "Далее",
+                    text = "Następny",
                     color = Color.White,
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Medium

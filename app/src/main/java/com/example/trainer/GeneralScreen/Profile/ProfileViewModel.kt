@@ -14,13 +14,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
-
-    // Храним данные пользователя. Изначально null (пока не загрузились)
     private val _userProfile = MutableStateFlow<UserEntity?>(null)
     val userProfile = _userProfile.asStateFlow()
 
     init {
-        // ИСПРАВЛЕНИЕ: Подписываемся на поток изменений
         viewModelScope.launch {
             repository.userFlow.collect { user ->
                 _userProfile.value = user
@@ -30,32 +27,26 @@ class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
 
     private fun loadUserProfile() {
         viewModelScope.launch {
-            // Запрос в базу (через репозиторий)
             val user = repository.getUserProfile()
             _userProfile.value = user
         }
     }
-
-    // Функция для кнопки "Сбросить прогресс"
     fun clearData(onCleared: () -> Unit) {
         viewModelScope.launch {
             repository.clearData()
-            onCleared() // Сообщаем экрану, что всё удалено (чтобы перейти на Welcome)
+            onCleared()
         }
     }
 
-    // --- НОВАЯ ФУНКЦИЯ ОБНОВЛЕНИЯ ---
     fun updateProfile(type: EditType, newValue: String) {
         val currentUser = _userProfile.value ?: return
 
         viewModelScope.launch {
-            // 1. Создаем копию пользователя с новыми данными
             var updatedUser = when (type) {
                 EditType.GOAL -> currentUser.copy(goal = newValue)
                 EditType.ACTIVITY -> currentUser.copy(activityLevel = newValue)
                 EditType.WEIGHT -> {
                     val newWeight = newValue.toDoubleOrNull() ?: currentUser.weight
-                    // Если меняем вес, надо добавить и в историю веса
                     if (newWeight != currentUser.weight) {
                         repository.addWeightEntry(newWeight.toFloat())
                     }
@@ -63,8 +54,6 @@ class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
                 }
             }
 
-            // 2. ПЕРЕСЧЕТ КБЖУ (Самое важное!)
-            // Нам нужно снова вызвать логику расчета, так как вводные данные изменились
             val genderEnum = try { Gender.valueOf(updatedUser.gender) } catch (e: Exception) { Gender.MALE }
             val goalEnum = try { Goal.valueOf(updatedUser.goal) } catch (e: Exception) { Goal.MAINTAIN_FITNESS }
             val activityEnum = try { ActivityLevel.valueOf(updatedUser.activityLevel) } catch (e: Exception) { ActivityLevel.INTERMEDIATE }
@@ -78,23 +67,16 @@ class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
                 activityLevel = activityEnum,
                 goal = goalEnum
             )
-
-            // 3. Применяем новые нормы калорий к пользователю
             updatedUser = updatedUser.copy(
                 targetCalories = newPlan.calories,
                 proteinGrams = newPlan.protein,
                 fatGrams = newPlan.fat,
                 carbGrams = newPlan.carbs
             )
-
-            // 4. Сохраняем в базу
-            repository.updateUser(updatedUser) // Нам нужен метод updateUser в DAO/Repo
+            repository.updateUser(updatedUser)
         }
     }
 }
-
-
-// Фабрика для создания ViewModel с репозиторием (стандартный шаблон)
 class ProfileViewModelFactory(private val repository: UserRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {

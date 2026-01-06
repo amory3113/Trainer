@@ -1,9 +1,8 @@
 package com.example.trainer.Logic
 
-import com.example.trainer.Logic.Models.ActivityLevel // <--- Теперь мы его импортируем
+import com.example.trainer.Logic.Models.ActivityLevel
 
 object ActivityAnalyzer {
-
     fun analyze(
         jobScore: Int,
         sportFreqScore: Int,

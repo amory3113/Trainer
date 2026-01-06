@@ -17,14 +17,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun BmiGauge(bmi: Double) {
-    // Ограничиваем значение для визуализации (от 15 до 40)
-    val minBmi = 15.0
+    val minBmi = 7.0
     val maxBmi = 40.0
     val progress = ((bmi - minBmi) / (maxBmi - minBmi)).coerceIn(0.0, 1.0).toFloat()
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Box(modifier = Modifier.fillMaxWidth().height(40.dp)) {
-            // Шкала
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -34,19 +32,17 @@ fun BmiGauge(bmi: Double) {
                     .background(
                         brush = Brush.horizontalGradient(
                             colors = listOf(
-                                Color(0xFF2196F3), // Синий (мало)
-                                Color(0xFF4CAF50), // Зеленый (Норма)
-                                Color(0xFFFFC107), // Желтый (Избыток)
-                                Color(0xFFF44336)  // Красный (Ожирение)
+                                Color(0xFF2196F3),
+                                Color(0xFF4CAF50),
+                                Color(0xFFFFC107),
+                                Color(0xFFF44336)
                             )
                         )
                     )
             )
-
-            // Стрелка-указатель
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(fraction = progress) // Хак для позиционирования
+                    .fillMaxWidth(fraction = progress)
                     .align(Alignment.CenterStart)
             ) {
                 Icon(
@@ -54,8 +50,8 @@ fun BmiGauge(bmi: Double) {
                     contentDescription = null,
                     modifier = Modifier
                         .size(32.dp)
-                        .align(Alignment.CenterEnd) // Стрелка в конце "невидимой" коробки
-                        .offset(y = (-12).dp), // Чуть выше полоски
+                        .align(Alignment.CenterEnd)
+                        .offset(y = (-12).dp),
                     tint = Color.Black
                 )
             }

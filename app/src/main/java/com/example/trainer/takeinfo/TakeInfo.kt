@@ -200,7 +200,7 @@ fun TakeInfo(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = "Далее",
+                    text = "Następny",
                     color = Color.White,
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Medium

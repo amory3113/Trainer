@@ -27,7 +27,6 @@ fun NutrientBar(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.padding(horizontal = 8.dp)) {
-        // Название нутриента
         Text(
             text = name,
             fontSize = 14.sp,
@@ -36,8 +35,6 @@ fun NutrientBar(
         )
 
         Spacer(modifier = Modifier.height(4.dp))
-
-        // Полоска прогресса
         LinearProgressIndicator(
             progress = progress,
             modifier = Modifier
@@ -49,9 +46,8 @@ fun NutrientBar(
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        // Текст с цифрами
         Text(
-            text = "$current / $target г",
+            text = "$current / $target g",
             fontSize = 12.sp,
             color = Color.Gray
         )

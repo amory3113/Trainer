@@ -29,7 +29,6 @@ fun GenderScreen(
     onNextClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
-
     val (selectedGender, setSelectedGender) = remember { mutableStateOf<Gender?>(null) }
 
     Box(
@@ -54,7 +53,7 @@ fun GenderScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Теперь нам нужна информация о вас",
+                text = "Teraz potrzebujemy informacji o Tobie.",
                 modifier = Modifier
                     .padding(start = 8.dp, top = 40.dp, end = 24.dp),
                 color = Color.Black,
@@ -64,7 +63,7 @@ fun GenderScreen(
                 lineHeight = 32.sp
             )
             Text(
-                text = "Укажите ваш пол:",
+                text = "Proszę podać płeć:",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 8.dp, top = 20.dp, end = 40.dp),
@@ -89,7 +88,7 @@ fun GenderScreen(
                 )
             ) {
                 Text(
-                    text = "Мужской",
+                    text = "Mężczyzna",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = if (selectedGender == Gender.MALE) Color.White else Color.Black
@@ -110,7 +109,7 @@ fun GenderScreen(
                 )
             ) {
                 Text(
-                    text = "Женский",
+                    text = "Kobieta",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = if (selectedGender == Gender.FEMALE) Color.White else Color.Black
@@ -138,7 +137,7 @@ fun GenderScreen(
                 elevation = ButtonDefaults.buttonElevation(0.dp)
             ) {
                 Text(
-                    text = "Назад",
+                    text = "Z powrotem",
                     color = ButtonBlue,
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Medium
@@ -163,7 +162,7 @@ fun GenderScreen(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = "Далее",
+                    text = "Następny",
                     color = Color.White,
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Medium

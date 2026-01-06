@@ -39,21 +39,19 @@ import com.example.trainer.GeneralScreen.Workout.WorkoutScreen
 import com.example.trainer.data.UserRepository
 import com.example.trainer.navigation.Routes
 
-// Описываем пункты меню
 sealed class BottomBarScreen(
     val route: String,
     val title: String,
     val icon: ImageVector
 ) {
-    object Home : BottomBarScreen("home", "Главная", Icons.Default.Home)
-    object Workout : BottomBarScreen("workout", "Тренировки", Icons.Filled.FitnessCenter)
-    object Stats : BottomBarScreen("stats", "Прогресс", Icons.AutoMirrored.Filled.TrendingUp)
-    object Profile : BottomBarScreen("profile", "Профиль", Icons.Default.Person)
+    object Home : BottomBarScreen("home", "Dom", Icons.Default.Home)
+    object Workout : BottomBarScreen("workout", "Ćwiczyć", Icons.Filled.FitnessCenter)
+    object Stats : BottomBarScreen("stats", "Postęp", Icons.AutoMirrored.Filled.TrendingUp)
+    object Profile : BottomBarScreen("profile", "Profil", Icons.Default.Person)
 }
 
 @Composable
 fun MainScreen(repository: UserRepository, navController: androidx.navigation.NavController) {
-    // У этого экрана свой СОБСТВЕННЫЙ контроллер навигации (для вкладок)
     val bottomNavController = rememberNavController()
 
     val screens = listOf(
@@ -66,12 +64,10 @@ fun MainScreen(repository: UserRepository, navController: androidx.navigation.Na
     Scaffold(
         bottomBar = {
             NavigationBar(
-                containerColor = Color.White // Белый фон меню
+                containerColor = Color.White
             ) {
-                // Определяем, какая вкладка сейчас открыта
                 val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
-
                 screens.forEach { screen ->
                     val isSelected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
 
@@ -86,19 +82,16 @@ fun MainScreen(repository: UserRepository, navController: androidx.navigation.Na
                         selected = isSelected,
                         onClick = {
                             bottomNavController.navigate(screen.route) {
-                                // Настройки для правильной работы вкладок:
-                                // 1. При нажатии "Назад" не уходим из приложения, а возвращаемся на "Home"
                                 popUpTo(bottomNavController.graph.findStartDestination().id) {
                                     saveState = true
                                 }
-                                // 2. Не создаем копии экранов, если много раз тыкать
                                 launchSingleTop = true
-                                // 3. Сохраняем состояние (скролл и т.д.)
+
                                 restoreState = true
                             }
                         },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color(0xFF2196F3), // Твой синий цвет
+                            selectedIconColor = Color(0xFF2196F3),
                             selectedTextColor = Color(0xFF2196F3),
                             indicatorColor = Color(0xFF2196F3).copy(alpha = 0.1f),
                             unselectedIconColor = Color.Gray,
@@ -109,29 +102,23 @@ fun MainScreen(repository: UserRepository, navController: androidx.navigation.Na
             }
         }
     ) { innerPadding ->
-        // Здесь меняется контент при переключении вкладок
         NavHost(
             navController = bottomNavController,
             startDestination = BottomBarScreen.Home.route,
-            modifier = Modifier.padding(innerPadding) // Важно! Отступ, чтобы меню не перекрывало контент
+            modifier = Modifier.padding(innerPadding)
         ) {
             composable(BottomBarScreen.Home.route) {
-                // 1. Получаем доступ к базе данных и создаем репозиторий (если еще нет)
                 val context = androidx.compose.ui.platform.LocalContext.current
                 val db = com.example.trainer.data.AppDatabase.getDatabase(context)
                 val workoutRepo = com.example.trainer.data.Exercise.WorkoutRepository(db.workoutDao())
-
-                // 2. Создаем ViewModel с новой фабрикой
                 val viewModel: HomeViewModel = viewModel(
-                    factory = HomeViewModelFactory(repository, workoutRepo) // Передаем workoutRepo
+                    factory = HomeViewModelFactory(repository, workoutRepo)
                 )
                 HomeScreen(viewModel = viewModel)
             }
 
             composable(BottomBarScreen.Workout.route) {
                 WorkoutScreen(onNavigateToCreate = { id ->
-                    // ВАЖНО: Мы используем id, который пришел из WorkoutScreen
-                    // Если id = -1, создается новая. Если id > 0, редактируется старая.
                     navController.navigate("create_workout?workoutId=$id") })
             }
 
@@ -147,11 +134,9 @@ fun MainScreen(repository: UserRepository, navController: androidx.navigation.Na
             Profile(
                 viewModel = viewModel,
                 onLogout = {
-                    // Действие при выходе из профиля
-                    // Например, можно вызвать метод из ViewModel для очистки данных
                 }
             )
-            } // Твой готовый экран
+            }
         }
     }
 }

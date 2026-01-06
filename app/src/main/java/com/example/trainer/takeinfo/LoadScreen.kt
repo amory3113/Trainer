@@ -47,8 +47,6 @@ fun LoadScreen(
     var currentStep by remember { mutableIntStateOf(0) }
     var isLoading by remember { mutableStateOf(true) }
 
-    // 2. "Слушаем" данные из ViewModel
-    // collectAsState превращает поток данных в переменную, которая обновляет экран сама
     val nutritionPlan by viewModel?.nutritionPlan?.collectAsState() ?: remember { mutableStateOf(null) }
     val goal by viewModel?.userGoal?.collectAsState() ?: remember { mutableStateOf(null) }
 
@@ -56,18 +54,16 @@ fun LoadScreen(
     val location by viewModel?.workoutLocation?.collectAsState() ?: remember { mutableStateOf(null) }
 
     val loadingTexts = listOf(
-        "Анализируем ваши данные...",
-        "Подбираем программу тренировок...",
-        "Рассчитываем калорийность и БЖУ..."
+        "Analizowanie danych...",
+        "Wybieramy program szkoleniowy...",
+        "Obliczanie kalorii i BJU..."
     )
 
     LaunchedEffect(Unit) {
-        // 3. ЗАПУСКАЕМ РАСЧЕТЫ!
-        // Как только экран открылся, просим ViewModel посчитать всё
         viewModel?.calculateNutrition()
         for (i in loadingTexts.indices) {
             currentStep = i
-            delay(1500) // 2 seconds for each step
+            delay(1500)
         }
         isLoading = false
     }
@@ -87,7 +83,6 @@ fun LoadScreen(
             )
     ) {
         if (isLoading) {
-            // Loading phase
             Column(
                 modifier = Modifier.align(Alignment.Center),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -111,12 +106,7 @@ fun LoadScreen(
                 )
             }
         } else {
-            // --- ЭКРАН РЕЗУЛЬТАТОВ ---
-
-            // Используем Box, чтобы разнести контент (вверх) и кнопку (вниз)
             Box(modifier = Modifier.fillMaxSize()) {
-
-                // Контент (Текст + Карточка)
                 Column(
                     modifier = Modifier
                         .align(Alignment.TopStart)
@@ -126,7 +116,7 @@ fun LoadScreen(
                     Spacer(modifier = Modifier.height(80.dp))
 
                     Text(
-                        text = "Ваш план готов!",
+                        text = "Twój plan jest gotowy!",
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black,
@@ -134,30 +124,27 @@ fun LoadScreen(
                     )
 
                     Text(
-                        text = "На основе ваших данных, мы подготовили для вас персональную программу.",
+                        text = "Na podstawie Twoich danych przygotowaliśmy dla Ciebie spersonalizowany program.",
                         fontSize = 16.sp,
                         color = Color.Black,
                         lineHeight = 22.sp,
                         modifier = Modifier.padding(bottom = 32.dp)
                     )
-
-                    // Карточка с данными (Белый фон)
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(
-                                color = Color.White.copy(alpha = 0.9f), // Полупрозрачный белый
+                                color = Color.White.copy(alpha = 0.9f),
                                 shape = RoundedCornerShape(16.dp)
                             )
                             .padding(20.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        // Подготовка текста
                         val goalText = when(goal) {
-                            Goal.WEIGHT_LOSS -> "Похудение"
-                            Goal.MUSCLE_GAIN -> "Набор массы"
-                            Goal.MAINTAIN_FITNESS -> "Поддержка формы"
-                            null -> "Не определена"
+                            Goal.WEIGHT_LOSS -> "Utrata wagi"
+                            Goal.MUSCLE_GAIN -> "Przyrost masy"
+                            Goal.MAINTAIN_FITNESS -> "Utrzymanie formy"
+                            null -> "Nie zdefiniowano"
                         }
 
                         val calories = nutritionPlan?.calories ?: 0
@@ -166,22 +153,20 @@ fun LoadScreen(
                         val c = nutritionPlan?.carbs ?: 0
 
                         val locationText = when(location) {
-                            WorkoutLocation.HOME -> "Дома"
-                            WorkoutLocation.GYM -> "Зал"
+                            WorkoutLocation.HOME -> "W domu"
+                            WorkoutLocation.GYM -> "W silownie"
                             null -> ""
                         }
 
-                        val trainingText = if (frequency > 0) "$frequency раза в неделю ($locationText)" else "-"
+                        val trainingText = if (frequency > 0) "$frequency raz w tygodniu ($locationText)" else "-"
 
                         // Вывод строк
-                        InfoRow(label = "Ваша цель:", value = goalText)
-                        InfoRow(label = "Калории:", value = "$calories ккал")
-                        InfoRow(label = "БЖУ:", value = "Б:$p / Ж:$f / У:$c (г)")
-                        InfoRow(label = "Тренировки:", value = trainingText)
+                        InfoRow(label = "Twój cel:", value = goalText)
+                        InfoRow(label = "Kalorie:", value = "$calories kcal")
+                        InfoRow(label = "BTW:", value = "B:$p / T:$f / W:$c (g)")
+                        InfoRow(label = "Ćwiczycienia:", value = trainingText)
                     }
                 }
-
-                // Кнопка (Прижата к низу)
                 Button(
                     onClick = { onPlanReady() },
                     modifier = Modifier
@@ -195,7 +180,7 @@ fun LoadScreen(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = "Показать мой план",
+                        text = "Pokaż mój plan",
                         color = Color.White,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium
@@ -220,7 +205,7 @@ fun InfoRow(label: String, value: String) {
         )
         Text(
             text = value,
-            fontSize = 17.sp, // Значение чуть крупнее
+            fontSize = 17.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
         )

@@ -34,13 +34,11 @@ fun CreateWorkoutScreen(
 
     val selectedExercises by viewModel.selectedExercises.collectAsState()
 
-    // Данные для фильтрации
     val filteredExercises by viewModel.filteredExercises.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
     val categories = viewModel.categories
 
     if (showExerciseSelector) {
-        // --- ЭКРАН ВЫБОРА (МЕНЮ) ---
         SelectExercisesView(
             exercisesToShow = filteredExercises,
             categories = categories,
@@ -51,19 +49,18 @@ fun CreateWorkoutScreen(
             onDone = { showExerciseSelector = false }
         )
     } else {
-        // --- ЭКРАН СОЗДАНИЯ ---
         GradientBackground {
             Scaffold(
                 containerColor = Color.Transparent,
                 topBar = {
                     TopAppBar(
-                        title = { Text("Новая программа") },
+                        title = { Text("Nowy program") },
                         navigationIcon = {
                             IconButton(onClick = {
                                 viewModel.clearSelection()
                                 onBack()
                             }) {
-                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Powrót")
                             }
                         },
                         colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
@@ -76,11 +73,10 @@ fun CreateWorkoutScreen(
                         .padding(padding)
                         .padding(16.dp)
                 ) {
-                    // 1. НАЗВАНИЕ ТРЕНИРОВКИ (Вот тут пользователь называет её)
                     OutlinedTextField(
                         value = workoutName,
                         onValueChange = { viewModel.onNameChange(it) },
-                        label = { Text("Название (например: День Груди)") },
+                        label = { Text("Tytuł (np.: Dzień Piersi)") },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
@@ -91,13 +87,12 @@ fun CreateWorkoutScreen(
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
-                    Text("Список упражнений:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text("Lista ćwiczeń:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // 2. СПИСОК УЖЕ ВЫБРАННЫХ (Короткий)
                     if (selectedExercises.isEmpty()) {
                         Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                            Text("Список пуст. Нажмите кнопку ниже.", color = Color.Gray)
+                            Text("Lista jest pusta. Kliknij przycisk poniżej.", color = Color.Gray)
                         }
                     } else {
                         LazyColumn(modifier = Modifier.weight(1f)) {
@@ -109,7 +104,6 @@ fun CreateWorkoutScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // 3. КНОПКИ
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Button(
                             onClick = { showExerciseSelector = true },
@@ -119,7 +113,7 @@ fun CreateWorkoutScreen(
                         ) {
                             Icon(Icons.Default.Add, null)
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Упражнение")
+                            Text("Ćwiczenia")
                         }
 
                         Button(
@@ -128,7 +122,7 @@ fun CreateWorkoutScreen(
                             enabled = selectedExercises.isNotEmpty(),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
                             shape = RoundedCornerShape(12.dp)
-                        ) { Text("Сохранить") }
+                        ) { Text("Zapisać") }
                     }
                 }
             }
@@ -136,7 +130,6 @@ fun CreateWorkoutScreen(
     }
 }
 
-// --- НОВЫЙ ЭКРАН ВЫБОРА С КАТЕГОРИЯМИ ---
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectExercisesView(
@@ -152,24 +145,23 @@ fun SelectExercisesView(
         topBar = {
             Column {
                 TopAppBar(
-                    title = { Text("Каталог упражнений") },
+                    title = { Text("Katalog ćwiczeń") },
                     actions = {
                         IconButton(onClick = onDone) {
-                            Icon(Icons.Default.Check, contentDescription = "Готово")
+                            Icon(Icons.Default.Check, contentDescription = "Gotowy")
                         }
                     }
                 )
-                // ЛЕНТА КАТЕГОРИЙ (Chips)
                 LazyRow(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(categories) { category ->
-                        val isSelected = (category == "Все" && selectedCategory == null) || category == selectedCategory
+                        val isSelected = (category == "Wszystko" && selectedCategory == null) || category == selectedCategory
                         FilterChip(
                             selected = isSelected,
                             onClick = { onCategorySelect(category) },
-                            label = { Text(translateCategory(category)) } // Функция перевода ниже
+                            label = { Text(translateCategory(category)) }
                         )
                     }
                 }
@@ -180,7 +172,7 @@ fun SelectExercisesView(
             if (exercisesToShow.isEmpty()) {
                 item {
                     Text(
-                        "В этой категории пока пусто",
+                        "Ta kategoria jest obecnie pusta.",
                         modifier = Modifier.fillMaxWidth().padding(24.dp),
                         color = Color.Gray,
                         textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -201,20 +193,16 @@ fun SelectExercisesView(
 
                     Spacer(modifier = Modifier.width(16.dp))
 
-                    // --- ДОБАВЛЯЕМ КАРТИНКУ СЮДА ---
                     val context = androidx.compose.ui.platform.LocalContext.current
-                    // Получаем ID картинки по имени из базы
                     val imageRes = getDrawableIdByName(context, exercise.imageName)
 
                     androidx.compose.foundation.Image(
                         painter = androidx.compose.ui.res.painterResource(id = imageRes),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(50.dp) // Размер картинки
-                            .padding(end = 16.dp) // Отступ справа до текста
+                            .size(50.dp)
+                            .padding(end = 16.dp)
                     )
-                    // -------------------------------
-
                     Column {
                         Text(exercise.name, fontWeight = FontWeight.Bold)
                         Text(translateCategory(exercise.muscleGroup), fontSize = 12.sp, color = Color.Gray)
@@ -235,10 +223,8 @@ fun SimpleExerciseItem(exercise: ExerciseEntity, onDelete: () -> Unit) {
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
-            // horizontalArrangement = Arrangement.SpaceBetween, <-- УБЕРИ ЭТО (будет мешать)
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // --- ДОБАВЛЯЕМ КАРТИНКУ ---
             val context = androidx.compose.ui.platform.LocalContext.current
             val imageRes = getDrawableIdByName(context, exercise.imageName)
 
@@ -249,43 +235,33 @@ fun SimpleExerciseItem(exercise: ExerciseEntity, onDelete: () -> Unit) {
                     .size(40.dp)
                     .padding(end = 12.dp)
             )
-            // --------------------------
-
-            // Название (добавь weight(1f), чтобы занять всё место до кнопки удаления)
             Text(exercise.name, modifier = Modifier.weight(1f))
-
             IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Удалить", tint = Color.Gray)
+                Icon(Icons.Default.Delete, contentDescription = "Usuwać", tint = Color.Gray)
             }
         }
     }
 }
-
-// Простой переводчик для отображения
 fun translateCategory(cat: String): String {
     return when(cat.uppercase()) {
-        "CHEST" -> "Грудь"
-        "BACK" -> "Спина"
-        "LEGS" -> "Ноги"
-        "ARMS" -> "Руки"
-        "ABS" -> "Пресс"
+        "CHEST" -> "Pierś"
+        "BACK" -> "Plecy"
+        "LEGS" -> "Nogi"
+        "ARMS" -> "Ręki"
+        "ABS" -> "Wyciskanie brzucha"
         "SHOULDERS" -> "Плечи"
-        "UP" -> "Верх тела"
-        "DOWN" -> "Низ тела"
+        "UP" -> "Górna część ciała"
+        "DOWN" -> "Dolna część ciała"
         else -> cat
     }
 }
-
-// --- В САМЫЙ НИЗ ФАЙЛА, ВНЕ КЛАССОВ ---
-
 @Composable
 fun getDrawableIdByName(context: android.content.Context, name: String?): Int {
-    if (name.isNullOrEmpty()) return R.drawable.ic_launcher_foreground // Заглушка
-
+    if (name.isNullOrEmpty()) return R.drawable.ic_launcher_foreground
     val resId = context.resources.getIdentifier(
         name,
         "drawable",
         context.packageName
     )
-    return if (resId != 0) resId else R.drawable.ic_launcher_foreground // Заглушка, если картинки нет
+    return if (resId != 0) resId else R.drawable.ic_launcher_foreground
 }

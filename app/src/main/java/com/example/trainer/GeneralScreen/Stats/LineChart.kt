@@ -24,42 +24,34 @@ fun LineChart(
 ) {
     if (dataPoints.isEmpty()) return
 
-    // Определяем отступы для текста и красоты
-    val spacing = 100f // Отступ для текста слева/справа
-
-    // Вычисляем мин/макс для масштабирования
+    val spacing = 100f
     val maxVal = dataPoints.maxOrNull() ?: 1f
     val minVal = dataPoints.minOrNull() ?: 0f
 
-    // Немного расширяем диапазон, чтобы график не прилипал к краям
     val range = if (maxVal - minVal == 0f) 1f else (maxVal - minVal)
     val displayMax = maxVal + (range * 0.1f)
     val displayMin = (minVal - (range * 0.1f)).coerceAtLeast(0f)
     val displayRange = displayMax - displayMin
 
-    // Краска для текста (используем нативный Android Paint)
     val textPaint = remember {
         Paint().apply {
             color = android.graphics.Color.GRAY
             textAlign = Paint.Align.LEFT
-            textSize = 32f // Размер текста в пикселях
+            textSize = 32f
         }
     }
 
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
-            .height(250.dp) // Чуть увеличили высоту
+            .height(250.dp)
             .padding(16.dp)
     ) {
 
         val width = size.width
         val height = size.height
-        // Расстояние между точками по X
         val distanceX = width / (dataPoints.size - 1).coerceAtLeast(1)
 
-        // --- 1. РИСУЕМ СЕТКУ И ТЕКСТ (Горизонтальные линии) ---
-        // Рисуем 5 линий сетки
         val gridLines = 4
         for (i in 0..gridLines) {
             val yRatio = i.toFloat() / gridLines
@@ -74,7 +66,6 @@ fun LineChart(
                 strokeWidth = 1.dp.toPx()
             )
 
-            // Текст (значение веса) - рисуем чуть выше линии
             drawContext.canvas.nativeCanvas.drawText(
                 String.format("%.1f", value),
                 0f,
@@ -93,7 +84,6 @@ fun LineChart(
             return@Canvas
         }
 
-        // --- 2. ПОДГОТОВКА ПУТИ (Кривая Безье) ---
         val strokePath = Path().apply {
             val firstY = height - ((dataPoints.first() - displayMin) / displayRange * height)
             moveTo(0f, firstY)
@@ -107,7 +97,6 @@ fun LineChart(
                 val prevX = (i - 1) * distanceX
                 val prevY = height - ((prevVal - displayMin) / displayRange * height)
 
-                // Контрольные точки для плавного изгиба
                 val controlPoint1 = Offset(prevX + (currentX - prevX) / 2, prevY)
                 val controlPoint2 = Offset(prevX + (currentX - prevX) / 2, currentY)
 
@@ -115,13 +104,11 @@ fun LineChart(
             }
         }
 
-        // --- 3. ИСПРАВЛЕННЫЙ БЛОК ГРАДИЕНТА ---
-        // Мы создаем новый Path и просто добавляем в него предыдущий
         val fillPath = Path()
         fillPath.addPath(strokePath)
-        fillPath.lineTo(width, height) // Вниз вправо
-        fillPath.lineTo(0f, height)    // Вниз влево
-        fillPath.close()               // Замкнуть
+        fillPath.lineTo(width, height)
+        fillPath.lineTo(0f, height)
+        fillPath.close()
 
         drawPath(
             path = fillPath,
@@ -134,7 +121,6 @@ fun LineChart(
             )
         )
 
-        // --- 4. РИСУЕМ САМУ ЛИНИЮ ---
         drawPath(
             path = strokePath,
             color = graphColor,
@@ -144,18 +130,15 @@ fun LineChart(
             )
         )
 
-        // --- 5. РИСУЕМ ТОЧКИ ---
         for (i in dataPoints.indices) {
             val x = i * distanceX
             val y = height - ((dataPoints[i] - displayMin) / displayRange * height)
 
-            // Белая обводка (чтобы точки отделялись от линии)
             drawCircle(
                 color = Color.White,
                 radius = 5.dp.toPx(),
                 center = Offset(x, y)
             )
-            // Цветная точка внутри
             drawCircle(
                 color = graphColor,
                 radius = 3.dp.toPx(),
