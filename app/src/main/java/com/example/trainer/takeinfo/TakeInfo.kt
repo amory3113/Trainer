@@ -37,6 +37,7 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.ui.text.TextStyle
 import com.example.trainer.ui.theme.ButtonBlue
 import com.example.trainer.ui.theme.LightBlue
+import com.example.trainer.ui.theme.NavigationButtons
 
 @Composable
 fun TakeInfo(
@@ -153,60 +154,20 @@ fun TakeInfo(
             )
         }
 
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(bottom = 26.dp, start = 16.dp, end = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-
-            Button(
-                onClick = { onBackClick() },
-                modifier = Modifier
-                    .weight(1f)
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent
-                ),
-                shape = RoundedCornerShape(12.dp),
-                elevation = ButtonDefaults.buttonElevation(0.dp)
-            ) {
-                Text(
-                    text = "Назад",
-                    color = ButtonBlue,
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-
-            Button(
-                onClick = {
-                    val ageInt = age.toIntOrNull()
-                    val heightDb = height.toDoubleOrNull()
-                    val weightDb = weight.toDoubleOrNull()
-                    if (ageInt != null && heightDb != null && weightDb != null) {
-                        viewModel?.setBodyData(age = ageInt, height = heightDb, weight = weightDb)
-                        onNextClick()
-                    }
-                },
-                enabled = isFormValid,
-                modifier = Modifier
-                    .weight(1f)
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = ButtonBlue
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(
-                    text = "Następny",
-                    color = Color.White,
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
+        NavigationButtons(
+            onBackClick = onBackClick,
+            onNextClick = {
+                val ageInt = age.toIntOrNull()
+                val heightDb = height.toDoubleOrNull()
+                val weightDb = weight.toDoubleOrNull()
+                if (ageInt != null && heightDb != null && weightDb != null) {
+                    viewModel?.setBodyData(age = ageInt, height = heightDb, weight = weightDb)
+                    onNextClick()
+                }
+            },
+            nextEnabled = isFormValid,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 

@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trainer.ui.theme.LightBlue
+import com.example.trainer.ui.theme.NavigationButtons
 import com.example.trainer.ui.theme.TrainerTheme
 
 @Composable
@@ -127,67 +128,29 @@ fun MoreHealthQuest(
             )
         }
 
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(bottom = 26.dp, start = 16.dp, end = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(
-                onClick = { onBackClick() },
-                modifier = Modifier
-                    .height(56.dp)
-                    .weight(1f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent
-                ),
-                shape = RoundedCornerShape(12.dp),
-                elevation = ButtonDefaults.buttonElevation(0.dp)
-            ) {
-                Text(
-                    text = "Назад",
-                    color = Color(0xFF2196F3),
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-
-            Button(
-                onClick = {
-                    fun parse(answer: String?): Int {
-                        return when (answer) {
-                            "Nie", "Rzadko" -> 0
-                            "Niewielkie", "Czasami", "Łagodne", "Częściowe", "Często" -> 1
-                            else -> 3
-                        }
+        NavigationButtons(
+            onBackClick = onBackClick,
+            onNextClick = {
+                fun parse(answer: String?): Int {
+                    return when (answer) {
+                        "Nie", "Rzadko" -> 0
+                        "Niewielkie", "Czasami", "Łagodne", "Częściowe", "Często" -> 1
+                        else -> 3
                     }
+                }
 
-                    viewModel?.saveHealthData(
-                        chronic = parse(question1),
-                        injuries = parse(question2),
-                        heart = parse(question3),
-                        restrictions = parse(question4),
-                        fatigue = parse(question5)
-                    )
-                    onNextClick() },
-                enabled = allAnswered,
-                modifier = Modifier
-                    .height(56.dp)
-                    .weight(1f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF2196F3)
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(
-                    text = "Następny",
-                    color = Color.White,
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Medium
+                viewModel?.saveHealthData(
+                    chronic = parse(question1),
+                    injuries = parse(question2),
+                    heart = parse(question3),
+                    restrictions = parse(question4),
+                    fatigue = parse(question5)
                 )
-            }
-        }
+                onNextClick()
+            },
+            nextEnabled = allAnswered,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 

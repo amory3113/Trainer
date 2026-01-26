@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trainer.ui.theme.LightBlue
+import com.example.trainer.ui.theme.NavigationButtons
 import com.example.trainer.ui.theme.TrainerTheme
 
 @Composable
@@ -134,61 +135,23 @@ fun HealthQuestion(
             }
         }
 
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(bottom = 26.dp, start = 16.dp, end = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Button(
-                onClick = { onBackClick() },
-                modifier = Modifier
-                    .height(56.dp)
-                    .weight(1f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent
-                ),
-                shape = RoundedCornerShape(12.dp),
-                elevation = ButtonDefaults.buttonElevation(0.dp)
-            ) {
-                Text(
-                    text = "Z powrotem",
-                    color = Color(0xFF2196F3),
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
 
-            Button(
-                onClick = {
-                    when (selectedOption) {
-                        "no" -> {
-                            viewModel?.setHealthyStatus()
-                            onNoLimitations()
-                        }
-                        "yes" -> {
-                            onNextClick()
-                        }
+        NavigationButtons(
+            onBackClick = onBackClick,
+            onNextClick = {
+                when (selectedOption) {
+                    "no" -> {
+                        viewModel?.setHealthyStatus()
+                        onNoLimitations()
                     }
-                },
-                enabled = selectedOption != null,
-                modifier = Modifier
-                    .height(56.dp)
-                    .weight(1f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF2196F3)
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(
-                    text = "Następny",
-                    color = Color.White,
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
+                    "yes" -> {
+                        onNextClick()
+                    }
+                }
+            },
+            nextEnabled = selectedOption != null,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 

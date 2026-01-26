@@ -38,9 +38,8 @@ fun Profile(
     val userProfile by viewModel.userProfile.collectAsState() ?: remember { androidx.compose.runtime.mutableStateOf(null) }
     val scrollState = rememberScrollState()
 
-    // --- НОВОЕ: Состояния для управления диалогом ---
     var showDialog by remember { mutableStateOf(false) }
-    var editType by remember { mutableStateOf(EditType.WEIGHT) } // По умолчанию Вес
+    var editType by remember { mutableStateOf(EditType.WEIGHT) }
     var editValue by remember { mutableStateOf("") }
 
     GradientBackground {
@@ -127,7 +126,6 @@ fun Profile(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // 4. БЛОК "ПРИЛОЖЕНИЕ"
                 SectionTitle("Aplikacja")
                 CardSection {
                     ProfileOptionItem(
@@ -156,6 +154,8 @@ fun Profile(
                 }
 
                 Spacer(modifier = Modifier.height(100.dp))
+
+
             }
         }
     }
@@ -202,11 +202,6 @@ fun ProfileHeader(user: UserEntity) {
             fontWeight = FontWeight.Bold,
             color = Color.Black
         )
-//        Text(
-//            text = "Ваш ID: ${user.id}",
-//            fontSize = 14.sp,
-//            color = Color.Gray
-//        )
     }
 }
 

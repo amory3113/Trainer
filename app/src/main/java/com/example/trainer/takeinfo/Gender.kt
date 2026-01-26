@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.example.trainer.Logic.Models.Gender
 import com.example.trainer.ui.theme.ButtonBlue
 import com.example.trainer.ui.theme.LightBlue
+import com.example.trainer.ui.theme.NavigationButtons
 import com.example.trainer.ui.theme.TrainerTheme
 
 @Composable
@@ -117,58 +118,18 @@ fun GenderScreen(
             }
         }
 
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(bottom = 26.dp, start = 16.dp, end = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-
-            Button(
-                onClick = { onBackClick() },
-                modifier = Modifier
-                    .weight(1f)
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent
-                ),
-                shape = RoundedCornerShape(12.dp),
-                elevation = ButtonDefaults.buttonElevation(0.dp)
-            ) {
-                Text(
-                    text = "Z powrotem",
-                    color = ButtonBlue,
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-
-            Button(
-                onClick = {
-                    if (selectedGender != null) {
-                        viewModel?.setGender(selectedGender)
-                        println("DEBUG: Сохранен пол: $selectedGender")
-                        onNextClick()
-                    }
-                },
-                enabled = selectedGender != null,
-                modifier = Modifier
-                    .weight(1f)
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = ButtonBlue
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(
-                    text = "Następny",
-                    color = Color.White,
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
+        NavigationButtons(
+            onBackClick = onBackClick,
+            onNextClick = {
+                if (selectedGender != null) {
+                    viewModel?.setGender(selectedGender)
+                    println("DEBUG: Сохранен пол: $selectedGender")
+                    onNextClick()
+                }
+            },
+            nextEnabled = selectedGender != null,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 

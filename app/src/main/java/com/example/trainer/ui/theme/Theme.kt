@@ -114,7 +114,7 @@ fun NavigationButtons(
             Text(
                 text = "Z powrotem",
                 color = Color(0xFF2196F3),
-                fontSize = 25.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Medium
             )
         }
@@ -133,7 +133,7 @@ fun NavigationButtons(
             Text(
                 text = nextText,
                 color = Color.White,
-                fontSize = if (nextText.length > 10) 18.sp else 25.sp,
+                fontSize = if (nextText.length > 10) 18.sp else 22.sp,
                 fontWeight = FontWeight.Medium
             )
         }

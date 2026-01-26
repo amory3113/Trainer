@@ -1,42 +1,66 @@
 package com.example.trainer
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts // <-- Важный импорт
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.produceState
-import androidx.lifecycle.lifecycleScope // <-- Добавь этот импорт
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import com.example.trainer.data.AppDatabase
 import com.example.trainer.data.UserRepository
-import com.example.trainer.data.Exercise.ExerciseLoader // <-- Наш лоадер
+import com.example.trainer.data.Exercise.ExerciseLoader
 import com.example.trainer.navigation.AppNavigation
 import com.example.trainer.navigation.Routes
 import com.example.trainer.ui.theme.TrainerTheme
+// Импорт нашего планировщика
+import com.example.trainer.notification.NotificationScheduler
+import com.example.trainer.notification.NotificationHelper
 
 class MainActivity : ComponentActivity() {
+
+    // 1. Создаем регистратор для запроса прав (он должен быть в классе Activity)
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // Если разрешил - отлично, уведомления будут приходить
+            println("DEBUG: Разрешение на уведомления получено")
+        } else {
+            // Если запретил - ну и ладно, просто не будем надоедать
+            println("DEBUG: Разрешение отклонено")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val database = AppDatabase.getDatabase(applicationContext)
         val repository = UserRepository(database.userDao())
-
         val exerciseDao = database.exerciseDao()
+
+        NotificationHelper.createNotificationChannel(this)
+
+        NotificationScheduler.scheduleAllNotifications(this)
+
+        checkAndRequestNotificationPermission()
 
         lifecycleScope.launch {
             val count = exerciseDao.getCount()
             if (count == 0) {
-                println("DEBUG: База пустая, загружаем упражнения из JSON...")
                 val exercises = ExerciseLoader.loadExercises(applicationContext)
                 exerciseDao.insertAll(exercises)
-                println("DEBUG: Загружено ${exercises.size} упражнений!")
-            } else {
-                println("DEBUG: Упражнения уже есть ($count шт). Пропускаем.")
             }
         }
 
@@ -62,6 +86,17 @@ class MainActivity : ComponentActivity() {
                         startDestination = startRoute.value!!
                     )
                 }
+            }
+        }
+    }
+
+    private fun checkAndRequestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val permission = Manifest.permission.POST_NOTIFICATIONS
+
+            if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
+            } else {
+                requestPermissionLauncher.launch(permission)
             }
         }
     }

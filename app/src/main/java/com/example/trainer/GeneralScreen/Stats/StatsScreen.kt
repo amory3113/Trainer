@@ -26,7 +26,7 @@ import java.util.*
 @Composable
 fun StatsScreen(viewModel: StatsViewModel) {
     var selectedTabIndex by remember { mutableStateOf(0) }
-    val tabs = listOf("„Waga i BMI”, „Historia żywienia”")
+    val tabs = listOf("Waga i BMI", "Historia żywienia")
 
     GradientBackground {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -78,7 +78,6 @@ fun WeightTabContent(viewModel: StatsViewModel) {
                 .verticalScroll(rememberScrollState())
         ) {
             if (user != null) {
-                // Карточка веса
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -120,7 +119,6 @@ fun WeightTabContent(viewModel: StatsViewModel) {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // График
                 Text("Historia pomiarów", fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
 

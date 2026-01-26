@@ -124,10 +124,11 @@ fun AppNavigation(repository: UserRepository, startDestination: String) {
             }
             composable(Routes.LOAD_SCREEN) {
                 val viewModel = getOnboardingViewModel(navController, repository)
+                val context = androidx.compose.ui.platform.LocalContext.current
                 LoadScreen(
                     viewModel = viewModel,
                     onPlanReady = {
-                        viewModel.saveFinalDataToDatabase()
+                        viewModel.saveFinalDataToDatabase(context)
                         navController.navigate(Routes.MAIN) {
                             popUpTo(Routes.WELCOME) { inclusive = true }
                         }

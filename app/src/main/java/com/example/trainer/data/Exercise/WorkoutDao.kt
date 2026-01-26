@@ -56,4 +56,7 @@ interface WorkoutDao {
 
     @Query("UPDATE schedule SET workoutId = NULL, workoutName = NULL WHERE workoutId = :workoutId")
     suspend fun removeWorkoutFromSchedule(workoutId: Int)
+
+    @Query("SELECT * FROM schedule WHERE dayOfWeek = :day LIMIT 1")
+    suspend fun getScheduleForDay(day: Int): ScheduleEntity?
 }

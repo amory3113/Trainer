@@ -1,5 +1,6 @@
 package com.example.trainer.takeinfo
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.example.trainer.Logic.ActivityAnalyzer
 import com.example.trainer.Logic.HealthAssessor
@@ -93,7 +94,7 @@ class OnboardingViewModel(private val repository: UserRepository) : ViewModel() 
         println("DEBUG: Szkolenie -> Lokalizacja: $location, Raz w tygodniu: $frequency")
     }
 
-    fun saveFinalDataToDatabase() {
+    fun saveFinalDataToDatabase(context: Context) {
         viewModelScope.launch {
             if (userGender != null && _userGoal.value != null && _nutritionPlan.value != null) {
 
@@ -113,6 +114,7 @@ class OnboardingViewModel(private val repository: UserRepository) : ViewModel() 
             } else {
                 println("DATABASE ERROR: Чего-то не хватает для сохранения.")
             }
+            com.example.trainer.notification.NotificationScheduler.scheduleAllNotifications(context)
         }
     }
 }

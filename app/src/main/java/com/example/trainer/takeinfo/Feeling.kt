@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trainer.Logic.Models.WorkoutLocation
 import com.example.trainer.ui.theme.LightBlue
+import com.example.trainer.ui.theme.NavigationButtons
 import com.example.trainer.ui.theme.TrainerTheme
 
 @Composable
@@ -121,56 +122,19 @@ fun Feeling(
             }
         }
 
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(bottom = 26.dp, start = 16.dp, end = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(
-                onClick = { onBackClick() },
-                modifier = Modifier
-                    .height(56.dp)
-                    .weight(1f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent
-                ),
-                shape = RoundedCornerShape(12.dp),
-                elevation = ButtonDefaults.buttonElevation(0.dp)
-            ) {
-                Text(
-                    text = "Z powrotem",
-                    color = Color(0xFF2196F3),
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Medium
+        NavigationButtons(
+            onBackClick = onBackClick,
+            onNextClick = {
+                viewModel?.saveWorkoutPreferences(
+                    location = selectedLocation!!,
+                    frequency = selectedFrequency!!
                 )
-            }
-
-            Button(
-                onClick = { if (isFormComplete) {
-                    viewModel?.saveWorkoutPreferences(
-                        location = selectedLocation!!,
-                        frequency = selectedFrequency!!
-                    )
-                    onNextClick()
-                } },
-                modifier = Modifier
-                    .height(56.dp)
-                    .weight(1f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF2196F3)
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(
-                    text = "Oblicz mój plan",
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
+                onNextClick()
+            },
+            nextEnabled = isFormComplete,
+            nextText = "Oblicz mój plan",
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 
