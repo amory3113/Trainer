@@ -33,9 +33,9 @@ class WorkoutViewModel(
     private val _selectedCategory = MutableStateFlow<String?>(null)
     val selectedCategory = _selectedCategory.asStateFlow()
 
-    val categories = listOf("Все", "CHEST", "BACK", "LEGS", "ARMS", "ABS", "SHOULDERS")
+    val categories = listOf("Wszystko", "CHEST", "BACK", "LEGS", "ARMS", "ABS", "SHOULDERS")
     val filteredExercises = combine(_allExercisesRaw, _selectedCategory) { list, category ->
-        if (category == null || category == "Все") {
+        if (category == null || category == "Wszystko") {
             list
         } else {
             list.filter { it.muscleGroup.equals(category, ignoreCase = true) }
@@ -51,7 +51,7 @@ class WorkoutViewModel(
     }
 
     fun selectCategory(category: String) {
-        _selectedCategory.value = if (category == "Все") null else category
+        _selectedCategory.value = if (category == "Wszystko") null else category
     }
     fun toggleExerciseSelection(exercise: ExerciseEntity) {
         val currentList = _selectedExercises.value.toMutableList()

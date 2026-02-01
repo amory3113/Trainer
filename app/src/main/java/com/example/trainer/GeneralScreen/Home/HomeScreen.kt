@@ -49,7 +49,7 @@ fun HomeScreen(
             Column(
                 modifier = modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+//                    .verticalScroll(rememberScrollState())
                     .padding(16.dp)
             ) {
                 HeaderSection(dayName = viewModel.getTodayName())
@@ -110,7 +110,7 @@ fun HomeScreen(
 private fun HeaderSection(dayName: String) {
     Column {
         Text(
-            text = "Dzisiaj, $dayName",
+            text = getGreeting(),
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
@@ -186,7 +186,7 @@ private fun NutrientsSection(
             )
 
             NutrientBar(
-                name = "Węglowodany",
+                name = "Węglow.",
                 current = carbsCurrent,
                 target = carbsTarget,
                 progress = carbsProgress,
@@ -293,13 +293,14 @@ fun RestDayCard() {
 private fun getGreeting(): String {
     val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
     return when (hour) {
-        in 0..11 -> "Доброе утро!"
-        in 12..17 -> "Добрый день!"
-        else -> "Добрый вечер!"
+        in 0..11 -> "Dzień dobry!"
+        in 12..17 -> "Witaj!"
+        else -> "Dobry wieczór!"
     }
 }
 
 private fun getCurrentDate(): String {
-    val dateFormat = SimpleDateFormat("d MMMM", Locale.getDefault())
-    return dateFormat.format(Date())
+    val dateFormat = SimpleDateFormat("EEEE, d MMMM", Locale("pl", "PL"))
+    val rawDate = dateFormat.format(Date())
+    return rawDate.replaceFirstChar { it.uppercase() }
 }

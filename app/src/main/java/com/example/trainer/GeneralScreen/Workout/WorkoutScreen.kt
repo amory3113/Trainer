@@ -45,12 +45,11 @@ fun WorkoutScreen(onNavigateToCreate: (Int) -> Unit) {
     )
 
     var selectedTab by remember { mutableIntStateOf(0) }
-    val tabs = listOf("Мои программы", "Расписание")
+    val tabs = listOf("Moje ćwiczenia", "Plan ćwiczeń")
 
     GradientBackground {
         Column(modifier = Modifier.fillMaxSize()) {
 
-            // ВЕРХНИЕ ВКЛАДКИ
             TabRow(
                 selectedTabIndex = selectedTab,
                 containerColor = Color.Transparent,
@@ -97,8 +96,8 @@ fun MyProgramsTab(
     if (showDeleteDialog && workoutToDelete != null) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Удалить тренировку?") },
-            text = { Text("Вы уверены, что хотите удалить \"${workoutToDelete?.name}\"? Это действие нельзя отменить.") },
+            title = { Text("Usunąć trening?") },
+            text = { Text("Czy na pewno chcesz usunąć \"${workoutToDelete?.name}\"? Tej czynności nie można cofnąć.") },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -107,10 +106,10 @@ fun MyProgramsTab(
                         workoutToDelete = null
                     },
                     colors = ButtonDefaults.textButtonColors(contentColor = Color.Red)
-                ) { Text("Удалить") }
+                ) { Text("Usunąć") }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text("Отмена") }
+                TextButton(onClick = { showDeleteDialog = false }) { Text("Cofnij") }
             }
         )
     }
@@ -118,7 +117,7 @@ fun MyProgramsTab(
     Box(modifier = Modifier.fillMaxSize()) {
         if (templates.isEmpty()) {
             Text(
-                text = "У вас пока нет программ.\nНажмите +, чтобы создать.",
+                text = "Nie masz jeszcze żadnych programów.\nKliknij +, aby utworzyć.",
                 color = Color.Gray,
                 modifier = Modifier.align(Alignment.Center)
             )
@@ -148,7 +147,7 @@ fun MyProgramsTab(
                 .padding(16.dp),
             containerColor = Color(0xFF2196F3)
         ) {
-            Icon(Icons.Default.Add, contentDescription = "Создать", tint = Color.White)
+            Icon(Icons.Default.Add, contentDescription = "Utwórz program", tint = Color.White)
         }
     }
 }
@@ -179,14 +178,11 @@ fun WorkoutCard(
             )
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Колонка с текстом занимает всё свободное место (weight 1f)
             Column(modifier = Modifier.weight(1f)) {
-                // Название программы
                 Text(item.template.name, fontSize = 18.sp, fontWeight = FontWeight.Bold)
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // СПИСОК УПРАЖНЕНИЙ
                 if (item.exercises.isNotEmpty()) {
                     val exercisesList = item.exercises.joinToString(separator = ", ") { it.name }
                     Text(
@@ -196,34 +192,30 @@ fun WorkoutCard(
                         lineHeight = 20.sp
                     )
                 } else {
-                    Text("Нет упражнений", fontSize = 14.sp, color = Color.Gray)
+                    Text("Brak ćwiczeń", fontSize = 14.sp, color = Color.Gray)
                 }
             }
 
-            // Кнопки действий (справа от текста)
             Row {
-                // Карандаш
                 IconButton(onClick = onEditClick) {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = "Редактировать",
+                        contentDescription = "Redagować",
                         tint = Color(0xFF2196F3)
                     )
                 }
-                // Корзина
                 IconButton(onClick = onDeleteClick) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Удалить",
+                        contentDescription = "Usunąć",
                         tint = Color.LightGray
                     )
                 }
             }
-        } // Закрываем Row
-    } // Закрываем Card
-} // Закрываем функцию WorkoutCard (ЭТОЙ СКОБКИ НЕ ХВАТАЛО)
+        }
+    }
+}
 
-// --- ВКЛАДКА 2: РАСПИСАНИЕ ---
 @Composable
 fun ScheduleTab(viewModel: WorkoutViewModel) {
     val schedule by viewModel.schedule.collectAsState()
@@ -232,18 +224,18 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
     var showDialog by remember { mutableStateOf(false) }
     var selectedDayIndex by remember { mutableIntStateOf(-1) }
 
-    val daysOfWeek = listOf("Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье")
+    val daysOfWeek = listOf("Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela")
 
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("Выберите тренировку на ${daysOfWeek[selectedDayIndex]}") },
+            title = { Text("Wybierz trening na ${daysOfWeek[selectedDayIndex]}") },
             text = {
                 LazyColumn {
                     item {
                         // Опция "Выходной"
                         Text(
-                            "Сделать выходным",
+                            "Zrób dzień wolny",
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
@@ -251,7 +243,7 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
                                     showDialog = false
                                 }
                                 .padding(12.dp),
-                            color = Color.Red, // Поменял на Red, чтобы было видно (White на белом фоне не видно)
+                            color = Color.White,
                             fontSize = 18.sp
                         )
                         HorizontalDivider()
@@ -274,7 +266,7 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
             },
             confirmButton = {},
             dismissButton = {
-                TextButton(onClick = { showDialog = false }) { Text("Отмена") }
+                TextButton(onClick = { showDialog = false }) { Text("Anuluj") }
             }
         )
     }
@@ -327,7 +319,7 @@ fun ScheduleDayCard(
                     fontWeight = FontWeight.Bold
                 )
             } else {
-                Text("Выходной / Назначить", color = Color.Gray, fontSize = 14.sp)
+                Text("Wolny / Przydzielić", color = Color.Gray, fontSize = 14.sp)
             }
         }
     }

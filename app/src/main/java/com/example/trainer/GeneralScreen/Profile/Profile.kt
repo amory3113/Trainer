@@ -5,26 +5,24 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.filled.MonitorWeight
-import androidx.compose.material.icons.filled.Height
-import androidx.compose.runtime.*
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trainer.ui.theme.GradientBackground
@@ -35,7 +33,7 @@ fun Profile(
     viewModel: ProfileViewModel,
     onLogout: () -> Unit = {}
 ) {
-    val userProfile by viewModel.userProfile.collectAsState() ?: remember { androidx.compose.runtime.mutableStateOf(null) }
+    val userProfile by viewModel.userProfile.collectAsState()
     val scrollState = rememberScrollState()
 
     var showDialog by remember { mutableStateOf(false) }
@@ -71,25 +69,32 @@ fun Profile(
                             showDialog = true
                         }
                     )
-                    Divider(color = Color.LightGray.copy(alpha = 0.3f))
+                    HorizontalDivider(color = Color.LightGray.copy(alpha = 0.3f))
 
                     ProfileOptionItem(
                         icon = Icons.Default.Height,
                         title = "Wysokość",
                         value = "${userProfile!!.height} cm",
-                        showArrow = false,
-                        onClick = null
+                        showArrow = true,
+                        onClick = {
+                            editType = EditType.HEIGHT
+                            editValue = userProfile!!.height.toString()
+                            showDialog = true
+                        }
                     )
-                    Divider(color = Color.LightGray.copy(alpha = 0.3f))
-
+                    HorizontalDivider(color = Color.LightGray.copy(alpha = 0.3f))
                     ProfileOptionItem(
                         icon = Icons.Default.Cake,
                         title = "Wiek",
                         value = "${userProfile!!.age} lat",
-                        showArrow = false,
-                        onClick = null
+                        showArrow = true,
+                        onClick = {
+                            editType = EditType.AGE
+                            editValue = userProfile!!.age.toString()
+                            showDialog = true
+                        }
                     )
-                    Divider(color = Color.LightGray.copy(alpha = 0.3f))
+                    HorizontalDivider(color = Color.LightGray.copy(alpha = 0.3f))
 
                     ProfileOptionItem(
                         icon = Icons.Default.Transgender,
@@ -105,19 +110,21 @@ fun Profile(
                 CardSection {
                     ProfileOptionItem(
                         icon = Icons.Default.Flag,
-                        title = "Цель",
+                        title = "Cel",
                         value = formatGoal(userProfile!!.goal),
-                        onClick = { editType = EditType.GOAL
+                        onClick = {
+                            editType = EditType.GOAL
                             editValue = userProfile!!.goal
                             showDialog = true
                         }
                     )
-                    Divider(color = Color.LightGray.copy(alpha = 0.3f))
+                    HorizontalDivider(color = Color.LightGray.copy(alpha = 0.3f))
                     ProfileOptionItem(
                         icon = Icons.Default.FitnessCenter,
-                        title = "Aktywnosc",
+                        title = "Aktywność",
                         value = formatActivity(userProfile!!.activityLevel),
-                        onClick = { editType = EditType.ACTIVITY
+                        onClick = {
+                            editType = EditType.ACTIVITY
                             editValue = userProfile!!.activityLevel
                             showDialog = true
                         }
@@ -154,8 +161,6 @@ fun Profile(
                 }
 
                 Spacer(modifier = Modifier.height(100.dp))
-
-
             }
         }
     }
@@ -170,6 +175,117 @@ fun Profile(
             }
         )
     }
+}
+
+@Composable
+fun EditProfileDialog(
+    type: EditType,
+    currentValue: String,
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit
+) {
+    var selectedValue by remember { mutableStateOf(currentValue) }
+
+    val title = when (type) {
+        EditType.WEIGHT -> "Zmień wagę"
+        EditType.HEIGHT -> "Zmień wzrost"
+        EditType.AGE -> "Zmień wiek"
+        EditType.GOAL -> "Zmień cel"
+        EditType.ACTIVITY -> "Zmień aktywność"
+    }
+
+    val suffix = when (type) {
+        EditType.WEIGHT -> "kg"
+        EditType.HEIGHT -> "cm"
+        EditType.AGE -> "lat"
+        else -> ""
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title, fontWeight = FontWeight.Bold) },
+        text = {
+            Column {
+                if (type == EditType.GOAL) {
+                    val options = mapOf(
+                        "WEIGHT_LOSS" to "Utrata wagi",
+                        "MUSCLE_GAIN" to "Przyrost masy",
+                        "MAINTAIN_FITNESS" to "Utrzymanie formy"
+                    )
+                    options.forEach { (key, label) ->
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                                .selectable(
+                                    selected = (selectedValue == key),
+                                    onClick = { selectedValue = key },
+                                    role = Role.RadioButton
+                                ),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = (selectedValue == key),
+                                onClick = null
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(text = label)
+                        }
+                    }
+
+                } else if (type == EditType.ACTIVITY) {
+                    val options = mapOf(
+                        "BEGINNER" to "Niska",
+                        "INTERMEDIATE" to "Średnia",
+                        "ADVANCED" to "Wysoka"
+                    )
+                    options.forEach { (key, label) ->
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                                .selectable(
+                                    selected = (selectedValue == key),
+                                    onClick = { selectedValue = key },
+                                    role = Role.RadioButton
+                                ),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = (selectedValue == key),
+                                onClick = null
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(text = label)
+                        }
+                    }
+
+                } else {
+                    OutlinedTextField(
+                        value = selectedValue,
+                        onValueChange = { selectedValue = it },
+                        label = { Text(suffix) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        )
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { onConfirm(selectedValue) },
+                ) {
+                Text("Zapisz")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Anuluj")
+            }
+        }
+    )
 }
 
 @Composable
@@ -282,6 +398,7 @@ fun ProfileOptionItem(
         }
     }
 }
+
 fun formatGender(gender: String): String {
     return when(gender) {
         "MALE" -> "Mężczyzna"

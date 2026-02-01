@@ -29,7 +29,7 @@ fun NutrientBar(
     Column(modifier = modifier.padding(horizontal = 8.dp)) {
         Text(
             text = name,
-            fontSize = 14.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
             color = Color.Black
         )

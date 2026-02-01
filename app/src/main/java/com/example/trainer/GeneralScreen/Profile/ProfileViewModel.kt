@@ -13,6 +13,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+// --- ВАЖНО: Это единственное место, где должен быть EditType ---
+enum class EditType {
+    WEIGHT, HEIGHT, AGE, GOAL, ACTIVITY
+}
+// -------------------------------------------------------------
+
 class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
     private val _userProfile = MutableStateFlow<UserEntity?>(null)
     val userProfile = _userProfile.asStateFlow()
@@ -25,12 +31,14 @@ class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
         }
     }
 
-    private fun loadUserProfile() {
+    // Эта функция нужна для начальной загрузки, если Flow не сработает сразу
+    fun loadUserProfile() {
         viewModelScope.launch {
             val user = repository.getUserProfile()
             _userProfile.value = user
         }
     }
+
     fun clearData(onCleared: () -> Unit) {
         viewModelScope.launch {
             repository.clearData()
@@ -52,12 +60,19 @@ class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
                     }
                     currentUser.copy(weight = newWeight)
                 }
+                EditType.HEIGHT -> {
+                    val newHeight = newValue.toDoubleOrNull() ?: currentUser.height
+                    currentUser.copy(height = newHeight)
+                }
+                EditType.AGE -> {
+                    val newAge = newValue.toIntOrNull() ?: currentUser.age
+                    currentUser.copy(age = newAge)
+                }
             }
 
             val genderEnum = try { Gender.valueOf(updatedUser.gender) } catch (e: Exception) { Gender.MALE }
             val goalEnum = try { Goal.valueOf(updatedUser.goal) } catch (e: Exception) { Goal.MAINTAIN_FITNESS }
             val activityEnum = try { ActivityLevel.valueOf(updatedUser.activityLevel) } catch (e: Exception) { ActivityLevel.INTERMEDIATE }
-
 
             val newPlan = NutritionCalculator.calculate(
                 gender = genderEnum,
@@ -77,6 +92,7 @@ class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
         }
     }
 }
+
 class ProfileViewModelFactory(private val repository: UserRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
