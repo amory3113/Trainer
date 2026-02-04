@@ -38,7 +38,7 @@ import com.example.trainer.ui.theme.GradientBackground
 fun WorkoutScreen(onNavigateToCreate: (Int) -> Unit) {
     val context = LocalContext.current
     val database = AppDatabase.getDatabase(context)
-    val repository = remember { WorkoutRepository(database.workoutDao()) }
+    val repository = remember { WorkoutRepository(database.workoutDao(), database.exerciseDao()) }
 
     val viewModel: WorkoutViewModel = viewModel(
         factory = WorkoutViewModelFactory(repository, database.exerciseDao())
@@ -254,7 +254,7 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    viewModel.assignWorkoutToDay(selectedDayIndex, item)
+                                    viewModel.assignWorkoutToDay(selectedDayIndex, item.template.id, item.template.name)
                                     showDialog = false
                                 }
                                 .padding(12.dp),

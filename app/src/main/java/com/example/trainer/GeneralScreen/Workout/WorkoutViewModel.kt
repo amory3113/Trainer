@@ -7,7 +7,6 @@ import com.example.trainer.data.Exercise.ExerciseEntity
 import com.example.trainer.data.Exercise.ScheduleEntity
 import com.example.trainer.data.Exercise.WorkoutExerciseEntity
 import com.example.trainer.data.Exercise.WorkoutRepository
-import com.example.trainer.data.Exercise.WorkoutTemplateEntity
 import com.example.trainer.data.Exercise.WorkoutWithExercises
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,13 +15,23 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+// Наш новый класс состояния (добавь его сюда или в Models)
+data class WorkoutExerciseUiState(
+    val exercise: ExerciseEntity,
+    val sets: Int = 3,
+    val reps: Int = 12
+)
+
 class WorkoutViewModel(
     private val repository: WorkoutRepository,
     private val exerciseDao: com.example.trainer.data.Exercise.ExerciseDao
 ) : ViewModel() {
+
     private var currentEditingId: Int? = null
+
     private val _workoutName = MutableStateFlow("")
     val workoutName = _workoutName.asStateFlow()
+
     private val _templates = MutableStateFlow<List<WorkoutWithExercises>>(emptyList())
     val templates = _templates.asStateFlow()
 
@@ -30,99 +39,91 @@ class WorkoutViewModel(
     val schedule = _schedule.asStateFlow()
 
     private val _allExercisesRaw = MutableStateFlow<List<ExerciseEntity>>(emptyList())
-    private val _selectedCategory = MutableStateFlow<String?>(null)
-    val selectedCategory = _selectedCategory.asStateFlow()
 
-    val categories = listOf("Wszystko", "CHEST", "BACK", "LEGS", "ARMS", "ABS", "SHOULDERS")
-    val filteredExercises = combine(_allExercisesRaw, _selectedCategory) { list, category ->
-        if (category == null || category == "Wszystko") {
-            list
-        } else {
-            list.filter { it.muscleGroup.equals(category, ignoreCase = true) }
-        }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-    private val _selectedExercises = MutableStateFlow<List<ExerciseEntity>>(emptyList())
+    // ИЗМЕНЕНИЕ 1: Теперь храним не просто упражнения, а упражнения с настройками (UI State)
+    private val _selectedExercises = MutableStateFlow<List<WorkoutExerciseUiState>>(emptyList())
     val selectedExercises = _selectedExercises.asStateFlow()
 
+    val availableExercises = combine(_allExercisesRaw, _selectedExercises) { all, selected ->
+        val selectedIds = selected.map { it.exercise.id }
+        all.filter { it.id !in selectedIds }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     init {
-        viewModelScope.launch { repository.allTemplates.collect { _templates.value = it } }
-        viewModelScope.launch { repository.schedule.collect { _schedule.value = it } }
-        viewModelScope.launch { exerciseDao.getAllExercises().collect { _allExercisesRaw.value = it } }
-    }
-
-    fun selectCategory(category: String) {
-        _selectedCategory.value = if (category == "Wszystko") null else category
-    }
-    fun toggleExerciseSelection(exercise: ExerciseEntity) {
-        val currentList = _selectedExercises.value.toMutableList()
-        if (currentList.contains(exercise)) {
-            currentList.remove(exercise)
-        } else {
-            currentList.add(exercise)
-        }
-        _selectedExercises.value = currentList
-    }
-
-    fun saveWorkout(onSuccess: () -> Unit) {
         viewModelScope.launch {
-            val nameToSave = if (_workoutName.value.isBlank()) "Nowy trening" else _workoutName.value
-            val targetId = currentEditingId
+            repository.allTemplates.collect { _templates.value = it }
+        }
+        viewModelScope.launch {
+            repository.schedule.collect { _schedule.value = it }
+        }
+        viewModelScope.launch {
+            exerciseDao.getAllExercises().collect { _allExercisesRaw.value = it }
+        }
+    }
 
-            if (targetId != null) {
-                val exerciseLinks = _selectedExercises.value.mapIndexed { index, exercise ->
-                    WorkoutExerciseEntity(
-                        workoutId = targetId,
-                        exerciseId = exercise.id,
-                        sets = 3, reps = 10, order = index
-                    )
-                }
-                repository.updateWorkout(targetId, nameToSave, exerciseLinks)
+    // ИЗМЕНЕНИЕ 2: При добавлении создаем объект с дефолтными 3x12
+    fun addExercise(exercise: ExerciseEntity) {
+        val newItem = WorkoutExerciseUiState(exercise, sets = 3, reps = 12)
+        _selectedExercises.value = _selectedExercises.value + newItem
+    }
+
+    // ИЗМЕНЕНИЕ 3: Удаление по ID упражнения
+    fun removeExercise(exerciseId: Int) {
+        _selectedExercises.value = _selectedExercises.value.filter { it.exercise.id != exerciseId }
+    }
+
+    // ИЗМЕНЕНИЕ 4: Функция для обновления подходов и повторов
+    fun updateExerciseDetails(exerciseId: Int, newSets: Int, newReps: Int) {
+        _selectedExercises.value = _selectedExercises.value.map { item ->
+            if (item.exercise.id == exerciseId) {
+                item.copy(sets = newSets, reps = newReps)
             } else {
-                // СОЗДАНИЕ НОВОЙ
-                val newId = repository.createTemplate(nameToSave, "Nie określono")
-                _selectedExercises.value.forEachIndexed { index, exercise ->
-                    val link = WorkoutExerciseEntity(
-                        workoutId = newId.toInt(),
-                        exerciseId = exercise.id,
-                        sets = 3, reps = 10, order = index
-                    )
-                    repository.insertWorkoutExercise(link)
-                }
+                item
+            }
+        }
+    }
+
+    // ИЗМЕНЕНИЕ 5: Сохранение теперь берет данные из UI State
+    fun saveWorkout() {
+        val name = _workoutName.value
+        if (name.isBlank() || _selectedExercises.value.isEmpty()) return
+
+        viewModelScope.launch {
+            // ИСПРАВЛЕНИЕ 1: Приводим Long к Int
+            // repository.createTemplate возвращает Long, а нам нужен Int
+            val workoutId = if (currentEditingId != null) {
+                currentEditingId!!
+            } else {
+                repository.createTemplate(name, null).toInt()
             }
 
+            // ИСПРАВЛЕНИЕ 2: Убрали лишний вызов updateTemplateName
+            // Функция updateWorkout внутри репозитория и так обновляет имя и упражнения сразу (транзакцией)
+
+            // Превращаем UI State обратно в Entity для базы данных
+            val entities = _selectedExercises.value.mapIndexed { index, item ->
+                WorkoutExerciseEntity(
+                    workoutId = workoutId,
+                    exerciseId = item.exercise.id,
+                    sets = item.sets,
+                    reps = item.reps,
+                    order = index
+                )
+            }
+
+            // Эта функция обновит И имя, И список упражнений
+            repository.updateWorkout(workoutId, name, entities)
             clearSelection()
-            onSuccess()
         }
     }
 
-    fun clearSelection() {
-        _selectedExercises.value = emptyList()
+    private fun clearSelection() {
         _workoutName.value = ""
+        _selectedExercises.value = emptyList()
         currentEditingId = null
-        _selectedCategory.value = null
-    }
-    fun assignWorkoutToDay(dayIndex: Int, workoutWrapper: WorkoutWithExercises) {
-        viewModelScope.launch {
-            repository.setWorkoutToDay(dayIndex, workoutWrapper.template.id, workoutWrapper.template.name)
-        }
     }
 
-    fun clearDay(dayIndex: Int) {
-        viewModelScope.launch {
-            repository.clearDay(dayIndex)
-        }
-    }
-
-    fun deleteWorkout(workoutId: Int) {
-        viewModelScope.launch {
-            repository.deleteWorkout(workoutId)
-        }
-    }
-
-    fun onNameChange(newName: String) {
-        _workoutName.value = newName
-    }
-
+    // Замени функцию loadWorkoutForEdit на эту обновленную версию:
     fun loadWorkoutForEdit(workoutId: Int) {
         if (workoutId == -1) {
             clearSelection()
@@ -130,17 +131,52 @@ class WorkoutViewModel(
         }
 
         viewModelScope.launch {
+            // 1. Загружаем имя тренировки
             val template = repository.getTemplateById(workoutId)
-            val exercises = repository.getExercisesForTemplate(workoutId)
+
+            // 2. Загружаем "сырые" данные (id упражнения, подходы, повторы)
+            val rawExercises = repository.getSavedWorkoutExercises(workoutId)
 
             if (template != null) {
                 currentEditingId = workoutId
                 _workoutName.value = template.name
-                _selectedExercises.value = exercises
+
+                // 3. Собираем правильный список для UI
+                val uiList = mutableListOf<WorkoutExerciseUiState>()
+
+                for (raw in rawExercises) {
+                    // Находим полную информацию об упражнении по его ID
+                    val fullExercise = repository.getExerciseById(raw.exerciseId)
+
+                    if (fullExercise != null) {
+                        // Создаем объект состояния с ПРАВИЛЬНЫМИ цифрами из базы
+                        uiList.add(WorkoutExerciseUiState(
+                            exercise = fullExercise,
+                            sets = raw.sets,  // Берем сохраненное значение
+                            reps = raw.reps   // Берем сохраненное значение
+                        ))
+                    }
+                }
+
+                _selectedExercises.value = uiList
             }
         }
     }
+
+    // Доп. методы
+    fun clearDay(dayIndex: Int) { viewModelScope.launch { repository.clearDay(dayIndex) } }
+    fun deleteWorkout(workoutId: Int) { viewModelScope.launch { repository.deleteWorkout(workoutId) } }
+    fun onNameChange(newName: String) { _workoutName.value = newName }
+
+    // Добавь эту функцию в WorkoutViewModel
+    fun assignWorkoutToDay(dayIndex: Int, workoutId: Int, workoutName: String) {
+        viewModelScope.launch {
+            repository.setWorkoutToDay(dayIndex, workoutId, workoutName)
+        }
+    }
+
 }
+
 class WorkoutViewModelFactory(
     private val repository: WorkoutRepository,
     private val exerciseDao: com.example.trainer.data.Exercise.ExerciseDao

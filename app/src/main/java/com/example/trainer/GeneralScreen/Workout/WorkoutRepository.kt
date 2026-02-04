@@ -2,7 +2,7 @@ package com.example.trainer.data.Exercise
 
 import kotlinx.coroutines.flow.Flow
 
-class WorkoutRepository(private val workoutDao: WorkoutDao) {
+class WorkoutRepository(private val workoutDao: WorkoutDao, private val exerciseDao: ExerciseDao) {
 
     val allTemplates: Flow<List<WorkoutWithExercises>> = workoutDao.getWorkoutsWithExercises()
 
@@ -16,7 +16,16 @@ class WorkoutRepository(private val workoutDao: WorkoutDao) {
         workoutDao.insertSchedule(item)
     }
     suspend fun getTemplateById(id: Int) = workoutDao.getTemplateById(id)
-    suspend fun getExercisesForTemplate(id: Int) = workoutDao.getExercisesForWorkoutList(id)
+
+    // --- ИЗМЕНЕНИЯ ЗДЕСЬ ---
+
+    // Получаем список связок (где хранятся подходы/повторы)
+    suspend fun getSavedWorkoutExercises(workoutId: Int) = workoutDao.getWorkoutExercisesRaw(workoutId)
+
+    // Получаем само упражнение по ID
+    suspend fun getExerciseById(id: Int) = exerciseDao.getExerciseById(id)
+
+    // -----------------------
     suspend fun updateWorkout(workoutId: Int, newName: String, exercises: List<WorkoutExerciseEntity>) {
         workoutDao.updateWorkoutTransaction(workoutId, newName, exercises)
     }

@@ -155,7 +155,7 @@ fun AppNavigation(repository: UserRepository, startDestination: String) {
 
             val context = androidx.compose.ui.platform.LocalContext.current
             val db = com.example.trainer.data.AppDatabase.getDatabase(context)
-            val workoutRepo = com.example.trainer.data.Exercise.WorkoutRepository(db.workoutDao())
+            val workoutRepo = com.example.trainer.data.Exercise.WorkoutRepository(db.workoutDao(), db.exerciseDao())
 
             val workoutViewModel: com.example.trainer.GeneralScreen.Workout.WorkoutViewModel =
                 androidx.lifecycle.viewmodel.compose.viewModel(

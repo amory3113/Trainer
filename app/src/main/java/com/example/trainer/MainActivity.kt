@@ -29,16 +29,12 @@ import com.example.trainer.notification.NotificationScheduler
 import com.example.trainer.notification.NotificationHelper
 
 class MainActivity : ComponentActivity() {
-
-    // 1. Создаем регистратор для запроса прав (он должен быть в классе Activity)
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) {
-            // Если разрешил - отлично, уведомления будут приходить
             println("DEBUG: Разрешение на уведомления получено")
         } else {
-            // Если запретил - ну и ладно, просто не будем надоедать
             println("DEBUG: Разрешение отклонено")
         }
     }

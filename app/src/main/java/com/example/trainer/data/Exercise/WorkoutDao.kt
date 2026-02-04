@@ -29,6 +29,12 @@ interface WorkoutDao {
         insertWorkoutExercises(exercises)
     }
 
+    // --- ДОБАВЬ ВОТ ЭТУ ФУНКЦИЮ ---
+    // Она достает именно настройки подходов и повторений для конкретной тренировки
+    @Query("SELECT * FROM workout_exercises WHERE workoutId = :workoutId ORDER BY `order` ASC")
+    suspend fun getWorkoutExercisesRaw(workoutId: Int): List<WorkoutExerciseEntity>
+    // -----------------------------
+
     @Query("UPDATE workout_templates SET name = :newName WHERE id = :workoutId")
     suspend fun updateTemplateName(workoutId: Int, newName: String)
 

@@ -1,130 +1,178 @@
 [
   {
-    "name": "Отжимания от пола",
+    "name": "Pompki klasyczne",
     "muscleGroup": "CHEST",
     "imageName": "pushups",
-    "description": "Классическое упражнение для груди и трицепса.",
+    "description": "Klasyczne ćwiczenie na klatkę piersiową i triceps.",
     "upDown": "UP",
     "equipment": "bodyweight"
   },
   {
-    "name": "Жим штанги лежа",
+    "name": "Wyciskanie sztangi leżąc",
     "muscleGroup": "CHEST",
     "imageName": "bench_press",
-    "description": "Базовое упражнение для развития силы грудных мышц.",
+    "description": "Podstawowe ćwiczenie budujące siłę klatki piersiowej.",
     "upDown": "UP",
     "equipment": "barbell"
   },
   {
-    "name": "Жим гантелей лежа",
+    "name": "Wyciskanie hantli leżąc",
     "muscleGroup": "CHEST",
     "imageName": "dumbbell_press",
-    "description": "Альтернатива штанге, позволяет лучше растянуть мышцы.",
+    "description": "Alternatywa dla sztangi, pozwala na lepsze rozciągnięcie mięśni.",
     "upDown": "UP",
     "equipment": "dumbbells"
   },
   {
-    "name": "Приседания (собственный вес)",
+    "name": "Pompki na poręczach (Dips)",
+    "muscleGroup": "ARMS",
+    "imageName": "dips",
+    "description": "Świetne na triceps i dolną część klatki.",
+    "upDown": "UP",
+    "equipment": "bodyweight"
+  },
+  {
+    "name": "Przysiady (ciężar własny)",
     "muscleGroup": "LEGS",
     "imageName": "body_squat",
-    "description": "Базовое движение для ног и ягодиц.",
+    "description": "Podstawowy ruch na nogi i pośladki.",
     "upDown": "DOWN",
     "equipment": "bodyweight"
   },
   {
-    "name": "Приседания со штангой",
+    "name": "Przysiady ze sztangą",
     "muscleGroup": "LEGS",
     "imageName": "barbell_squat",
-    "description": "Король упражнений для набора массы ног.",
+    "description": "Król ćwiczeń na masę nóg.",
     "upDown": "DOWN",
     "equipment": "barbell"
   },
   {
-    "name": "Выпады с гантелями",
+    "name": "Wykroki z hantlami",
     "muscleGroup": "LEGS",
     "imageName": "lunges",
-    "description": "Отличное упражнение для ягодиц и квадрицепсов.",
+    "description": "Świetne ćwiczenie na pośladki i mięśnie czworogłowe.",
     "upDown": "DOWN",
     "equipment": "dumbbells"
   },
   {
-    "name": "Подтягивания",
+    "name": "Wypychanie nóg na suwnicy",
+    "muscleGroup": "LEGS",
+    "imageName": "leg_press",
+    "description": "Bezpieczniejsza alternatywa dla przysiadów przy dużym ciężarze.",
+    "upDown": "DOWN",
+    "equipment": "machine"
+  },
+  {
+    "name": "Wspięcia na palce",
+    "muscleGroup": "LEGS",
+    "imageName": "calf_raises",
+    "description": "Izolacja na łydki.",
+    "upDown": "DOWN",
+    "equipment": "bodyweight"
+  },
+  {
+    "name": "Podciąganie na drążku",
     "muscleGroup": "BACK",
     "imageName": "pullups",
-    "description": "Лучшее упражнение для ширины спины.",
+    "description": "Najlepsze ćwiczenie na szerokość pleców.",
     "upDown": "UP",
     "equipment": "bodyweight"
   },
   {
-    "name": "Тяга верхнего блока",
+    "name": "Ściąganie drążka (wyciąg górny)",
     "muscleGroup": "BACK",
     "imageName": "lat_pulldown",
-    "description": "Аналог подтягиваний на тренажере.",
+    "description": "Odpowiednik podciągania na maszynie.",
     "upDown": "UP",
     "equipment": "machine"
   },
   {
-    "name": "Тяга гантели в наклоне",
+    "name": "Wiosłowanie hantlą w opadzie",
     "muscleGroup": "BACK",
     "imageName": "dumbbell_row",
-    "description": "Упражнение для толщины спины.",
+    "description": "Ćwiczenie na grubość pleców.",
     "upDown": "UP",
     "equipment": "dumbbells"
   },
   {
-    "name": "Жим гантелей сидя",
+    "name": "Martwy ciąg klasyczny",
+    "muscleGroup": "BACK",
+    "imageName": "deadlift",
+    "description": "Angażuje całe ciało, głównie plecy i nogi.",
+    "upDown": "FULL",
+    "equipment": "barbell"
+  },
+  {
+    "name": "Wyciskanie hantli siedząc",
     "muscleGroup": "SHOULDERS",
     "imageName": "shoulder_press",
-    "description": "База для дельтовидных мышц.",
+    "description": "Baza dla mięśni naramiennych.",
     "upDown": "UP",
     "equipment": "dumbbells"
   },
   {
-    "name": "Махи гантелями в стороны",
+    "name": "Wznosy hantli bokiem",
     "muscleGroup": "SHOULDERS",
     "imageName": "lateral_raises",
-    "description": "Изоляция для средней дельты (ширина плеч).",
+    "description": "Izolacja na środkowy akton barków (szerokość).",
     "upDown": "UP",
     "equipment": "dumbbells"
   },
   {
-    "name": "Планка",
+    "name": "Deska (Plank)",
     "muscleGroup": "ABS",
     "imageName": "plank",
-    "description": "Статика для кора.",
+    "description": "Ćwiczenie statyczne na mięśnie korpusu.",
     "upDown": "UP",
     "equipment": "bodyweight"
   },
   {
-    "name": "Скручивания",
+    "name": "Brzuszki (Spięcia)",
     "muscleGroup": "ABS",
     "imageName": "crunches",
-    "description": "Классика для пресса.",
+    "description": "Klasyka na mięśnie brzucha.",
     "upDown": "UP",
     "equipment": "bodyweight"
   },
   {
-    "name": "Сгибания на бицепс (гантели)",
+    "name": "Uginanie ramion z hantlami",
     "muscleGroup": "ARMS",
     "imageName": "bicep_curl",
-    "description": "База для бицепса.",
+    "description": "Podstawowe ćwiczenie na biceps.",
     "upDown": "UP",
     "equipment": "dumbbells"
   },
   {
-    "name": "Разгибания на трицепс (блок)",
+    "name": "Uginanie młotkowe",
+    "muscleGroup": "ARMS",
+    "imageName": "hammer_curl",
+    "description": "Angażuje biceps i mięsień ramienny.",
+    "upDown": "UP",
+    "equipment": "dumbbells"
+  },
+  {
+    "name": "Prostowanie ramion na wyciągu",
     "muscleGroup": "ARMS",
     "imageName": "tricep_pushdown",
-    "description": "Изоляция для трицепса.",
+    "description": "Izolacja na triceps.",
     "upDown": "UP",
     "equipment": "machine"
   },
   {
-    "name": "Берпи",
+    "name": "Burpees (Krokodylki)",
     "muscleGroup": "CARDIO",
     "imageName": "burpee",
-    "description": "Интенсивное упражнение для всего тела.",
+    "description": "Intensywne ćwiczenie na całe ciało.",
     "upDown": "FULL",
+    "equipment": "bodyweight"
+  },
+  {
+    "name": "Wyprosty tułowia (Ławeczka)",
+    "muscleGroup": "BACK",
+    "imageName": "hyperextension",
+    "description": "Wzmacnia prostowniki grzbietu (lędźwie).",
+    "upDown": "UP",
     "equipment": "bodyweight"
   }
 ]

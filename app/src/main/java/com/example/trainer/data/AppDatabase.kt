@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-// Импортируем наши новые файлы
 import com.example.trainer.data.Exercise.ExerciseEntity
 import com.example.trainer.data.Exercise.WorkoutTemplateEntity
 import com.example.trainer.data.Exercise.WorkoutExerciseEntity

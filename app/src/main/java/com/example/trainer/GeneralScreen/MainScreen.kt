@@ -110,7 +110,7 @@ fun MainScreen(repository: UserRepository, navController: androidx.navigation.Na
             composable(BottomBarScreen.Home.route) {
                 val context = androidx.compose.ui.platform.LocalContext.current
                 val db = com.example.trainer.data.AppDatabase.getDatabase(context)
-                val workoutRepo = com.example.trainer.data.Exercise.WorkoutRepository(db.workoutDao())
+                val workoutRepo = com.example.trainer.data.Exercise.WorkoutRepository(db.workoutDao(), db.exerciseDao())
                 val viewModel: HomeViewModel = viewModel(
                     factory = HomeViewModelFactory(repository, workoutRepo)
                 )
