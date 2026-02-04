@@ -139,7 +139,7 @@ fun MoreHealthQuest(
                     }
                 }
 
-                viewModel?.saveHealthData(
+                viewModel?.calculateHealthRisks(
                     chronic = parse(question1),
                     injuries = parse(question2),
                     heart = parse(question3),

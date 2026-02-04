@@ -158,11 +158,11 @@ fun ActivityLevel(
                         else -> 3
                     }
 
-                    viewModel?.saveActivityData(
+                    viewModel?.calculateActivityLevel(
                         job = jobScore,
-                        freq = freqScore,
-                        dur = durScore,
-                        cond = condScore,
+                        sport = freqScore,
+                        duration = durScore,
+                        condition = condScore,
                         fatigue = fatScore
                     )
                     onNextClick()
