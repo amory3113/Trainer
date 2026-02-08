@@ -48,7 +48,7 @@ fun CircularProgressbar(
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier.size(size)
+        modifier = modifier.size(size),
     ) {
         Canvas(modifier = Modifier.size(size)) {
             drawArc(

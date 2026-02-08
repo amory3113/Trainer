@@ -20,7 +20,13 @@ class WorkoutRepository(private val workoutDao: WorkoutDao, private val exercise
     // --- ИЗМЕНЕНИЯ ЗДЕСЬ ---
 
     // Получаем список связок (где хранятся подходы/повторы)
-    suspend fun getSavedWorkoutExercises(workoutId: Int) = workoutDao.getWorkoutExercisesRaw(workoutId)
+    suspend fun getSavedWorkoutExercises(workoutId: Int): List<WorkoutExerciseEntity> {
+        return workoutDao.getWorkoutExercisesRaw(workoutId)
+    }
+    // ДОБАВЛЯЕМ:
+    fun getWorkoutExercisesStream(workoutId: Int): kotlinx.coroutines.flow.Flow<List<WorkoutExerciseEntity>> {
+        return workoutDao.getWorkoutExercisesFlow(workoutId)
+    }
 
     // Получаем само упражнение по ID
     suspend fun getExerciseById(id: Int) = exerciseDao.getExerciseById(id)

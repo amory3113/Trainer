@@ -5,176 +5,135 @@ import com.example.trainer.Logic.Models.WorkoutLocation
 import com.example.trainer.data.Exercise.ExerciseEntity
 import com.example.trainer.data.Exercise.WorkoutExerciseEntity
 import com.example.trainer.data.Exercise.WorkoutTemplateEntity
-import com.example.trainer.data.Exercise.WorkoutWithExercises
-import com.example.trainer.data.UserEntity
 
 object WorkoutGenerator {
 
-    // Класс-результат, который мы вернем ViewModel-у
-    data class GeneratedPlan(
-        val templates: List<WorkoutTemplateEntity>,
-        val exercisesMap: Map<Long, List<WorkoutExerciseEntity>>, // Long тут это tempId шаблона
-        val schedule: Map<Int, Long> // День недели (1-7) -> tempId шаблона
+    // НОВАЯ СТРУКТУРА: Хранит всё вместе, чтобы ничего не потерялось
+    data class GeneratedWorkout(
+        val tempId: Long, // Временный ID (например, 31, 32...)
+        val template: WorkoutTemplateEntity,
+        val exercises: List<WorkoutExerciseEntity>
     )
 
-    fun generate(user: UserEntity, allExercises: List<ExerciseEntity>): GeneratedPlan {
+    data class GeneratedPlan(
+        val workouts: List<GeneratedWorkout>, // Список готовых тренировок
+        val schedule: Map<Int, Long> // Расписание (0=Пн -> ID)
+    )
 
-        // 1. ФИЛЬТРАЦИЯ ПО ОБОРУДОВАНИЮ
-        // Если Дом -> берем только свой вес и гантели. Если Зал -> берем всё.
+    fun generate(user: com.example.trainer.data.UserEntity, allExercises: List<ExerciseEntity>): GeneratedPlan {
+
         val validExercises = if (user.workoutLocation == WorkoutLocation.HOME.name) {
-            allExercises.filter {
-                it.equipment == "bodyweight" || it.equipment == "dumbbells"
-            }
+            allExercises.filter { it.equipment == "bodyweight" || it.equipment == "dumbbells" }
         } else {
             allExercises
         }
 
-        // 2. ОПРЕДЕЛЕНИЕ ПАРАМЕТРОВ (Подходы / Повторы)
         val (sets, reps) = when (user.goal) {
             Goal.MUSCLE_GAIN.name -> 4 to 10
             Goal.WEIGHT_LOSS.name -> 3 to 15
-            else -> 3 to 12 // MAINTAIN
+            else -> 3 to 12
         }
 
-        // 3. ВЫБОР СПЛИТА
-        // Если тренировок мало (<= 3) -> делаем Фулбади.
-        // Если много (>= 4) -> делаем Верх/Низ.
-        return if (user.workoutFrequency <= 3) {
-            generateFullBodySplit(validExercises, sets, reps, user.workoutFrequency)
-        } else {
-            generateUpperLowerSplit(validExercises, sets, reps, user.workoutFrequency)
+        return when {
+            user.workoutFrequency <= 3 -> generateFullBodySplit(validExercises, sets, reps, user.workoutFrequency)
+            user.workoutFrequency == 4 -> generateUpperLowerSplit(validExercises, sets, reps)
+            else -> generateBodyPartSplit(validExercises, sets, reps) // 5 дней
         }
     }
 
-    // --- ГЕНЕРАТОР FULL BODY (Всё тело) ---
+    // --- 1. FULL BODY (2-3 дня) ---
     private fun generateFullBodySplit(
-        exercises: List<ExerciseEntity>,
-        sets: Int,
-        reps: Int,
-        freq: Int
+        exercises: List<ExerciseEntity>, sets: Int, reps: Int, freq: Int
     ): GeneratedPlan {
-        val templates = mutableListOf<WorkoutTemplateEntity>()
-        val exercisesMap = mutableMapOf<Long, List<WorkoutExerciseEntity>>()
+        val workouts = mutableListOf<GeneratedWorkout>()
         val schedule = mutableMapOf<Int, Long>()
 
-        // Создаем две вариации: Тренировка А и Тренировка Б
-        val workoutA = createWorkoutTemplate(
-            name = "Full Body A",
-            exercises = selectExercisesForFullBody(exercises, variation = "A"),
-            sets = sets,
-            reps = reps,
-            tempId = 1L
-        )
+        // Создаем тренировки A и B
+        val wA = createWorkout("Full Body A", selectExercisesForFullBody(exercises, "A"), sets, reps)
+        val wB = createWorkout("Full Body B", selectExercisesForFullBody(exercises, "B"), sets, reps)
 
-        val workoutB = createWorkoutTemplate(
-            name = "Full Body B",
-            exercises = selectExercisesForFullBody(exercises, variation = "B"),
-            sets = sets,
-            reps = reps,
-            tempId = 2L
-        )
+        // Добавляем в список с ID 1 и 2
+        workouts.add(GeneratedWorkout(1L, wA.first, wA.second))
+        workouts.add(GeneratedWorkout(2L, wB.first, wB.second))
 
-        templates.add(workoutA.first)
-        exercisesMap[1L] = workoutA.second
-        templates.add(workoutB.first)
-        exercisesMap[2L] = workoutB.second
-
-        // Расставляем по дням (Пн, Ср, Пт)
-        // 1=Вс, 2=Пн, 3=Вт, 4=Ср, 5=Чт, 6=Пт, 7=Сб
+        // Расписание (0=Пн)
         if (freq == 1) {
-            schedule[2] = 1L // Пн
+            schedule[0] = 1L
         } else if (freq == 2) {
-            schedule[2] = 1L // Пн
-            schedule[5] = 2L // Чт
+            schedule[0] = 1L; schedule[3] = 2L
         } else {
-            schedule[2] = 1L // Пн
-            schedule[4] = 2L // Ср
-            schedule[6] = 1L // Пт
+            schedule[0] = 1L; schedule[2] = 2L; schedule[4] = 1L
         }
 
-        return GeneratedPlan(templates, exercisesMap, schedule)
+        return GeneratedPlan(workouts, schedule)
     }
 
-    // --- ГЕНЕРАТОР UPPER/LOWER (Верх / Низ) ---
+    // --- 2. UPPER/LOWER (4 дня) ---
     private fun generateUpperLowerSplit(
-        exercises: List<ExerciseEntity>,
-        sets: Int,
-        reps: Int,
-        freq: Int
+        exercises: List<ExerciseEntity>, sets: Int, reps: Int
     ): GeneratedPlan {
-        val templates = mutableListOf<WorkoutTemplateEntity>()
-        val exercisesMap = mutableMapOf<Long, List<WorkoutExerciseEntity>>()
+        val workouts = mutableListOf<GeneratedWorkout>()
         val schedule = mutableMapOf<Int, Long>()
 
-        // 1. Тренировка ВЕРХ
-        val upperExercises = exercises.filter {
-            it.muscleGroup in listOf("CHEST", "BACK", "SHOULDERS", "ARMS")
-        }.shuffled().take(7) // Берем 7 случайных упражнений на верх
+        val upperEx = exercises.filter { it.muscleGroup in listOf("CHEST", "BACK", "SHOULDERS", "ARMS") }.shuffled().take(7)
+        val lowerEx = exercises.filter { it.muscleGroup in listOf("LEGS", "ABS", "CARDIO") }.shuffled().take(6)
 
-        val workoutUpper = createWorkoutTemplate("Upper Body", upperExercises, sets, reps, 10L)
+        val wUp = createWorkout("Upper Body", upperEx, sets, reps)
+        val wLow = createWorkout("Lower Body", lowerEx, sets, reps)
 
-        // 2. Тренировка НИЗ + ПРЕСС
-        val lowerExercises = exercises.filter {
-            it.muscleGroup in listOf("LEGS", "ABS", "CARDIO")
-        }.shuffled().take(6)
+        workouts.add(GeneratedWorkout(10L, wUp.first, wUp.second))
+        workouts.add(GeneratedWorkout(20L, wLow.first, wLow.second))
 
-        val workoutLower = createWorkoutTemplate("Lower Body", lowerExercises, sets, reps, 20L)
+        // Пн, Вт, Чт, Пт
+        schedule[0] = 10L; schedule[1] = 20L; schedule[3] = 10L; schedule[4] = 20L
 
-        templates.add(workoutUpper.first)
-        exercisesMap[10L] = workoutUpper.second
-        templates.add(workoutLower.first)
-        exercisesMap[20L] = workoutLower.second
-
-        // Расписание: Пн(Верх), Вт(Низ), Чт(Верх), Пт(Низ)
-        schedule[2] = 10L
-        schedule[3] = 20L
-        schedule[5] = 10L
-        schedule[6] = 20L
-
-        return GeneratedPlan(templates, exercisesMap, schedule)
+        return GeneratedPlan(workouts, schedule)
     }
 
-    // --- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
+    // --- 3. BODY PART SPLIT (5 дней) ---
+    private fun generateBodyPartSplit(
+        exercises: List<ExerciseEntity>, sets: Int, reps: Int
+    ): GeneratedPlan {
+        val workouts = mutableListOf<GeneratedWorkout>()
+        val schedule = mutableMapOf<Int, Long>()
 
-    private fun createWorkoutTemplate(
-        name: String,
-        exercises: List<ExerciseEntity>,
-        sets: Int,
-        reps: Int,
-        tempId: Long // Временный ID для связки внутри генератора
-    ): Pair<WorkoutTemplateEntity, List<WorkoutExerciseEntity>> {
+        // Генерируем 5 разных тренировок
+        val wChest = createWorkout("Klatka Piersiowa", exercises.filter { it.muscleGroup == "CHEST" }.shuffled().take(5), sets, reps)
+        val wBack = createWorkout("Plecy", exercises.filter { it.muscleGroup == "BACK" }.shuffled().take(5), sets, reps)
+        val wLegs = createWorkout("Nogi i Brzuch", exercises.filter { it.muscleGroup == "LEGS" || it.muscleGroup == "ABS" }.shuffled().take(6), sets, reps)
+        val wShoulders = createWorkout("Barki", exercises.filter { it.muscleGroup == "SHOULDERS" }.shuffled().take(5), sets, reps)
+        val wArms = createWorkout("Ramiona", exercises.filter { it.muscleGroup == "ARMS" }.shuffled().take(6), sets, reps)
 
-        // Тут мы ставим id = 0, так как реальный ID выдаст база данных при вставке.
-        // Но нам нужно как-то связать их в GeneratedPlan, поэтому используем tempId во внешней мапе.
+        // Добавляем их в список с уникальными ID
+        workouts.add(GeneratedWorkout(31L, wChest.first, wChest.second)) // Грудь
+        workouts.add(GeneratedWorkout(32L, wBack.first, wBack.second))   // Спина
+        workouts.add(GeneratedWorkout(33L, wLegs.first, wLegs.second))   // Ноги
+        workouts.add(GeneratedWorkout(34L, wShoulders.first, wShoulders.second)) // Плечи
+        workouts.add(GeneratedWorkout(35L, wArms.first, wArms.second))   // Руки
+
+        // Расписание: Пн-Пт подряд
+        schedule[0] = 31L
+        schedule[1] = 32L
+        schedule[2] = 33L
+        schedule[3] = 34L
+        schedule[4] = 35L
+
+        return GeneratedPlan(workouts, schedule)
+    }
+
+    private fun createWorkout(name: String, exercises: List<ExerciseEntity>, sets: Int, reps: Int): Pair<WorkoutTemplateEntity, List<WorkoutExerciseEntity>> {
         val template = WorkoutTemplateEntity(name = name, description = "System generated", isSystemDefault = false)
-
         val workoutExercises = exercises.mapIndexed { index, exercise ->
-            WorkoutExerciseEntity(
-                workoutId = 0, // Будет заменено при сохранении
-                exerciseId = exercise.id,
-                sets = sets,
-                reps = reps,
-                order = index
-            )
+            WorkoutExerciseEntity(workoutId = 0, exerciseId = exercise.id, sets = sets, reps = reps, order = index)
         }
         return template to workoutExercises
     }
 
-    // Логика подбора упражнений для Фулбади
     private fun selectExercisesForFullBody(all: List<ExerciseEntity>, variation: String): List<ExerciseEntity> {
-        // Мы пытаемся взять по 1 упражнению на каждую группу
         val result = mutableListOf<ExerciseEntity>()
-
-        val groups = listOf("LEGS", "CHEST", "BACK", "SHOULDERS", "ARMS", "ABS")
-
-        groups.forEach { group ->
+        listOf("LEGS", "CHEST", "BACK", "SHOULDERS", "ARMS", "ABS").forEach { group ->
             val candidates = all.filter { it.muscleGroup == group }
-            if (candidates.isNotEmpty()) {
-                // Если вариация А -> берем первое, Б -> берем второе (или последнее)
-                // Это простая логика, чтобы тренировки отличались
-                val exercise = if (variation == "A") candidates.first() else candidates.last()
-                result.add(exercise)
-            }
+            if (candidates.isNotEmpty()) result.add(if (variation == "A") candidates.first() else candidates.last())
         }
         return result
     }

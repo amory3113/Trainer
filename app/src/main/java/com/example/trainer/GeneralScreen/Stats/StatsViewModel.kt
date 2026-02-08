@@ -19,30 +19,36 @@ class StatsViewModel(private val repository: UserRepository) : ViewModel() {
     private val _weightHistory = MutableStateFlow<List<Float>>(emptyList())
     val weightHistory = _weightHistory.asStateFlow()
 
+    // Список питания
     private val _nutritionHistory = MutableStateFlow<List<NutritionEntity>>(emptyList())
     val nutritionHistory = _nutritionHistory.asStateFlow()
 
     init {
+        // 1. Слушаем профиль
         viewModelScope.launch {
             repository.userFlow.collect { user ->
                 _userProfile.value = user
             }
         }
 
+        // 2. Слушаем историю веса
         viewModelScope.launch {
             repository.getWeightHistoryFlow().collect { listEntities ->
                 _weightHistory.value = listEntities.map { it.weight }
             }
         }
-        loadNutritionData()
-    }
 
-    fun loadNutritionData() {
+        // 3. СЛУШАЕМ ИСТОРИЮ ПИТАНИЯ (НОВОЕ)
+        // Теперь мы используем .collect, чтобы данные обновлялись сами
         viewModelScope.launch {
-            val nHistory = repository.getNutritionHistory()
-            _nutritionHistory.value = nHistory
+            repository.getNutritionHistoryStream().collect { list ->
+                _nutritionHistory.value = list
+            }
         }
     }
+
+    // Функция loadNutritionData() больше не нужна, так как работает init выше.
+
     fun addNewWeight(newWeight: Float) {
         viewModelScope.launch {
             repository.addWeightEntry(newWeight)

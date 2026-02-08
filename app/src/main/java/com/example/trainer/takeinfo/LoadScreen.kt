@@ -158,13 +158,18 @@ fun LoadScreen(
                             null -> ""
                         }
 
-                        val trainingText = if (frequency > 0) "$frequency raz w tygodniu ($locationText)" else "-"
+                        val trainingText = if (frequency > 0) "$frequency razy w tygodniu" else "-"
+                        val whereText = if (locationText.isNotEmpty()) "$locationText " else ""
+
 
                         // Вывод строк
                         InfoRow(label = "Twój cel:", value = goalText)
                         InfoRow(label = "Kalorie:", value = "$calories kcal")
-                        InfoRow(label = "BTW:", value = "B:$p / T:$f / W:$c (g)")
-                        InfoRow(label = "Ćwiczycienia:", value = trainingText)
+                        InfoRow(label = "B:", value = "$p g.")
+                        InfoRow(label = "T:", value = "$f g.")
+                        InfoRow(label = "W:", value = "$c g.")
+                        InfoRow(label = "Ćwiczenia:", value = trainingText)
+                        InfoRow(label = "Miejsce:", value = whereText)
                     }
                 }
                 Button(

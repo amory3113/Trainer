@@ -32,6 +32,9 @@ interface WorkoutDao {
     // --- ДОБАВЬ ВОТ ЭТУ ФУНКЦИЮ ---
     // Она достает именно настройки подходов и повторений для конкретной тренировки
     @Query("SELECT * FROM workout_exercises WHERE workoutId = :workoutId ORDER BY `order` ASC")
+    fun getWorkoutExercisesFlow(workoutId: Int): kotlinx.coroutines.flow.Flow<List<WorkoutExerciseEntity>>
+
+    @Query("SELECT * FROM workout_exercises WHERE workoutId = :workoutId ORDER BY `order` ASC")
     suspend fun getWorkoutExercisesRaw(workoutId: Int): List<WorkoutExerciseEntity>
     // -----------------------------
 

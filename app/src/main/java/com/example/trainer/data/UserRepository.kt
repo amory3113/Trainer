@@ -5,6 +5,7 @@ import java.util.Calendar
 
 class UserRepository(private val userDao: UserDao) {
 
+    // --- СОХРАНЕНИЕ ПРОФИЛЯ ---
     suspend fun saveUserProfile(
         gender: Gender,
         age: Int,
@@ -45,34 +46,23 @@ class UserRepository(private val userDao: UserDao) {
         userDao.insertWeight(initialWeight)
     }
 
+    // --- ВЕС ---
     suspend fun addWeightEntry(weight: Float) {
         val entry = WeightEntity(weight = weight, date = System.currentTimeMillis())
         userDao.insertWeight(entry)
+
+        // Обновляем текущий вес в профиле
         val currentUser = userDao.getLastUser()
         if (currentUser != null) {
             val updatedUser = currentUser.copy(weight = weight.toDouble())
-            userDao.insertUser(updatedUser)
+            userDao.updateUser(updatedUser)
         }
     }
 
-    fun getWeightHistoryFlow(): kotlinx.coroutines.flow.Flow<List<WeightEntity>> {
-        return userDao.getAllWeightsFlow()
-    }
+    fun getWeightHistoryFlow() = userDao.getAllWeightsFlow()
 
-    suspend fun getUserProfile(): UserEntity? {
-        return userDao.getLastUser()
-    }
-
-    suspend fun updateUser(user: UserEntity) {
-        userDao.updateUser(user)
-    }
-
-    suspend fun clearData() {
-        userDao.clearTable()
-    }
-
-    suspend fun getTodayNutrition(): NutritionEntity? {
-        val (start, end) = getDayRange()
+    // --- ПИТАНИЕ ---
+    suspend fun getNutritionForDate(start: Long, end: Long): NutritionEntity? {
         return userDao.getNutritionForDate(start, end)
     }
 
@@ -103,8 +93,30 @@ class UserRepository(private val userDao: UserDao) {
     suspend fun getNutritionHistory(): List<NutritionEntity> {
         return userDao.getAllNutrition()
     }
+
+    // ДОБАВЛЯЕМ НОВУЮ
+    fun getNutritionHistoryStream(): kotlinx.coroutines.flow.Flow<List<NutritionEntity>> {
+        return userDao.getAllNutritionFlow()
+    }
+
+    // --- ЮЗЕР ---
     val userFlow: kotlinx.coroutines.flow.Flow<UserEntity?> = userDao.getUserFlow()
 
+    suspend fun getUserProfile(): UserEntity? {
+        return userDao.getLastUser()
+    }
+
+    suspend fun updateUser(user: UserEntity) {
+        userDao.updateUser(user)
+    }
+
+    // --- !!! ВОТ ЭТА ФУНКЦИЯ, КОТОРОЙ НЕ ХВАТАЛО !!! ---
+    suspend fun clearData() {
+        userDao.clearTable()
+    }
+    // ---------------------------------------------------
+
+    // Вспомогательная для времени
     private fun getDayRange(): Pair<Long, Long> {
         val calendar = Calendar.getInstance()
 
@@ -119,6 +131,6 @@ class UserRepository(private val userDao: UserDao) {
         calendar.set(Calendar.SECOND, 59)
         val end = calendar.timeInMillis
 
-        return Pair(start, end)
+        return start to end
     }
 }

@@ -103,7 +103,7 @@ class OnboardingViewModel(
         viewModelScope.launch {
             if (userGender != null && _userGoal.value != null && _nutritionPlan.value != null) {
 
-                // 1. Сохраняем профиль пользователя и вес
+                // 1. Сохраняем профиль (как и раньше)
                 repository.saveUserProfile(
                     gender = userGender!!,
                     age = userAge,
@@ -117,8 +117,6 @@ class OnboardingViewModel(
                     nutritionPlan = _nutritionPlan.value!!
                 )
 
-                // 2. ГЕНЕРАЦИЯ ТРЕНИРОВОК
-                // Создаем временный объект юзера, чтобы передать в генератор (ID не важен)
                 val tempUserForGenerator = UserEntity(
                     gender = userGender!!.name,
                     age = userAge,
@@ -130,63 +128,49 @@ class OnboardingViewModel(
                     healthWarning = null,
                     workoutLocation = _workoutLocation.value?.name ?: "HOME",
                     workoutFrequency = _workoutFrequency.value,
-                    targetCalories = 0, proteinGrams = 0, fatGrams = 0, carbGrams = 0 // заглушки
+                    targetCalories = 0, proteinGrams = 0, fatGrams = 0, carbGrams = 0
                 )
 
-                // Получаем все упражнения из базы (они уже загрузились при старте App)
                 val allExercises = exerciseDao.getAllExercises().first()
-
-                // Запускаем генератор!
                 val generatedPlan = WorkoutGenerator.generate(tempUserForGenerator, allExercises)
 
-                // 3. Сохраняем сгенерированный план в БД
+                // 3. СОХРАНЕНИЕ ТРЕНИРОВОК (УНИВЕРСАЛЬНЫЙ ЦИКЛ)
+                // Карта для перевода временных ID (31, 32...) в реальные ID базы данных (1, 2, 3...)
                 val tempToRealIdMap = mutableMapOf<Long, Int>()
 
-                // Определяем ID шаблонов из генератора
-                val isFullBody = _workoutFrequency.value <= 3
-                val firstTempId = if (isFullBody) 1L else 10L
-                val secondTempId = if (isFullBody) 2L else 20L
+                // Теперь мы перебираем ВСЕ созданные тренировки, сколько бы их ни было
+                generatedPlan.workouts.forEach { generatedWorkout ->
+                    // А. Сохраняем шаблон (название)
+                    val realId = workoutRepository.createTemplate(
+                        generatedWorkout.template.name,
+                        generatedWorkout.template.description
+                    ).toInt()
 
-                // Сохраняем первую тренировку (A или Upper)
-                if (generatedPlan.templates.isNotEmpty()) {
-                    val t1 = generatedPlan.templates[0]
-                    val realId1 = workoutRepository.createTemplate(t1.name, t1.description).toInt()
-                    tempToRealIdMap[firstTempId] = realId1
+                    // Б. Запоминаем: Временный ID -> Реальный ID
+                    tempToRealIdMap[generatedWorkout.tempId] = realId
 
-                    // Сохраняем упражнения для первой тренировки
-                    val exercises1 = generatedPlan.exercisesMap[firstTempId] ?: emptyList()
-                    val entities1 = exercises1.map { it.copy(workoutId = realId1, id = 0) }
-                    workoutRepository.updateWorkout(realId1, t1.name, entities1)
+                    // В. Сохраняем упражнения для этой тренировки
+                    val entities = generatedWorkout.exercises.map {
+                        it.copy(workoutId = realId, id = 0) // Привязываем к реальному ID
+                    }
+                    workoutRepository.updateWorkout(realId, generatedWorkout.template.name, entities)
                 }
 
-                // Сохраняем вторую тренировку (B или Lower), если она есть
-                if (generatedPlan.templates.size > 1) {
-                    val t2 = generatedPlan.templates[1]
-                    val realId2 = workoutRepository.createTemplate(t2.name, t2.description).toInt()
-                    tempToRealIdMap[secondTempId] = realId2
-
-                    // Сохраняем упражнения для второй тренировки
-                    val exercises2 = generatedPlan.exercisesMap[secondTempId] ?: emptyList()
-                    val entities2 = exercises2.map { it.copy(workoutId = realId2, id = 0) }
-                    workoutRepository.updateWorkout(realId2, t2.name, entities2)
-                }
-
-                // 4. Заполняем расписание
+                // 4. ЗАПОЛНЯЕМ РАСПИСАНИЕ
                 generatedPlan.schedule.forEach { (day, tempId) ->
                     val realId = tempToRealIdMap[tempId]
                     if (realId != null) {
-                        // Находим имя для расписания
-                        val name = if (tempId == firstTempId) generatedPlan.templates[0].name
-                        else generatedPlan.templates.getOrNull(1)?.name ?: ""
+                        // Находим имя тренировки по ID
+                        val workoutName = generatedPlan.workouts.find { it.tempId == tempId }?.template?.name ?: ""
 
-                        workoutRepository.setWorkoutToDay(day, realId, name)
+                        workoutRepository.setWorkoutToDay(day, realId, workoutName)
                     }
                 }
 
-                println("DATABASE: План успешно сгенерирован и сохранен!")
+                println("DATABASE: План успешно сгенерирован! Сохранено тренировок: ${generatedPlan.workouts.size}")
             }
 
-            // 5. Запускаем уведомления
+            // 5. Уведомления
             com.example.trainer.notification.NotificationScheduler.scheduleAllNotifications(context)
         }
     }
