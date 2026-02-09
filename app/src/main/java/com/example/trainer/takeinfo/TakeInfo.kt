@@ -10,6 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -33,7 +37,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trainer.ui.theme.TrainerTheme
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.ui.text.TextStyle
 import com.example.trainer.ui.theme.ButtonBlue
 import com.example.trainer.ui.theme.LightBlue
@@ -64,13 +67,13 @@ fun TakeInfo(
                     endY = Float.POSITIVE_INFINITY
                 )
             )
-            .safeDrawingPadding()
+            .statusBarsPadding()
     ) {
         Column(
             modifier = Modifier
-                .align(Alignment.TopStart)
-                .fillMaxWidth()
-                .padding(start = 8.dp, top = 40.dp, end = 24.dp),
+                .fillMaxSize()
+                .padding(start = 8.dp, top = 40.dp, end = 24.dp, bottom = 80.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.Start
         ) {
             Text(
@@ -109,8 +112,7 @@ fun TakeInfo(
                     unfocusedLabelColor = Color.Gray,
                     focusedTextColor = Color.Black,
                     unfocusedTextColor = Color.Black
-                ),
-
+                )
             )
 
             OutlinedTextField(
@@ -154,28 +156,24 @@ fun TakeInfo(
             )
         }
 
-        NavigationButtons(
-            onBackClick = onBackClick,
-            onNextClick = {
-                val ageInt = age.toIntOrNull()
-                val heightDb = height.toDoubleOrNull()
-                val weightDb = weight.toDoubleOrNull()
-                if (ageInt != null && heightDb != null && weightDb != null) {
-                    viewModel?.setBodyData(age = ageInt, height = heightDb, weight = weightDb)
-                    onNextClick()
-                }
-            },
-            nextEnabled = isFormValid,
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun TakeInfoPreview() {
-    TrainerTheme {
-        TakeInfo(onNextClick  = {} )
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .navigationBarsPadding()
+        ) {
+            NavigationButtons(
+                onBackClick = onBackClick,
+                onNextClick = {
+                    val ageInt = age.toIntOrNull()
+                    val heightDb = height.toDoubleOrNull()
+                    val weightDb = weight.toDoubleOrNull()
+                    if (ageInt != null && heightDb != null && weightDb != null) {
+                        viewModel?.setBodyData(age = ageInt, height = heightDb, weight = weightDb)
+                        onNextClick()
+                    }
+                },
+                nextEnabled = isFormValid
+            )
+        }
     }
 }

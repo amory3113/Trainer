@@ -110,7 +110,8 @@ fun AppNavigation(repository: UserRepository, startDestination: String) {
 
                 MoreHealthQuest(
                     viewModel = viewModel,
-                    onNextClick = { navController.navigate(Routes.ACTIVITY_LEVEL) }
+                    onNextClick = { navController.navigate(Routes.ACTIVITY_LEVEL) },
+                    onBackClick = { navController.popBackStack() }
                 )
             }
 

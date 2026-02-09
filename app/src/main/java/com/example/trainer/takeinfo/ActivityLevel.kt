@@ -41,13 +41,20 @@ fun ActivityLevel(
             fatigueLevel != null
 
     GradientBackground {
-        Box(modifier = Modifier.fillMaxSize()) {
+        // ГЛАВНЫЙ КОНТЕЙНЕР СО СКРОЛЛОМ
+        // Мы убрали отсюда padding, чтобы кнопки внизу были широкими
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+
+            // ВНУТРЕННИЙ КОНТЕЙНЕР ДЛЯ ВОПРОСОВ
+            // Здесь мы добавляем отступы, чтобы текст не прилипал к краям
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth()
                     .padding(horizontal = 24.dp)
-                    .padding(bottom = 120.dp)
             ) {
                 Text(
                     text = "Twoja aktywność",
@@ -129,6 +136,12 @@ fun ActivityLevel(
                 )
             }
 
+            // ОТСТУП ПЕРЕД КНОПКАМИ
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // КНОПКИ
+            // Они находятся ВНЕ колонки с padding(24.dp), поэтому они будут на всю ширину
+            // Но они ВНУТРИ скроллящейся колонки, поэтому будут в самом низу страницы
             NavigationButtons(
                 onBackClick = onBackClick,
                 onNextClick = {
@@ -167,9 +180,12 @@ fun ActivityLevel(
                     )
                     onNextClick()
                 },
-                nextEnabled = allAnswered,
-                modifier = Modifier.align(Alignment.BottomCenter)
+                nextEnabled = allAnswered
+                // Здесь modifier не нужен, кнопки займут свое место сами
             )
+
+            // Отступ в самом низу, чтобы было красиво
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
