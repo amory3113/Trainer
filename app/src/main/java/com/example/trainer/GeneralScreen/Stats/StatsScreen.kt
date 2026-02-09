@@ -86,7 +86,7 @@ fun WeightTabContent(viewModel: StatsViewModel) {
                     Column(modifier = Modifier.padding(24.dp)) {
                         Text("Aktualna waga", color = Color.Gray)
                         Text(
-                            text = "${user!!.weight} кг",
+                            text = "${user!!.weight} kg",
                             fontSize = 36.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF2196F3)
