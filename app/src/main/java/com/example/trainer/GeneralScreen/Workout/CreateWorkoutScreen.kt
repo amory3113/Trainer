@@ -38,18 +38,14 @@ fun CreateWorkoutScreen(
 ) {
     val workoutName by viewModel.workoutName.collectAsState()
     var showExerciseSelector by remember { mutableStateOf(false) }
-
-    // Список уже добавленных в тренировку упражнений
     val selectedExercises by viewModel.selectedExercises.collectAsState()
 
-    // Состояние для диалога редактирования подходов (sets/reps)
     var exerciseToEdit by remember { mutableStateOf<WorkoutExerciseUiState?>(null) }
 
     if (showExerciseSelector) {
-        // Показываем экран с ЧЕКБОКСАМИ
         ExerciseSelectorScreen(
             viewModel = viewModel,
-            onClose = { showExerciseSelector = false }
+            onClose = { }
         )
     } else {
         GradientBackground {
@@ -112,7 +108,7 @@ fun CreateWorkoutScreen(
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
-                        IconButton(onClick = { showExerciseSelector = true }) {
+                        IconButton(onClick = { }) {
                             Icon(Icons.Default.Add, contentDescription = "Добавить", tint = Color(0xFF2196F3))
                         }
                     }
@@ -135,20 +131,17 @@ fun CreateWorkoutScreen(
         }
     }
 
-    // Диалог редактирования
     if (exerciseToEdit != null) {
         EditSetsRepsDialog(
             item = exerciseToEdit!!,
-            onDismiss = { exerciseToEdit = null },
+            onDismiss = { },
             onConfirm = { sets, reps ->
                 viewModel.updateExerciseDetails(exerciseToEdit!!.exercise.id, sets, reps)
-                exerciseToEdit = null
             }
         )
     }
 }
 
-// Карточка упражнения внутри создаваемой тренировки
 @Composable
 fun ExerciseItem(
     item: WorkoutExerciseUiState,
@@ -195,7 +188,6 @@ fun ExerciseItem(
     }
 }
 
-// Диалог редактирования подходов
 @Composable
 fun EditSetsRepsDialog(
     item: WorkoutExerciseUiState,
@@ -245,7 +237,6 @@ fun EditSetsRepsDialog(
     )
 }
 
-// --- ЭКРАН ВЫБОРА С ЧЕКБОКСАМИ (ИСПРАВЛЕННЫЙ) ---
 @Composable
 fun ExerciseSelectorScreen(
     viewModel: WorkoutViewModel,
@@ -255,7 +246,6 @@ fun ExerciseSelectorScreen(
     val categories = availableExercises.map { it.muscleGroup }.distinct()
     var selectedCategory by remember { mutableStateOf<String?>(null) }
 
-    // Храним ID выбранных упражнений
     var selectedIds by remember { mutableStateOf(setOf<Int>()) }
 
     GradientBackground {
@@ -263,7 +253,6 @@ fun ExerciseSelectorScreen(
             Text("Wybierz ćwiczenia", fontSize = 22.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Фильтры категорий
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 item {
                     FilterChip(
@@ -298,7 +287,6 @@ fun ExerciseSelectorScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                // Логика переключения: если есть - убираем, если нет - добавляем
                                 selectedIds = if (isSelected) {
                                     selectedIds - exercise.id
                                 } else {
@@ -306,14 +294,12 @@ fun ExerciseSelectorScreen(
                                 }
                             },
                         colors = CardDefaults.cardColors(containerColor = cardColor),
-                        // Используем безопасный BorderStroke
                         border = BorderStroke(2.dp, borderColor)
                     ) {
                         Row(
                             modifier = Modifier.padding(12.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            // Галочка
                             Checkbox(
                                 checked = isSelected,
                                 onCheckedChange = { checked ->
@@ -352,7 +338,6 @@ fun ExerciseSelectorScreen(
 
                 Button(
                     onClick = {
-                        // Добавляем все выбранные разом
                         val exercisesToAdd = availableExercises.filter { it.id in selectedIds }
                         exercisesToAdd.forEach { viewModel.addExercise(it) }
                         onClose()
@@ -367,7 +352,6 @@ fun ExerciseSelectorScreen(
     }
 }
 
-// Вспомогательные функции
 fun translateCategory(cat: String): String {
     return when(cat.uppercase()) {
         "CHEST" -> "Klatka piersiowa"

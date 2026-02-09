@@ -168,10 +168,9 @@ fun Profile(
         EditProfileDialog(
             type = editType,
             currentValue = editValue,
-            onDismiss = { showDialog = false },
+            onDismiss = { },
             onConfirm = { newValue ->
                 viewModel.updateProfile(editType, newValue)
-                showDialog = false
             }
         )
     }

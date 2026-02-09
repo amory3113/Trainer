@@ -24,7 +24,6 @@ interface UserDao {
     @Query("SELECT * FROM nutrition_history ORDER BY date DESC")
     suspend fun getAllNutrition(): List<NutritionEntity>
 
-    // ДОБАВЛЯЕМ НОВУЮ (для живого обновления)
     @Query("SELECT * FROM nutrition_history ORDER BY date DESC")
     fun getAllNutritionFlow(): kotlinx.coroutines.flow.Flow<List<NutritionEntity>>
 

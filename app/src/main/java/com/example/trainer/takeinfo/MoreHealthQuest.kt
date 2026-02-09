@@ -151,10 +151,7 @@ fun MoreHealthQuest(
                     onNextClick()
                 },
                 nextEnabled = allAnswered,
-                // modifier не нужен, кнопки сами займут место в потоке Column
             )
-
-            // Отступ снизу для красоты
             Spacer(modifier = Modifier.height(24.dp))
         }
     }

@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-// Добавили workoutRepository и exerciseDao в конструктор
 class OnboardingViewModel(
     private val repository: UserRepository,
     private val workoutRepository: WorkoutRepository,
@@ -38,18 +37,15 @@ class OnboardingViewModel(
     private val _nutritionPlan = MutableStateFlow<NutritionPlan?>(null)
     val nutritionPlan = _nutritionPlan.asStateFlow()
 
-    private val _activityLevelResult = MutableStateFlow<ActivityLevel>(ActivityLevel.BEGINNER)
+    private val _activityLevelResult = MutableStateFlow(ActivityLevel.BEGINNER)
     private val _healthResult = MutableStateFlow<HealthResult?>(null)
 
     private val _userGoal = MutableStateFlow<Goal?>(null)
     val userGoal = _userGoal.asStateFlow()
     private val _workoutLocation = MutableStateFlow<WorkoutLocation?>(null)
     val workoutLocation = _workoutLocation.asStateFlow()
-    private val _workoutFrequency = MutableStateFlow<Int>(3)
+    private val _workoutFrequency = MutableStateFlow(3)
     val workoutFrequency = _workoutFrequency.asStateFlow()
-
-    // --- Сбор данных ---
-
     fun setGender(gender: Gender) {
         userGender = gender
     }
@@ -97,13 +93,10 @@ class OnboardingViewModel(
         _workoutFrequency.value = frequency
     }
 
-    // --- ФИНАЛЬНОЕ СОХРАНЕНИЕ ---
-
     fun saveFinalDataToDatabase(context: Context) {
         viewModelScope.launch {
             if (userGender != null && _userGoal.value != null && _nutritionPlan.value != null) {
 
-                // 1. Сохраняем профиль (как и раньше)
                 repository.saveUserProfile(
                     gender = userGender!!,
                     age = userAge,
@@ -134,43 +127,32 @@ class OnboardingViewModel(
                 val allExercises = exerciseDao.getAllExercises().first()
                 val generatedPlan = WorkoutGenerator.generate(tempUserForGenerator, allExercises)
 
-                // 3. СОХРАНЕНИЕ ТРЕНИРОВОК (УНИВЕРСАЛЬНЫЙ ЦИКЛ)
-                // Карта для перевода временных ID (31, 32...) в реальные ID базы данных (1, 2, 3...)
                 val tempToRealIdMap = mutableMapOf<Long, Int>()
 
-                // Теперь мы перебираем ВСЕ созданные тренировки, сколько бы их ни было
                 generatedPlan.workouts.forEach { generatedWorkout ->
-                    // А. Сохраняем шаблон (название)
                     val realId = workoutRepository.createTemplate(
                         generatedWorkout.template.name,
                         generatedWorkout.template.description
                     ).toInt()
 
-                    // Б. Запоминаем: Временный ID -> Реальный ID
                     tempToRealIdMap[generatedWorkout.tempId] = realId
 
-                    // В. Сохраняем упражнения для этой тренировки
                     val entities = generatedWorkout.exercises.map {
-                        it.copy(workoutId = realId, id = 0) // Привязываем к реальному ID
+                        it.copy(workoutId = realId, id = 0)
                     }
                     workoutRepository.updateWorkout(realId, generatedWorkout.template.name, entities)
                 }
 
-                // 4. ЗАПОЛНЯЕМ РАСПИСАНИЕ
+
                 generatedPlan.schedule.forEach { (day, tempId) ->
                     val realId = tempToRealIdMap[tempId]
                     if (realId != null) {
-                        // Находим имя тренировки по ID
                         val workoutName = generatedPlan.workouts.find { it.tempId == tempId }?.template?.name ?: ""
-
                         workoutRepository.setWorkoutToDay(day, realId, workoutName)
                     }
                 }
-
                 println("DATABASE: План успешно сгенерирован! Сохранено тренировок: ${generatedPlan.workouts.size}")
             }
-
-            // 5. Уведомления
             com.example.trainer.notification.NotificationScheduler.scheduleAllNotifications(context)
         }
     }

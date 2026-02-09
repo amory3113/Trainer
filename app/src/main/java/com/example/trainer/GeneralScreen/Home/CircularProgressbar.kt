@@ -34,7 +34,6 @@ fun CircularProgressbar(
     progressColor: Color = Color(0xFF2196F3),
     backgroundColor: Color = Color(0xFFE0E0E0)
 ) {
-    // Анимация прогресса
     var animationPlayed by remember { mutableStateOf(false) }
     val animatedProgress by animateFloatAsState(
         targetValue = if (animationPlayed) progress else 0f,
@@ -42,9 +41,9 @@ fun CircularProgressbar(
         label = "progress"
     )
 
-    LaunchedEffect(key1 = true) {
-        animationPlayed = true
-    }
+//    LaunchedEffect(key1 = true) {
+//        animationPlayed = true
+//    }
 
     Box(
         contentAlignment = Alignment.Center,

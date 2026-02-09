@@ -13,11 +13,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-// --- ВАЖНО: Это единственное место, где должен быть EditType ---
 enum class EditType {
     WEIGHT, HEIGHT, AGE, GOAL, ACTIVITY
 }
-// -------------------------------------------------------------
 
 class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
     private val _userProfile = MutableStateFlow<UserEntity?>(null)
@@ -28,14 +26,6 @@ class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
             repository.userFlow.collect { user ->
                 _userProfile.value = user
             }
-        }
-    }
-
-    // Эта функция нужна для начальной загрузки, если Flow не сработает сразу
-    fun loadUserProfile() {
-        viewModelScope.launch {
-            val user = repository.getUserProfile()
-            _userProfile.value = user
         }
     }
 

@@ -74,20 +74,4 @@ object NotificationScheduler {
             pendingIntent
         )
     }
-
-    fun cancelAll(context: Context) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, NotificationReceiver::class.java)
-
-        val ids = listOf(1001, 2001, 2002, 2003, 3001)
-        ids.forEach { id ->
-            val pendingIntent = PendingIntent.getBroadcast(
-                context, id, intent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE
-            )
-            if (pendingIntent != null) {
-                alarmManager.cancel(pendingIntent)
-            }
-        }
-    }
 }

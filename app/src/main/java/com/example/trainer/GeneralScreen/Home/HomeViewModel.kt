@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
-// Модель для отображения упражнения на Главном экране
 data class DailyExercise(
     val exercise: ExerciseEntity,
     val sets: Int,
@@ -29,7 +28,7 @@ data class HomeUiState(
     val isLoading: Boolean = true
 )
 
-@OptIn(ExperimentalCoroutinesApi::class) // Нужно для flatMapLatest
+@OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModel(
     private val userRepository: UserRepository,
     private val workoutRepository: WorkoutRepository
@@ -39,7 +38,6 @@ class HomeViewModel(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
-        // 1. Подписка на профиль
         viewModelScope.launch {
             userRepository.userFlow.collect { user ->
                 if (user != null) {
@@ -51,46 +49,31 @@ class HomeViewModel(
                 }
             }
         }
-
-        // 2. УМНАЯ ПОДПИСКА НА ТРЕНИРОВКУ
         observeTodayWorkout()
     }
 
     private fun observeTodayWorkout() {
         viewModelScope.launch {
-            // Следим за расписанием
             workoutRepository.schedule
-                // 1. Превращаем список расписания в конкретную запись "на сегодня"
                 .map { scheduleList ->
                     val todayIndex = getTodayIndex()
                     scheduleList.find { it.dayOfWeek == todayIndex }
                 }
-                // 2. САМАЯ ВАЖНАЯ ЧАСТЬ: flatMapLatest
-                // Если запись на сегодня есть -> переключаемся на прослушивание упражнений этой тренировки
-                // Если записи нет -> возвращаем пустой поток
                 .flatMapLatest { todayItem ->
                     if (todayItem != null && todayItem.workoutId != null) {
-                        // Подписываемся на изменения ВНУТРИ тренировки (подходы/повторы)
                         workoutRepository.getWorkoutExercisesStream(todayItem.workoutId)
                             .map { rawExercises ->
-                                // Возвращаем пару: (Название тренировки, Список упражнений)
                                 todayItem.workoutName to rawExercises
                             }
                     } else {
-                        // Если тренировки нет, возвращаем null и пустой список
                         flowOf(null to emptyList())
                     }
                 }
-                // 3. Получаем готовые данные и обновляем UI
                 .collect { (workoutName, rawExercises) ->
 
                     val fullExercises = mutableListOf<DailyExercise>()
 
-                    // Превращаем "сырые" данные в красивые объекты для UI
                     for (raw in rawExercises) {
-                        // Здесь getExerciseById все еще одноразовый запрос, но это ок,
-                        // так как названия упражнений меняются редко.
-                        // Главное, что raw.sets и raw.reps приходят свежими.
                         val exerciseInfo = workoutRepository.getExerciseById(raw.exerciseId)
                         if (exerciseInfo != null) {
                             fullExercises.add(DailyExercise(
@@ -109,12 +92,9 @@ class HomeViewModel(
         }
     }
 
-    // --- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
     fun getTodayIndex(): Int {
         val calendar = Calendar.getInstance()
         val day = calendar.get(Calendar.DAY_OF_WEEK)
-        // В Calendar: Sunday=1, Monday=2 ... Saturday=7
-        // В нашей базе: Monday=0 ... Sunday=6
         return when (day) {
             Calendar.MONDAY -> 0
             Calendar.TUESDAY -> 1
@@ -127,7 +107,6 @@ class HomeViewModel(
         }
     }
 
-    // --- ПИТАНИЕ ---
     fun loadNutritionData() {
         viewModelScope.launch {
             val start = getStartOfDay()
@@ -154,7 +133,6 @@ class HomeViewModel(
         }
     }
 
-    // --- ПРОГРЕСС ---
     fun getCaloriesRemaining(): Int {
         val target = _uiState.value.userProfile?.targetCalories ?: 0
         return (target - _uiState.value.caloriesEaten).coerceAtLeast(0)

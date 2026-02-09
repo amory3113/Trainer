@@ -1,7 +1,5 @@
 package com.example.trainer.GeneralScreen.Workout
 
-import android.content.Context
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,7 +67,6 @@ fun WorkoutScreen(onNavigateToCreate: (Int) -> Unit) {
                 }
             }
 
-            // КОНТЕНТ
             Box(modifier = Modifier.weight(1f)){
 
             }
@@ -82,7 +78,6 @@ fun WorkoutScreen(onNavigateToCreate: (Int) -> Unit) {
     }
 }
 
-// --- ВКЛАДКА 1: ПРОГРАММЫ ---
 @Composable
 fun MyProgramsTab(
     viewModel: WorkoutViewModel,
@@ -95,21 +90,19 @@ fun MyProgramsTab(
 
     if (showDeleteDialog && workoutToDelete != null) {
         AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
+            onDismissRequest = { },
             title = { Text("Usunąć trening?") },
             text = { Text("Czy na pewno chcesz usunąć \"${workoutToDelete?.name}\"? Tej czynności nie można cofnąć.") },
             confirmButton = {
                 TextButton(
                     onClick = {
                         workoutToDelete?.let { viewModel.deleteWorkout(it.id) }
-                        showDeleteDialog = false
-                        workoutToDelete = null
                     },
                     colors = ButtonDefaults.textButtonColors(contentColor = Color.Red)
                 ) { Text("Usunąć") }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text("Cofnij") }
+                TextButton(onClick = { }) { Text("Cofnij") }
             }
         )
     }
@@ -132,7 +125,6 @@ fun MyProgramsTab(
                         onEditClick = { onNavigateToCreate(item.template.id) },
                         onDeleteClick = {
                             workoutToDelete = item.template
-                            showDeleteDialog = true
                         }
                     )
                 }
@@ -228,19 +220,17 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
 
     if (showDialog) {
         AlertDialog(
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = { },
             title = { Text("Wybierz trening na ${daysOfWeek[selectedDayIndex]}") },
             text = {
                 LazyColumn {
                     item {
-                        // Опция "Выходной"
                         Text(
                             "Zrób dzień wolny",
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
                                     viewModel.clearDay(selectedDayIndex)
-                                    showDialog = false
                                 }
                                 .padding(12.dp),
                             color = Color.White,
@@ -255,7 +245,6 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
                                 .fillMaxWidth()
                                 .clickable {
                                     viewModel.assignWorkoutToDay(selectedDayIndex, item.template.id, item.template.name)
-                                    showDialog = false
                                 }
                                 .padding(12.dp),
                             fontSize = 18.sp
@@ -266,7 +255,7 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
             },
             confirmButton = {},
             dismissButton = {
-                TextButton(onClick = { showDialog = false }) { Text("Anuluj") }
+                TextButton(onClick = { }) { Text("Anuluj") }
             }
         )
     }
@@ -284,7 +273,6 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
                 item = scheduleItem,
                 onClick = {
                     selectedDayIndex = index
-                    showDialog = true
                 }
             )
         }

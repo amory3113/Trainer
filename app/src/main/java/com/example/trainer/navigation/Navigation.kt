@@ -49,12 +49,10 @@ object Routes {
 fun AppNavigation(repository: UserRepository, startDestination: String) {
     val navController = rememberNavController()
 
-    // --- ДОБАВЛЕНО: Инициализация зависимостей для генератора тренировок ---
     val context = androidx.compose.ui.platform.LocalContext.current
     val db = com.example.trainer.data.AppDatabase.getDatabase(context)
     val workoutRepo = remember { com.example.trainer.data.Exercise.WorkoutRepository(db.workoutDao(), db.exerciseDao()) }
     val exerciseDao = remember { db.exerciseDao() }
-    // ----------------------------------------------------------------------
 
     NavHost(
         navController = navController,
@@ -67,7 +65,6 @@ fun AppNavigation(repository: UserRepository, startDestination: String) {
             route = Routes.ONBOARDING_GRAPH
         ) {
             composable(Routes.TAKE_CEL) {
-                // Передаем workoutRepo и exerciseDao
                 val viewModel = getOnboardingViewModel(navController, repository, workoutRepo, exerciseDao)
                 TakeCelScreen(
                     viewModel = viewModel,
@@ -134,11 +131,10 @@ fun AppNavigation(repository: UserRepository, startDestination: String) {
             }
             composable(Routes.LOAD_SCREEN) {
                 val viewModel = getOnboardingViewModel(navController, repository, workoutRepo, exerciseDao)
-                val currentContext = androidx.compose.ui.platform.LocalContext.current // переименовал, чтобы не путать с внешним context
+                val currentContext = androidx.compose.ui.platform.LocalContext.current
                 LoadScreen(
                     viewModel = viewModel,
                     onPlanReady = {
-                        // Здесь запустится генератор тренировок
                         viewModel.saveFinalDataToDatabase(currentContext)
                         navController.navigate(Routes.MAIN) {
                             popUpTo(Routes.WELCOME) { inclusive = true }
@@ -163,9 +159,8 @@ fun AppNavigation(repository: UserRepository, startDestination: String) {
         ) { backStackEntry ->
             val workoutId = backStackEntry.arguments?.getInt("workoutId") ?: -1
 
-            // Тут мы используем те же переменные workoutRepo, что создали в начале
             val workoutViewModel: com.example.trainer.GeneralScreen.Workout.WorkoutViewModel =
-                androidx.lifecycle.viewmodel.compose.viewModel(
+                viewModel(
                     factory = com.example.trainer.GeneralScreen.Workout.WorkoutViewModelFactory(workoutRepo, exerciseDao)
                 )
 
@@ -195,7 +190,6 @@ fun getOnboardingViewModel(
 
     val factory = object : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            // Передаем все три зависимости в конструктор ViewModel
             return OnboardingViewModel(repository, workoutRepository, exerciseDao) as T
         }
     }

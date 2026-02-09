@@ -143,10 +143,9 @@ fun WeightTabContent(viewModel: StatsViewModel) {
 
     if (showDialog) {
         AddWeightDialog(
-            onDismiss = { showDialog = false },
+            onDismiss = { },
             onConfirm = { newWeight ->
                 viewModel.addNewWeight(newWeight)
-                showDialog = false
             }
         )
     }
@@ -189,14 +188,12 @@ fun NutritionHistoryItem(item: NutritionEntity) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Дата
             Text(
                 text = dateFormat.format(Date(item.date)),
                 color = Color.Gray,
                 fontSize = 14.sp
             )
 
-            // Калории и БЖУ
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     text = "${item.calories} kcal",

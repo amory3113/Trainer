@@ -12,10 +12,8 @@ interface ExerciseDao {
     @Query("SELECT * FROM exercises ORDER BY name ASC")
     fun getAllExercises(): Flow<List<ExerciseEntity>>
 
-    // --- ДОБАВЬ ВОТ ЭТУ ФУНКЦИЮ ---
     @Query("SELECT * FROM exercises WHERE id = :id")
     suspend fun getExerciseById(id: Int): ExerciseEntity?
-    // -----------------------------
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(exercises: List<ExerciseEntity>)

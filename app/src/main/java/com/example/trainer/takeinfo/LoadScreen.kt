@@ -161,8 +161,6 @@ fun LoadScreen(
                         val trainingText = if (frequency > 0) "$frequency razy w tygodniu" else "-"
                         val whereText = if (locationText.isNotEmpty()) "$locationText " else ""
 
-
-                        // Вывод строк
                         InfoRow(label = "Twój cel:", value = goalText)
                         InfoRow(label = "Kalorie:", value = "$calories kcal")
                         InfoRow(label = "B:", value = "$p g.")

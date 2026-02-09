@@ -17,21 +17,16 @@ class WorkoutRepository(private val workoutDao: WorkoutDao, private val exercise
     }
     suspend fun getTemplateById(id: Int) = workoutDao.getTemplateById(id)
 
-    // --- ИЗМЕНЕНИЯ ЗДЕСЬ ---
 
-    // Получаем список связок (где хранятся подходы/повторы)
     suspend fun getSavedWorkoutExercises(workoutId: Int): List<WorkoutExerciseEntity> {
         return workoutDao.getWorkoutExercisesRaw(workoutId)
     }
-    // ДОБАВЛЯЕМ:
-    fun getWorkoutExercisesStream(workoutId: Int): kotlinx.coroutines.flow.Flow<List<WorkoutExerciseEntity>> {
+    fun getWorkoutExercisesStream(workoutId: Int): Flow<List<WorkoutExerciseEntity>> {
         return workoutDao.getWorkoutExercisesFlow(workoutId)
     }
 
-    // Получаем само упражнение по ID
     suspend fun getExerciseById(id: Int) = exerciseDao.getExerciseById(id)
 
-    // -----------------------
     suspend fun updateWorkout(workoutId: Int, newName: String, exercises: List<WorkoutExerciseEntity>) {
         workoutDao.updateWorkoutTransaction(workoutId, newName, exercises)
     }
@@ -42,9 +37,4 @@ class WorkoutRepository(private val workoutDao: WorkoutDao, private val exercise
         workoutDao.removeWorkoutFromSchedule(workoutId)
         workoutDao.deleteTemplateById(workoutId)
     }
-    suspend fun insertWorkoutExercise(entity: WorkoutExerciseEntity) {
-        workoutDao.insertWorkoutExercise(entity)
-    }
-
-
 }

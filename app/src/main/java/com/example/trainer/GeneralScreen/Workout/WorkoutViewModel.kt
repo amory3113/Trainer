@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-// Наш новый класс состояния (добавь его сюда или в Models)
 data class WorkoutExerciseUiState(
     val exercise: ExerciseEntity,
     val sets: Int = 3,
@@ -40,7 +39,6 @@ class WorkoutViewModel(
 
     private val _allExercisesRaw = MutableStateFlow<List<ExerciseEntity>>(emptyList())
 
-    // ИЗМЕНЕНИЕ 1: Теперь храним не просто упражнения, а упражнения с настройками (UI State)
     private val _selectedExercises = MutableStateFlow<List<WorkoutExerciseUiState>>(emptyList())
     val selectedExercises = _selectedExercises.asStateFlow()
 
@@ -61,18 +59,15 @@ class WorkoutViewModel(
         }
     }
 
-    // ИЗМЕНЕНИЕ 2: При добавлении создаем объект с дефолтными 3x12
     fun addExercise(exercise: ExerciseEntity) {
         val newItem = WorkoutExerciseUiState(exercise, sets = 3, reps = 12)
         _selectedExercises.value = _selectedExercises.value + newItem
     }
 
-    // ИЗМЕНЕНИЕ 3: Удаление по ID упражнения
     fun removeExercise(exerciseId: Int) {
         _selectedExercises.value = _selectedExercises.value.filter { it.exercise.id != exerciseId }
     }
 
-    // ИЗМЕНЕНИЕ 4: Функция для обновления подходов и повторов
     fun updateExerciseDetails(exerciseId: Int, newSets: Int, newReps: Int) {
         _selectedExercises.value = _selectedExercises.value.map { item ->
             if (item.exercise.id == exerciseId) {
@@ -83,24 +78,17 @@ class WorkoutViewModel(
         }
     }
 
-    // ИЗМЕНЕНИЕ 5: Сохранение теперь берет данные из UI State
     fun saveWorkout() {
         val name = _workoutName.value
         if (name.isBlank() || _selectedExercises.value.isEmpty()) return
 
         viewModelScope.launch {
-            // ИСПРАВЛЕНИЕ 1: Приводим Long к Int
-            // repository.createTemplate возвращает Long, а нам нужен Int
             val workoutId = if (currentEditingId != null) {
                 currentEditingId!!
             } else {
                 repository.createTemplate(name, null).toInt()
             }
 
-            // ИСПРАВЛЕНИЕ 2: Убрали лишний вызов updateTemplateName
-            // Функция updateWorkout внутри репозитория и так обновляет имя и упражнения сразу (транзакцией)
-
-            // Превращаем UI State обратно в Entity для базы данных
             val entities = _selectedExercises.value.mapIndexed { index, item ->
                 WorkoutExerciseEntity(
                     workoutId = workoutId,
@@ -111,7 +99,6 @@ class WorkoutViewModel(
                 )
             }
 
-            // Эта функция обновит И имя, И список упражнений
             repository.updateWorkout(workoutId, name, entities)
             clearSelection()
         }
@@ -123,7 +110,6 @@ class WorkoutViewModel(
         currentEditingId = null
     }
 
-    // Замени функцию loadWorkoutForEdit на эту обновленную версию:
     fun loadWorkoutForEdit(workoutId: Int) {
         if (workoutId == -1) {
             clearSelection()
@@ -131,29 +117,24 @@ class WorkoutViewModel(
         }
 
         viewModelScope.launch {
-            // 1. Загружаем имя тренировки
             val template = repository.getTemplateById(workoutId)
 
-            // 2. Загружаем "сырые" данные (id упражнения, подходы, повторы)
             val rawExercises = repository.getSavedWorkoutExercises(workoutId)
 
             if (template != null) {
                 currentEditingId = workoutId
                 _workoutName.value = template.name
 
-                // 3. Собираем правильный список для UI
                 val uiList = mutableListOf<WorkoutExerciseUiState>()
 
                 for (raw in rawExercises) {
-                    // Находим полную информацию об упражнении по его ID
                     val fullExercise = repository.getExerciseById(raw.exerciseId)
 
                     if (fullExercise != null) {
-                        // Создаем объект состояния с ПРАВИЛЬНЫМИ цифрами из базы
                         uiList.add(WorkoutExerciseUiState(
                             exercise = fullExercise,
-                            sets = raw.sets,  // Берем сохраненное значение
-                            reps = raw.reps   // Берем сохраненное значение
+                            sets = raw.sets,
+                            reps = raw.reps
                         ))
                     }
                 }
@@ -163,12 +144,9 @@ class WorkoutViewModel(
         }
     }
 
-    // Доп. методы
     fun clearDay(dayIndex: Int) { viewModelScope.launch { repository.clearDay(dayIndex) } }
     fun deleteWorkout(workoutId: Int) { viewModelScope.launch { repository.deleteWorkout(workoutId) } }
     fun onNameChange(newName: String) { _workoutName.value = newName }
-
-    // Добавь эту функцию в WorkoutViewModel
     fun assignWorkoutToDay(dayIndex: Int, workoutId: Int, workoutName: String) {
         viewModelScope.launch {
             repository.setWorkoutToDay(dayIndex, workoutId, workoutName)

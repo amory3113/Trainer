@@ -8,16 +8,15 @@ import com.example.trainer.data.Exercise.WorkoutTemplateEntity
 
 object WorkoutGenerator {
 
-    // НОВАЯ СТРУКТУРА: Хранит всё вместе, чтобы ничего не потерялось
     data class GeneratedWorkout(
-        val tempId: Long, // Временный ID (например, 31, 32...)
+        val tempId: Long,
         val template: WorkoutTemplateEntity,
         val exercises: List<WorkoutExerciseEntity>
     )
 
     data class GeneratedPlan(
-        val workouts: List<GeneratedWorkout>, // Список готовых тренировок
-        val schedule: Map<Int, Long> // Расписание (0=Пн -> ID)
+        val workouts: List<GeneratedWorkout>,
+        val schedule: Map<Int, Long>
     )
 
     fun generate(user: com.example.trainer.data.UserEntity, allExercises: List<ExerciseEntity>): GeneratedPlan {
@@ -37,26 +36,22 @@ object WorkoutGenerator {
         return when {
             user.workoutFrequency <= 3 -> generateFullBodySplit(validExercises, sets, reps, user.workoutFrequency)
             user.workoutFrequency == 4 -> generateUpperLowerSplit(validExercises, sets, reps)
-            else -> generateBodyPartSplit(validExercises, sets, reps) // 5 дней
+            else -> generateBodyPartSplit(validExercises, sets, reps)
         }
     }
 
-    // --- 1. FULL BODY (2-3 дня) ---
     private fun generateFullBodySplit(
         exercises: List<ExerciseEntity>, sets: Int, reps: Int, freq: Int
     ): GeneratedPlan {
         val workouts = mutableListOf<GeneratedWorkout>()
         val schedule = mutableMapOf<Int, Long>()
 
-        // Создаем тренировки A и B
         val wA = createWorkout("Full Body A", selectExercisesForFullBody(exercises, "A"), sets, reps)
         val wB = createWorkout("Full Body B", selectExercisesForFullBody(exercises, "B"), sets, reps)
 
-        // Добавляем в список с ID 1 и 2
         workouts.add(GeneratedWorkout(1L, wA.first, wA.second))
         workouts.add(GeneratedWorkout(2L, wB.first, wB.second))
 
-        // Расписание (0=Пн)
         if (freq == 1) {
             schedule[0] = 1L
         } else if (freq == 2) {
@@ -68,7 +63,6 @@ object WorkoutGenerator {
         return GeneratedPlan(workouts, schedule)
     }
 
-    // --- 2. UPPER/LOWER (4 дня) ---
     private fun generateUpperLowerSplit(
         exercises: List<ExerciseEntity>, sets: Int, reps: Int
     ): GeneratedPlan {
@@ -84,34 +78,29 @@ object WorkoutGenerator {
         workouts.add(GeneratedWorkout(10L, wUp.first, wUp.second))
         workouts.add(GeneratedWorkout(20L, wLow.first, wLow.second))
 
-        // Пн, Вт, Чт, Пт
         schedule[0] = 10L; schedule[1] = 20L; schedule[3] = 10L; schedule[4] = 20L
 
         return GeneratedPlan(workouts, schedule)
     }
 
-    // --- 3. BODY PART SPLIT (5 дней) ---
     private fun generateBodyPartSplit(
         exercises: List<ExerciseEntity>, sets: Int, reps: Int
     ): GeneratedPlan {
         val workouts = mutableListOf<GeneratedWorkout>()
         val schedule = mutableMapOf<Int, Long>()
 
-        // Генерируем 5 разных тренировок
         val wChest = createWorkout("Klatka Piersiowa", exercises.filter { it.muscleGroup == "CHEST" }.shuffled().take(5), sets, reps)
         val wBack = createWorkout("Plecy", exercises.filter { it.muscleGroup == "BACK" }.shuffled().take(5), sets, reps)
         val wLegs = createWorkout("Nogi i Brzuch", exercises.filter { it.muscleGroup == "LEGS" || it.muscleGroup == "ABS" }.shuffled().take(6), sets, reps)
         val wShoulders = createWorkout("Barki", exercises.filter { it.muscleGroup == "SHOULDERS" }.shuffled().take(5), sets, reps)
         val wArms = createWorkout("Ramiona", exercises.filter { it.muscleGroup == "ARMS" }.shuffled().take(6), sets, reps)
 
-        // Добавляем их в список с уникальными ID
-        workouts.add(GeneratedWorkout(31L, wChest.first, wChest.second)) // Грудь
-        workouts.add(GeneratedWorkout(32L, wBack.first, wBack.second))   // Спина
-        workouts.add(GeneratedWorkout(33L, wLegs.first, wLegs.second))   // Ноги
-        workouts.add(GeneratedWorkout(34L, wShoulders.first, wShoulders.second)) // Плечи
-        workouts.add(GeneratedWorkout(35L, wArms.first, wArms.second))   // Руки
+        workouts.add(GeneratedWorkout(31L, wChest.first, wChest.second))
+        workouts.add(GeneratedWorkout(32L, wBack.first, wBack.second))
+        workouts.add(GeneratedWorkout(33L, wLegs.first, wLegs.second))
+        workouts.add(GeneratedWorkout(34L, wShoulders.first, wShoulders.second))
+        workouts.add(GeneratedWorkout(35L, wArms.first, wArms.second))
 
-        // Расписание: Пн-Пт подряд
         schedule[0] = 31L
         schedule[1] = 32L
         schedule[2] = 33L

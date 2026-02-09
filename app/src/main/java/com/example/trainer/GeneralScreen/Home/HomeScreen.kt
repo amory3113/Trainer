@@ -45,23 +45,18 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsState()
     var showFoodDialog by remember { mutableStateOf(false) }
 
-    // Состояния для диалогов
     var showWorkoutDialog by remember { mutableStateOf(false) }
     var selectedImageForZoom by remember { mutableStateOf<String?>(null) }
 
     GradientBackground {
-        // Используем Box, чтобы наложить FAB поверх списка
         Box(modifier = Modifier.fillMaxSize()) {
 
-            // --- СКРОЛЛЯЩИЙСЯ КОНТЕНТ ---
             Column(
                 modifier = modifier
                     .fillMaxSize()
                     .padding(16.dp),
-//                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // 1. Приветствие и дата
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -84,25 +79,19 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // 2. Круговой прогресс
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 16.dp)
                 ) {
-                    // ВАЖНОЕ ИЗМЕНЕНИЕ:
-                    // Используем fillMaxWidth(0.65f) -> 65% ширины экрана
-                    // aspectRatio(1f) -> Делает высоту равной ширине (идеальный квадрат)
                     Box(
                         modifier = Modifier
                             .fillMaxWidth(0.65f)
                             .aspectRatio(1f)
                     ) {
-                        // Важно: Убедись, что твой CircularProgressbar внутри использует modifier.fillMaxSize()
-                        // Если у тебя в CircularProgressbar стоит size(250.dp), убери его и используй fillMaxSize()
                         CircularProgressbar(
-                            modifier = Modifier.fillMaxSize(), // Заполнит родительский Box (65% экрана)
+                            modifier = Modifier.fillMaxSize(),
                             calories = uiState.caloriesEaten,
                             remainingCalories = viewModel.getCaloriesRemaining(),
                             progress = viewModel.getCaloriesProgress()
@@ -112,7 +101,6 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // 3. Полоски БЖУ
                 Column(modifier = Modifier.fillMaxWidth()) {
                     NutrientBar(
                         name = "Białko",
@@ -146,18 +134,16 @@ fun HomeScreen(
                     RestDayCard()
                 }
 
-                // Большой отступ снизу, чтобы кнопка и меню не перекрывали контент
                 Spacer(modifier = Modifier.height(100.dp))
             }
 
-            // --- ПЛАВАЮЩАЯ КНОПКА (FAB) ---
             ExtendedFloatingActionButton(
                 onClick = { showFoodDialog = true },
                 containerColor = Color(0xFF2196F3),
                 contentColor = Color.White,
                 modifier = Modifier
-                    .align(Alignment.BottomEnd) // В правый нижний угол
-                    .padding(16.dp) // Отступ от краев
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Dodaj")
                 Spacer(modifier = Modifier.width(8.dp))
@@ -166,21 +152,19 @@ fun HomeScreen(
         }
     }
 
-    // --- ДИАЛОГИ (Остаются без изменений) ---
 
     if (showFoodDialog) {
         AddFoodDialog(
-            onDismiss = { showFoodDialog = false },
+            onDismiss = { },
             onConfirm = { k, p, f, c ->
                 viewModel.addFood(k, p, f, c)
-                showFoodDialog = false
             }
         )
     }
 
     if (showWorkoutDialog && uiState.todayWorkoutName != null) {
         AlertDialog(
-            onDismissRequest = { showWorkoutDialog = false },
+            onDismissRequest = { },
             title = {
                 Text(
                     text = uiState.todayWorkoutName ?: "Trening",
@@ -237,7 +221,7 @@ fun HomeScreen(
                 }
             },
             confirmButton = {
-                Button(onClick = { showWorkoutDialog = false }) {
+                Button(onClick = { }) {
                     Text("Zamknij")
                 }
             }
@@ -245,7 +229,7 @@ fun HomeScreen(
     }
 
     if (selectedImageForZoom != null) {
-        Dialog(onDismissRequest = { selectedImageForZoom = null }) {
+        Dialog(onDismissRequest = { }) {
             val context = LocalContext.current
             val imageRes = getDrawableIdByName(context, selectedImageForZoom)
 
@@ -263,7 +247,7 @@ fun HomeScreen(
                         modifier = Modifier.fillMaxSize().background(Color.White)
                     )
                     IconButton(
-                        onClick = { selectedImageForZoom = null },
+                        onClick = { },
                         modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)
                     ) {
                         Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.Black)
@@ -274,7 +258,6 @@ fun HomeScreen(
     }
 }
 
-// Карточки и вспомогательные функции остаются без изменений
 @Composable
 fun WorkoutCard(workoutName: String, onClick: () -> Unit) {
     Card(

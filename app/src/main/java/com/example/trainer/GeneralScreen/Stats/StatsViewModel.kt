@@ -19,27 +19,22 @@ class StatsViewModel(private val repository: UserRepository) : ViewModel() {
     private val _weightHistory = MutableStateFlow<List<Float>>(emptyList())
     val weightHistory = _weightHistory.asStateFlow()
 
-    // Список питания
     private val _nutritionHistory = MutableStateFlow<List<NutritionEntity>>(emptyList())
     val nutritionHistory = _nutritionHistory.asStateFlow()
 
     init {
-        // 1. Слушаем профиль
         viewModelScope.launch {
             repository.userFlow.collect { user ->
                 _userProfile.value = user
             }
         }
 
-        // 2. Слушаем историю веса
         viewModelScope.launch {
             repository.getWeightHistoryFlow().collect { listEntities ->
                 _weightHistory.value = listEntities.map { it.weight }
             }
         }
 
-        // 3. СЛУШАЕМ ИСТОРИЮ ПИТАНИЯ (НОВОЕ)
-        // Теперь мы используем .collect, чтобы данные обновлялись сами
         viewModelScope.launch {
             repository.getNutritionHistoryStream().collect { list ->
                 _nutritionHistory.value = list
@@ -47,56 +42,44 @@ class StatsViewModel(private val repository: UserRepository) : ViewModel() {
         }
     }
 
-    // Функция loadNutritionData() больше не нужна, так как работает init выше.
-
-    // ИСПРАВЛЕННАЯ ФУНКЦИЯ: Добавляет вес И пересчитывает калории
     fun addNewWeight(newWeight: Float) {
         viewModelScope.launch {
-            // 1. Добавляем запись в историю (для графика)
             repository.addWeightEntry(newWeight)
 
-            // 2. Пересчитываем калории для профиля
             val currentUser = _userProfile.value
             if (currentUser != null) {
                 val updatedUser = recalculateNutrition(currentUser, newWeight)
-                // 3. Сохраняем обновленного пользователя в базу
                 repository.updateUser(updatedUser)
             }
         }
     }
 
-    // Логика пересчета (Такая же, как при регистрации)
     private fun recalculateNutrition(user: UserEntity, currentWeight: Float): UserEntity {
-        // Формула Миффлина-Сан-Жеора
         val bmr = if (user.gender == "MALE") {
             (10 * currentWeight) + (6.25 * user.height) - (5 * user.age) + 5
         } else {
             (10 * currentWeight) + (6.25 * user.height) - (5 * user.age) - 161
         }
 
-        // Коэффициент активности (Парсим из строки или числового значения ActivityLevel)
-        // Предполагаем, что в базе ActivityLevel хранится как Enum name, но на всякий случай проверяем
         val activityMultiplier = when (user.activityLevel) {
             "SEDENTARY" -> 1.2
             "LIGHTLY_ACTIVE" -> 1.375
             "MODERATELY_ACTIVE" -> 1.55
             "VERY_ACTIVE" -> 1.725
             "SUPER_ACTIVE" -> 1.9
-            else -> 1.2 // Дефолт
+            else -> 1.2
         }
 
         val tdee = bmr * activityMultiplier
 
-        // Корректировка под цель
         val goalAdjustment = when (user.goal) {
-            "WEIGHT_LOSS" -> -400 // Дефицит
-            "MUSCLE_GAIN" -> 300  // Профицит
+            "WEIGHT_LOSS" -> -400
+            "MUSCLE_GAIN" -> 300
             else -> 0
         }
 
-        val targetCal = (tdee + goalAdjustment).toInt().coerceAtLeast(1200) // Защита от краша (минимум 1200)
+        val targetCal = (tdee + goalAdjustment).toInt().coerceAtLeast(1200)
 
-        // БЖУ
         val p = (targetCal * 0.3 / 4).toInt()
         val f = (targetCal * 0.3 / 9).toInt()
         val c = (targetCal * 0.4 / 4).toInt()

@@ -5,7 +5,6 @@ import java.util.Calendar
 
 class UserRepository(private val userDao: UserDao) {
 
-    // --- СОХРАНЕНИЕ ПРОФИЛЯ ---
     suspend fun saveUserProfile(
         gender: Gender,
         age: Int,
@@ -46,12 +45,10 @@ class UserRepository(private val userDao: UserDao) {
         userDao.insertWeight(initialWeight)
     }
 
-    // --- ВЕС ---
     suspend fun addWeightEntry(weight: Float) {
         val entry = WeightEntity(weight = weight, date = System.currentTimeMillis())
         userDao.insertWeight(entry)
 
-        // Обновляем текущий вес в профиле
         val currentUser = userDao.getLastUser()
         if (currentUser != null) {
             val updatedUser = currentUser.copy(weight = weight.toDouble())
@@ -61,7 +58,6 @@ class UserRepository(private val userDao: UserDao) {
 
     fun getWeightHistoryFlow() = userDao.getAllWeightsFlow()
 
-    // --- ПИТАНИЕ ---
     suspend fun getNutritionForDate(start: Long, end: Long): NutritionEntity? {
         return userDao.getNutritionForDate(start, end)
     }
@@ -90,16 +86,10 @@ class UserRepository(private val userDao: UserDao) {
         }
     }
 
-    suspend fun getNutritionHistory(): List<NutritionEntity> {
-        return userDao.getAllNutrition()
-    }
-
-    // ДОБАВЛЯЕМ НОВУЮ
     fun getNutritionHistoryStream(): kotlinx.coroutines.flow.Flow<List<NutritionEntity>> {
         return userDao.getAllNutritionFlow()
     }
 
-    // --- ЮЗЕР ---
     val userFlow: kotlinx.coroutines.flow.Flow<UserEntity?> = userDao.getUserFlow()
 
     suspend fun getUserProfile(): UserEntity? {
@@ -110,13 +100,10 @@ class UserRepository(private val userDao: UserDao) {
         userDao.updateUser(user)
     }
 
-    // --- !!! ВОТ ЭТА ФУНКЦИЯ, КОТОРОЙ НЕ ХВАТАЛО !!! ---
     suspend fun clearData() {
         userDao.clearTable()
     }
-    // ---------------------------------------------------
 
-    // Вспомогательная для времени
     private fun getDayRange(): Pair<Long, Long> {
         val calendar = Calendar.getInstance()
 

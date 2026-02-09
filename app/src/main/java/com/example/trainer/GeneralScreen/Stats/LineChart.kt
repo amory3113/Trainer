@@ -24,7 +24,6 @@ fun LineChart(
 ) {
     if (dataPoints.isEmpty()) return
 
-    val spacing = 100f
     val maxVal = dataPoints.maxOrNull() ?: 1f
     val minVal = dataPoints.minOrNull() ?: 0f
 
@@ -58,7 +57,6 @@ fun LineChart(
             val y = height * yRatio
             val value = displayMax - (displayRange * yRatio)
 
-            // Линия
             drawLine(
                 color = Color.LightGray.copy(alpha = 0.5f),
                 start = Offset(0f, y),
