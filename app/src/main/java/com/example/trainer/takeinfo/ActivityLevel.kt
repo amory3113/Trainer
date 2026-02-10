@@ -61,7 +61,7 @@ fun ActivityLevel(
                 )
 
                 Text(
-                    text = "Proszę odpowiedzieć na wszystkie pytania, abyśmy mogli dokładnie obliczyć Twoje spożycie kalorii.",
+                    text = "Proszę odpowiedzieć na wszystkie pytania, abyśmy mogli dokładnie obliczyć Twoje zapotrzebowanie kaloryczne.",
                     modifier = Modifier.padding(bottom = 32.dp),
                     color = Color.DarkGray,
                     fontSize = 16.sp
@@ -71,7 +71,7 @@ fun ActivityLevel(
                     question = "1. Jaka jest Twoja praca lub główne codzienne zajęcie?",
                     options = listOf(
                         "Siedzący tryb życia, mało ruchu",
-                        "Pracuj \"na stojąco\", ale bez stresu",
+                        "Praca \"stojąca\", lekka aktywność",
                         "Praca fizyczna, dużo ruchu"
                     ),
                     selectedOption = workActivity,
@@ -83,7 +83,7 @@ fun ActivityLevel(
                     options = listOf(
                         "Rzadko lub nigdy",
                         "Kilka razy w tygodniu",
-                        "Prawie każdego dnia"
+                        "Prawie codziennie"
                     ),
                     selectedOption = sportsFrequency,
                     onOptionSelected = { sportsFrequency = it }
@@ -111,9 +111,9 @@ fun ActivityLevel(
                 ActivityQuestionSection(
                     question = "4. Jaka jest Twoja aktualna kondycja fizyczna?",
                     options = listOf(
-                        "Słaby (szybko się męczy)",
-                        "Średni (potrafię biegać)",
-                        "Świetnie (jestem odporny)"
+                        "Niska (szybko się męczę)",
+                        "Przeciętna (regularny ruch)",
+                        "Wysoka (mam dobrą kondycję)"
                     ),
                     selectedOption = physicalCondition,
                     onOptionSelected = { physicalCondition = it }
@@ -122,9 +122,9 @@ fun ActivityLevel(
                 ActivityQuestionSection(
                     question = "5. Zmęczenie pod koniec dnia?",
                     options = listOf(
-                        "Często (spadam z nóg)",
+                        "Często (brak energii pod koniec dnia)",
                         "Czasami",
-                        "Rzadko (pełen energii)"
+                        "Rzadko (dużo energii)"
                     ),
                     selectedOption = fatigueLevel,
                     onOptionSelected = { fatigueLevel = it }

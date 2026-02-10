@@ -37,7 +37,7 @@ fun AddFoodDialog(
                     OutlinedTextField(
                         value = protein,
                         onValueChange = { protein = it },
-                        label = { Text("Białka") },
+                        label = { Text("Białko") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
                         modifier = Modifier.weight(1f)
@@ -45,7 +45,7 @@ fun AddFoodDialog(
                     OutlinedTextField(
                         value = fat,
                         onValueChange = { fat = it },
-                        label = { Text("Tłuszcze") },
+                        label = { Text("Tłuszcz") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
                         modifier = Modifier.weight(1f)
@@ -53,7 +53,7 @@ fun AddFoodDialog(
                     OutlinedTextField(
                         value = carbs,
                         onValueChange = { carbs = it },
-                        label = { Text("Węglewodany") },
+                        label = { Text("Węglowodany") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
                         modifier = Modifier.weight(1f)
@@ -73,12 +73,12 @@ fun AddFoodDialog(
                     }
                 }
             ) {
-                Text("Dodać")
+                Text("Dodaj")
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Anulować")
+                Text("Anuluj")
             }
         }
     )

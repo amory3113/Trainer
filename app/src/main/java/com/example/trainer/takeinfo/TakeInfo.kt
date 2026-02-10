@@ -87,7 +87,7 @@ fun TakeInfo(
             )
 
             Text(
-                text = "Wprowadź swoje dane:",
+                text = "Podaj swoje parametry:",
                 modifier = Modifier.padding(top = 20.dp),
                 color = Color.Black,
                 fontSize = 16.sp,
@@ -118,7 +118,7 @@ fun TakeInfo(
             OutlinedTextField(
                 value = height,
                 onValueChange = { height = it },
-                label = { Text("Wysokość (cm)") },
+                label = { Text("Wzrost (cm)") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),

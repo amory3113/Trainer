@@ -46,8 +46,8 @@ object WorkoutGenerator {
         val workouts = mutableListOf<GeneratedWorkout>()
         val schedule = mutableMapOf<Int, Long>()
 
-        val wA = createWorkout("Full Body A", selectExercisesForFullBody(exercises, "A"), sets, reps)
-        val wB = createWorkout("Full Body B", selectExercisesForFullBody(exercises, "B"), sets, reps)
+        val wA = createWorkout("Całe ciało A", selectExercisesForFullBody(exercises, "A"), sets, reps)
+        val wB = createWorkout("Całe ciało B", selectExercisesForFullBody(exercises, "B"), sets, reps)
 
         workouts.add(GeneratedWorkout(1L, wA.first, wA.second))
         workouts.add(GeneratedWorkout(2L, wB.first, wB.second))
@@ -72,8 +72,8 @@ object WorkoutGenerator {
         val upperEx = exercises.filter { it.muscleGroup in listOf("CHEST", "BACK", "SHOULDERS", "ARMS") }.shuffled().take(7)
         val lowerEx = exercises.filter { it.muscleGroup in listOf("LEGS", "ABS", "CARDIO") }.shuffled().take(6)
 
-        val wUp = createWorkout("Upper Body", upperEx, sets, reps)
-        val wLow = createWorkout("Lower Body", lowerEx, sets, reps)
+        val wUp = createWorkout("Góra ciała", upperEx, sets, reps)
+        val wLow = createWorkout("Dół ciała", lowerEx, sets, reps)
 
         workouts.add(GeneratedWorkout(10L, wUp.first, wUp.second))
         workouts.add(GeneratedWorkout(20L, wLow.first, wLow.second))

@@ -54,7 +54,7 @@ fun GenderScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Teraz potrzebujemy informacji o Tobie.",
+                text = "Teraz potrzebujemy informacji o Tobie",
                 modifier = Modifier
                     .padding(start = 8.dp, top = 40.dp, end = 24.dp),
                 color = Color.Black,
@@ -64,7 +64,7 @@ fun GenderScreen(
                 lineHeight = 32.sp
             )
             Text(
-                text = "Proszę podać płeć:",
+                text = "Wybierz płeć:",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 8.dp, top = 20.dp, end = 40.dp),

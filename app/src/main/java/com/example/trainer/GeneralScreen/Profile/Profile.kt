@@ -168,9 +168,10 @@ fun Profile(
         EditProfileDialog(
             type = editType,
             currentValue = editValue,
-            onDismiss = { },
+            onDismiss = { showDialog = false },
             onConfirm = { newValue ->
                 viewModel.updateProfile(editType, newValue)
+                showDialog = false
             }
         )
     }
@@ -196,7 +197,7 @@ fun EditProfileDialog(
     val suffix = when (type) {
         EditType.WEIGHT -> "kg"
         EditType.HEIGHT -> "cm"
-        EditType.AGE -> "lat"
+        EditType.AGE -> "lat/lata"
         else -> ""
     }
 

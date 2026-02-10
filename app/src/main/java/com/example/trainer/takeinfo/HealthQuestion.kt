@@ -77,7 +77,7 @@ fun HealthQuestion(
             )
 
             Text(
-                text = "Czy wiesz o jakichś poważnych ograniczeniach, urazach lub przewlekłych chorobach?",
+                text = "Czy masz jakieś przeciwwskazania zdrowotne, kontuzje lub choroby przewlekłe?",
                 modifier = Modifier.padding(bottom = 40.dp),
                 color = Color.Black,
                 fontSize = 18.sp,
@@ -102,7 +102,7 @@ fun HealthQuestion(
                     .clickable { selectedOption = "no" }
             ) {
                 Text(
-                    text = "Nie, nie mam żadnych ograniczeń.",
+                    text = "Nie, wszystko w porządku.",
                     modifier = Modifier.align(Alignment.Center),
                     color = if (selectedOption == "no") Color.White else Color.Black,
                     fontSize = 18.sp,

@@ -55,8 +55,8 @@ fun LoadScreen(
 
     val loadingTexts = listOf(
         "Analizowanie danych...",
-        "Wybieramy program szkoleniowy...",
-        "Obliczanie kalorii i BJU..."
+        "Dobieramy plan treningowy...",
+        "Obliczanie kalorii i makroskładników..."
     )
 
     LaunchedEffect(Unit) {
@@ -124,7 +124,7 @@ fun LoadScreen(
                     )
 
                     Text(
-                        text = "Na podstawie Twoich danych przygotowaliśmy dla Ciebie spersonalizowany program.",
+                        text = "Oto Twój spersonalizowany plan treningowy.",
                         fontSize = 16.sp,
                         color = Color.Black,
                         lineHeight = 22.sp,
@@ -141,9 +141,9 @@ fun LoadScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         val goalText = when(goal) {
-                            Goal.WEIGHT_LOSS -> "Utrata wagi"
-                            Goal.MUSCLE_GAIN -> "Przyrost masy"
-                            Goal.MAINTAIN_FITNESS -> "Utrzymanie formy"
+                            Goal.WEIGHT_LOSS -> "Schudnięcie"
+                            Goal.MUSCLE_GAIN -> "Budowa masy mięśniowej"
+                            Goal.MAINTAIN_FITNESS -> "Utrzymanie kondycji"
                             null -> "Nie zdefiniowano"
                         }
 
@@ -166,7 +166,7 @@ fun LoadScreen(
                         InfoRow(label = "B:", value = "$p g.")
                         InfoRow(label = "T:", value = "$f g.")
                         InfoRow(label = "W:", value = "$c g.")
-                        InfoRow(label = "Ćwiczenia:", value = trainingText)
+                        InfoRow(label = "Treningi:", value = trainingText)
                         InfoRow(label = "Miejsce:", value = whereText)
                     }
                 }

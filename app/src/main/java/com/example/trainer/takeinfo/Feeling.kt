@@ -77,7 +77,7 @@ fun Feeling(
             )
 
             Text(
-                text = "Gdzie jest Ci wygodniej się uczyć?",
+                text = "Gdzie wolisz trenować?",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color.Black,
@@ -94,7 +94,7 @@ fun Feeling(
                     onClick = { selectedLocation = WorkoutLocation.HOME }
                 )
                 LocationButton(
-                    text = "W silownie",
+                    text = "Na siłowni",
                     isSelected = selectedLocation == WorkoutLocation.GYM,
                     onClick = { selectedLocation = WorkoutLocation.GYM }
                 )
@@ -117,7 +117,7 @@ fun Feeling(
                 }
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     FreqButton("4 razy", 4, selectedFrequency) { selectedFrequency = 4 }
-                    FreqButton("5 raz", 5, selectedFrequency) { selectedFrequency = 5 }
+                    FreqButton("5 razy", 5, selectedFrequency) { selectedFrequency = 5 }
                 }
             }
         }

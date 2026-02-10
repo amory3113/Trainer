@@ -45,7 +45,7 @@ fun CreateWorkoutScreen(
     if (showExerciseSelector) {
         ExerciseSelectorScreen(
             viewModel = viewModel,
-            onClose = { }
+            onClose = { showExerciseSelector = false }
         )
     } else {
         GradientBackground {
@@ -108,7 +108,7 @@ fun CreateWorkoutScreen(
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
-                        IconButton(onClick = { }) {
+                        IconButton(onClick = { showExerciseSelector = true }) {
                             Icon(Icons.Default.Add, contentDescription = "Добавить", tint = Color(0xFF2196F3))
                         }
                     }
@@ -134,9 +134,10 @@ fun CreateWorkoutScreen(
     if (exerciseToEdit != null) {
         EditSetsRepsDialog(
             item = exerciseToEdit!!,
-            onDismiss = { },
+            onDismiss = { exerciseToEdit = null },
             onConfirm = { sets, reps ->
                 viewModel.updateExerciseDetails(exerciseToEdit!!.exercise.id, sets, reps)
+                exerciseToEdit = null
             }
         )
     }

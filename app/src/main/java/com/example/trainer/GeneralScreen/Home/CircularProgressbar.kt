@@ -41,9 +41,9 @@ fun CircularProgressbar(
         label = "progress"
     )
 
-//    LaunchedEffect(key1 = true) {
-//        animationPlayed = true
-//    }
+    LaunchedEffect(key1 = true) {
+        animationPlayed = true
+    }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -75,12 +75,12 @@ fun CircularProgressbar(
                 color = Color.Black
             )
             Text(
-                text = "Pozostałę",
+                text = "Pozostało",
                 fontSize = 16.sp,
                 color = Color.Gray
             )
             Text(
-                text = " $calories kalorie",
+                text = " $calories kalorii",
                 fontSize = 14.sp,
                 color = Color.Gray
             )

@@ -54,7 +54,7 @@ fun TakeCelScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Dostosujmy program treningowy do Twoich celów",
+                text = "Dopasujmy plan do Twoich celów",
                 modifier = Modifier
                     .padding(start = 8.dp, top = 40.dp, end = 24.dp),
                 color = Color.Black,
@@ -89,7 +89,7 @@ fun TakeCelScreen(
                 )
             ) {
                 Text(
-                    text = "Utrata wagi",
+                    text = "Schudnięcie",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = if (selectedGoal == Goal.WEIGHT_LOSS) Color.White else Color.Black
@@ -110,7 +110,7 @@ fun TakeCelScreen(
                 )
             ) {
                 Text(
-                    text = "Zyskiwanie masy mięśniowej",
+                    text = "Budowa masy mięśniowej",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = if (selectedGoal == Goal.MUSCLE_GAIN) Color.White else Color.Black
@@ -131,7 +131,7 @@ fun TakeCelScreen(
                 )
             ) {
                 Text(
-                    text = "Utrzymywanie formy",
+                    text = "Utrzymanie kondycji",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = if (selectedGoal == Goal.MAINTAIN_FITNESS) Color.White else Color.Black

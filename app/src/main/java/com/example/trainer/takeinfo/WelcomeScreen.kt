@@ -80,9 +80,9 @@ fun WelcomeScreen(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = "Następny",
+                    text = "Dalej",
                     color = Color.White,
-                    fontSize = 22.sp,
+                    fontSize = 26.sp,
                     fontWeight = FontWeight.Medium
                 )
             }

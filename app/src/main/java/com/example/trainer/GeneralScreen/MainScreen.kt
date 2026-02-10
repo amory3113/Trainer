@@ -44,9 +44,9 @@ sealed class BottomBarScreen(
     val title: String,
     val icon: ImageVector
 ) {
-    object Home : BottomBarScreen("home", "Dom", Icons.Default.Home)
-    object Workout : BottomBarScreen("workout", "Ćwiczyć", Icons.Filled.FitnessCenter)
-    object Stats : BottomBarScreen("stats", "Postęp", Icons.AutoMirrored.Filled.TrendingUp)
+    object Home : BottomBarScreen("home", "Główna", Icons.Default.Home)
+    object Workout : BottomBarScreen("workout", "Trening", Icons.Filled.FitnessCenter)
+    object Stats : BottomBarScreen("stats", "Postępy", Icons.AutoMirrored.Filled.TrendingUp)
     object Profile : BottomBarScreen("profile", "Profil", Icons.Default.Person)
 }
 

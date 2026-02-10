@@ -155,16 +155,17 @@ fun HomeScreen(
 
     if (showFoodDialog) {
         AddFoodDialog(
-            onDismiss = { },
+            onDismiss = { showFoodDialog = false },
             onConfirm = { k, p, f, c ->
                 viewModel.addFood(k, p, f, c)
+                showFoodDialog = false
             }
         )
     }
 
     if (showWorkoutDialog && uiState.todayWorkoutName != null) {
         AlertDialog(
-            onDismissRequest = { },
+            onDismissRequest = { showWorkoutDialog = false },
             title = {
                 Text(
                     text = uiState.todayWorkoutName ?: "Trening",
@@ -221,7 +222,7 @@ fun HomeScreen(
                 }
             },
             confirmButton = {
-                Button(onClick = { }) {
+                Button(onClick = { showWorkoutDialog = false }) {
                     Text("Zamknij")
                 }
             }
@@ -247,7 +248,7 @@ fun HomeScreen(
                         modifier = Modifier.fillMaxSize().background(Color.White)
                     )
                     IconButton(
-                        onClick = { },
+                        onClick = { selectedImageForZoom = null },
                         modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)
                     ) {
                         Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.Black)
@@ -339,8 +340,8 @@ fun RestDayCard() {
             Spacer(modifier = Modifier.width(16.dp))
 
             Column {
-                Text(text = "Dzień wolny", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Text(text = "Odpoczynek jest ważny dla wzrostu mięśni.", fontSize = 14.sp, color = Color.Gray)
+                Text(text = "Dzień odpoczynku", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(text = "Odpoczynek jest kluczowy dla regeneracji mięśni.", fontSize = 14.sp, color = Color.Gray)
             }
         }
     }

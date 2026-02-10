@@ -31,7 +31,7 @@ fun StatsScreen(viewModel: StatsViewModel) {
     GradientBackground {
         Column(modifier = Modifier.fillMaxSize()) {
             Text(
-                text = "Mój postęp",
+                text = "Moje postępy",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
@@ -102,10 +102,11 @@ fun WeightTabContent(viewModel: StatsViewModel) {
                     elevation = CardDefaults.cardElevation(2.dp)
                 ) {
                     Column(modifier = Modifier.padding(24.dp)) {
-                        Text("Wskaźnik masy ciała (BMI)", fontWeight = FontWeight.Bold)
+                        Text("Wskaźnik masy ciała (BMI)", fontWeight = FontWeight.Bold, color = Color.Gray)
                         Text(
                             text = String.format("%.1f", bmi),
-                            fontSize = 24.sp
+                            fontSize = 24.sp,
+                            color = Color.Gray
                         )
                         Text(
                             text = viewModel.getBmiStatus(bmi),
@@ -143,9 +144,10 @@ fun WeightTabContent(viewModel: StatsViewModel) {
 
     if (showDialog) {
         AddWeightDialog(
-            onDismiss = { },
+            onDismiss = { showDialog = false },
             onConfirm = { newWeight ->
                 viewModel.addNewWeight(newWeight)
+                showDialog = false
             }
         )
     }
@@ -217,7 +219,7 @@ fun AddWeightDialog(onDismiss: () -> Unit, onConfirm: (Float) -> Unit) {
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Nowe ważenie") },
+        title = { Text("Nowy pomiar") },
         text = {
             Column {
                 Text("Wprowadź swoją aktualną wagę:")
@@ -235,12 +237,12 @@ fun AddWeightDialog(onDismiss: () -> Unit, onConfirm: (Float) -> Unit) {
                 val weight = text.toFloatOrNull()
                 if (weight != null) onConfirm(weight)
             }) {
-                Text("Zapisać")
+                Text("Zapisz")
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Anulować")
+                Text("Anuluj")
             }
         }
     )

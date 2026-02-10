@@ -90,7 +90,7 @@ fun GradientBackground(
 fun NavigationButtons(
     onBackClick: () -> Unit,
     onNextClick: () -> Unit,
-    nextText: String = "Następny",
+    nextText: String = "Dalej",
     nextEnabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
@@ -112,9 +112,9 @@ fun NavigationButtons(
             elevation = ButtonDefaults.buttonElevation(0.dp)
         ) {
             Text(
-                text = "Z powrotem",
+                text = "Powrót",
                 color = Color(0xFF2196F3),
-                fontSize = 20.sp,
+                fontSize = 26.sp,
                 fontWeight = FontWeight.Medium
             )
         }
@@ -133,7 +133,11 @@ fun NavigationButtons(
             Text(
                 text = nextText,
                 color = Color.White,
-                fontSize = if (nextText.length > 10) 18.sp else 22.sp,
+                fontSize = when {
+                    nextText.length > 12 -> 16.sp
+                    nextText.length > 5 -> 18.sp
+                    else -> 26.sp
+                },
                 fontWeight = FontWeight.Medium
             )
         }

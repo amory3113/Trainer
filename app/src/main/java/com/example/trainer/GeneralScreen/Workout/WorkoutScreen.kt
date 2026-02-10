@@ -90,19 +90,21 @@ fun MyProgramsTab(
 
     if (showDeleteDialog && workoutToDelete != null) {
         AlertDialog(
-            onDismissRequest = { },
+            onDismissRequest = { showDeleteDialog = false },
             title = { Text("Usunąć trening?") },
             text = { Text("Czy na pewno chcesz usunąć \"${workoutToDelete?.name}\"? Tej czynności nie można cofnąć.") },
             confirmButton = {
                 TextButton(
                     onClick = {
                         workoutToDelete?.let { viewModel.deleteWorkout(it.id) }
+                        showDeleteDialog = false
+                        workoutToDelete = null
                     },
                     colors = ButtonDefaults.textButtonColors(contentColor = Color.Red)
                 ) { Text("Usunąć") }
             },
             dismissButton = {
-                TextButton(onClick = { }) { Text("Cofnij") }
+                TextButton(onClick = { showDeleteDialog = false }) { Text("Cofnij") }
             }
         )
     }
@@ -110,7 +112,7 @@ fun MyProgramsTab(
     Box(modifier = Modifier.fillMaxSize()) {
         if (templates.isEmpty()) {
             Text(
-                text = "Nie masz jeszcze żadnych programów.\nKliknij +, aby utworzyć.",
+                text = "Nie masz jeszcze żadnych treningów.\nKliknij +, aby stworzyć pierwszy.",
                 color = Color.Gray,
                 modifier = Modifier.align(Alignment.Center)
             )
@@ -125,6 +127,7 @@ fun MyProgramsTab(
                         onEditClick = { onNavigateToCreate(item.template.id) },
                         onDeleteClick = {
                             workoutToDelete = item.template
+                            showDeleteDialog = true
                         }
                     )
                 }
@@ -220,7 +223,7 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
 
     if (showDialog) {
         AlertDialog(
-            onDismissRequest = { },
+            onDismissRequest = { showDialog = false },
             title = { Text("Wybierz trening na ${daysOfWeek[selectedDayIndex]}") },
             text = {
                 LazyColumn {
@@ -231,6 +234,7 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
                                 .fillMaxWidth()
                                 .clickable {
                                     viewModel.clearDay(selectedDayIndex)
+                                    showDialog = false
                                 }
                                 .padding(12.dp),
                             color = Color.White,
@@ -245,6 +249,7 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
                                 .fillMaxWidth()
                                 .clickable {
                                     viewModel.assignWorkoutToDay(selectedDayIndex, item.template.id, item.template.name)
+                                    showDialog = false
                                 }
                                 .padding(12.dp),
                             fontSize = 18.sp
@@ -255,7 +260,7 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
             },
             confirmButton = {},
             dismissButton = {
-                TextButton(onClick = { }) { Text("Anuluj") }
+                TextButton(onClick = { showDialog = false }) { Text("Anuluj") }
             }
         )
     }
@@ -273,6 +278,7 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
                 item = scheduleItem,
                 onClick = {
                     selectedDayIndex = index
+                    showDialog = true
                 }
             )
         }
@@ -307,7 +313,7 @@ fun ScheduleDayCard(
                     fontWeight = FontWeight.Bold
                 )
             } else {
-                Text("Wolny / Przydzielić", color = Color.Gray, fontSize = 14.sp)
+                Text("Odpoczynek / Zaplanuj", color = Color.Gray, fontSize = 14.sp)
             }
         }
     }

@@ -74,7 +74,7 @@ fun MoreHealthQuest(
                     .padding(horizontal = 24.dp)
             ) {
                 Text(
-                    text = "Wyjaśnijmy Twój stan",
+                    text = "Poznajmy Twój stan zdrowia",
                     modifier = Modifier.padding(top = 40.dp, bottom = 16.dp),
                     color = Color.Black,
                     fontSize = 30.sp,
@@ -84,7 +84,7 @@ fun MoreHealthQuest(
                 )
 
                 Text(
-                    text = "Oceń poniższe punkty, abyśmy mogli wybrać bezpieczne ćwiczenia.",
+                    text = "Odpowiedz na poniższe pytania, abyśmy mogli dobrać bezpieczne ćwiczenia.",
                     modifier = Modifier.padding(bottom = 32.dp),
                     color = Color.Black,
                     fontSize = 16.sp,
@@ -94,7 +94,7 @@ fun MoreHealthQuest(
 
                 QuestionSection(
                     question = "Choroby przewlekłe (cukrzyca, nadciśnienie)?",
-                    options = listOf("Nie", "Nieznaczne", "Poważne"),
+                    options = listOf("Nie", "Łagodne", "Poważne"),
                     selectedOption = question1,
                     onOptionSelected = { question1 = it }
                 )
@@ -122,7 +122,7 @@ fun MoreHealthQuest(
 
                 QuestionSection(
                     question = "Jak często odczuwasz zmęczenie podczas codziennych czynności?",
-                    options = listOf("Rzadko", "Często", "Ciągle"),
+                    options = listOf("Rzadko", "Często", "Bardzo często"),
                     selectedOption = question5,
                     onOptionSelected = { question5 = it }
                 )
