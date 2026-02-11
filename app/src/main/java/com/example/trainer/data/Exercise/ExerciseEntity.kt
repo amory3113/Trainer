@@ -11,5 +11,6 @@ data class ExerciseEntity(
     val upDown: String,
     val imageName: String,
     val description: String,
-    val equipment: String
+    val equipment: String,
+    val healthRisk: String = "SAFE"
 )

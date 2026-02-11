@@ -40,6 +40,8 @@ fun Profile(
     var editType by remember { mutableStateOf(EditType.WEIGHT) }
     var editValue by remember { mutableStateOf("") }
 
+    var showAboutDialog by remember { mutableStateOf(false) }
+
     GradientBackground {
         if (userProfile == null) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -139,7 +141,8 @@ fun Profile(
                         icon = Icons.Default.Info,
                         title = "O aplikacji",
                         value = "Wersja 1.0",
-                        showArrow = false
+                        showArrow = true,
+                        onClick = { showAboutDialog = true }
                     )
                 }
 
@@ -164,6 +167,7 @@ fun Profile(
             }
         }
     }
+
     if (showDialog) {
         EditProfileDialog(
             type = editType,
@@ -174,6 +178,42 @@ fun Profile(
                 showDialog = false
             }
         )
+    }
+
+    if (showAboutDialog) {
+        AboutAppDialog(
+            onDismiss = { showAboutDialog = false }
+        )
+    }
+}
+
+@Composable
+fun AboutAppDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Informacje o projekcie", fontWeight = FontWeight.Bold)},
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                AboutRow(label = "Temat:", value = "Projekt i wykonanie aplikacji mobilnej typu „trener personalny”")
+                AboutRow(label = "Autor:", value = "Maksym Shevelenko")
+                AboutRow(label = "Uczelnia:", value = "UTH Radom")
+                AboutRow(label = "Kierunek:", value = "Informatyka")
+                AboutRow(label = "Rok akademicki:", value = "2022/2026")
+            }
+        },
+        confirmButton = {
+            Button(onClick = onDismiss) {
+                Text("Zamknij")
+            }
+        }
+    )
+}
+
+@Composable
+fun AboutRow(label: String, value: String) {
+    Column {
+        Text(text = label, fontSize = 12.sp, color = Color.Gray)
+        Text(text = value, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = Color.White)
     }
 }
 
@@ -276,7 +316,7 @@ fun EditProfileDialog(
         confirmButton = {
             Button(
                 onClick = { onConfirm(selectedValue) },
-                ) {
+            ) {
                 Text("Zapisz")
             }
         },

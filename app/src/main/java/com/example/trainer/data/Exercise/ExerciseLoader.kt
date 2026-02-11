@@ -22,7 +22,9 @@ object ExerciseLoader {
                     imageName = item.getString("imageName"),
                     description = item.getString("description"),
                     upDown = item.optString("upDown", "UP"),
-                    equipment = item.optString("equipment", "machine")
+                    equipment = item.optString("equipment", "machine"),
+
+                    healthRisk = item.optString("healthRisk", "SAFE")
                 )
                 exerciseList.add(exercise)
             }

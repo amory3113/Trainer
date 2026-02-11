@@ -5,7 +5,8 @@
     "imageName": "pushups",
     "description": "Klasyczne ćwiczenie na klatkę piersiową i triceps.",
     "upDown": "UP",
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "healthRisk": "SAFE"
   },
   {
     "name": "Wyciskanie sztangi leżąc",
@@ -13,7 +14,8 @@
     "imageName": "bench_press",
     "description": "Podstawowe ćwiczenie budujące siłę klatki piersiowej.",
     "upDown": "UP",
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "healthRisk": "JOINTS"
   },
   {
     "name": "Wyciskanie hantli leżąc",
@@ -21,7 +23,8 @@
     "imageName": "dumbbell_press",
     "description": "Alternatywa dla sztangi, pozwala na lepsze rozciągnięcie mięśni.",
     "upDown": "UP",
-    "equipment": "dumbbells"
+    "equipment": "dumbbells",
+    "healthRisk": "SAFE"
   },
   {
     "name": "Pompki na poręczach (Dips)",
@@ -29,7 +32,8 @@
     "imageName": "dips",
     "description": "Świetne na triceps i dolną część klatki.",
     "upDown": "UP",
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "healthRisk": "JOINTS"
   },
   {
     "name": "Przysiady (ciężar własny)",
@@ -37,7 +41,8 @@
     "imageName": "body_squat",
     "description": "Podstawowy ruch na nogi i pośladki.",
     "upDown": "DOWN",
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "healthRisk": "SAFE"
   },
   {
     "name": "Przysiady ze sztangą",
@@ -45,7 +50,8 @@
     "imageName": "barbell_squat",
     "description": "Król ćwiczeń na masę nóg.",
     "upDown": "DOWN",
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "healthRisk": "JOINTS"
   },
   {
     "name": "Wykroki z hantlami",
@@ -53,7 +59,8 @@
     "imageName": "lunges",
     "description": "Świetne ćwiczenie na pośladki i mięśnie czworogłowe.",
     "upDown": "DOWN",
-    "equipment": "dumbbells"
+    "equipment": "dumbbells",
+    "healthRisk": "JOINTS"
   },
   {
     "name": "Wypychanie nóg na suwnicy",
@@ -61,7 +68,8 @@
     "imageName": "leg_press",
     "description": "Bezpieczniejsza alternatywa dla przysiadów przy dużym ciężarze.",
     "upDown": "DOWN",
-    "equipment": "machine"
+    "equipment": "machine",
+    "healthRisk": "SAFE"
   },
   {
     "name": "Wspięcia na palce",
@@ -69,7 +77,8 @@
     "imageName": "calf_raises",
     "description": "Izolacja na łydki.",
     "upDown": "DOWN",
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "healthRisk": "SAFE"
   },
   {
     "name": "Podciąganie na drążku",
@@ -77,7 +86,8 @@
     "imageName": "pullups",
     "description": "Najlepsze ćwiczenie na szerokość pleców.",
     "upDown": "UP",
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "healthRisk": "SAFE"
   },
   {
     "name": "Ściąganie drążka (wyciąg górny)",
@@ -85,7 +95,8 @@
     "imageName": "lat_pulldown",
     "description": "Odpowiednik podciągania na maszynie.",
     "upDown": "UP",
-    "equipment": "machine"
+    "equipment": "machine",
+    "healthRisk": "SAFE"
   },
   {
     "name": "Wiosłowanie hantlą w opadzie",
@@ -93,7 +104,8 @@
     "imageName": "dumbbell_row",
     "description": "Ćwiczenie na grubość pleców.",
     "upDown": "UP",
-    "equipment": "dumbbells"
+    "equipment": "dumbbells",
+    "healthRisk": "JOINTS"
   },
   {
     "name": "Martwy ciąg klasyczny",
@@ -101,7 +113,8 @@
     "imageName": "deadlift",
     "description": "Angażuje całe ciało, głównie plecy i nogi.",
     "upDown": "FULL",
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "healthRisk": "JOINTS"
   },
   {
     "name": "Wyciskanie hantli siedząc",
@@ -109,7 +122,8 @@
     "imageName": "shoulder_press",
     "description": "Baza dla mięśni naramiennych.",
     "upDown": "UP",
-    "equipment": "dumbbells"
+    "equipment": "dumbbells",
+    "healthRisk": "JOINTS"
   },
   {
     "name": "Wznosy hantli bokiem",
@@ -117,7 +131,8 @@
     "imageName": "lateral_raises",
     "description": "Izolacja na środkowy akton barków (szerokość).",
     "upDown": "UP",
-    "equipment": "dumbbells"
+    "equipment": "dumbbells",
+    "healthRisk": "SAFE"
   },
   {
     "name": "Deska (Plank)",
@@ -125,7 +140,8 @@
     "imageName": "plank",
     "description": "Ćwiczenie statyczne na mięśnie korpusu.",
     "upDown": "UP",
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "healthRisk": "SAFE"
   },
   {
     "name": "Brzuszki (Spięcia)",
@@ -133,7 +149,8 @@
     "imageName": "crunches",
     "description": "Klasyka na mięśnie brzucha.",
     "upDown": "UP",
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "healthRisk": "SAFE"
   },
   {
     "name": "Uginanie ramion z hantlami",
@@ -141,7 +158,8 @@
     "imageName": "bicep_curl",
     "description": "Podstawowe ćwiczenie na biceps.",
     "upDown": "UP",
-    "equipment": "dumbbells"
+    "equipment": "dumbbells",
+    "healthRisk": "SAFE"
   },
   {
     "name": "Uginanie młotkowe",
@@ -149,7 +167,8 @@
     "imageName": "hammer_curl",
     "description": "Angażuje biceps i mięsień ramienny.",
     "upDown": "UP",
-    "equipment": "dumbbells"
+    "equipment": "dumbbells",
+    "healthRisk": "SAFE"
   },
   {
     "name": "Prostowanie ramion na wyciągu",
@@ -157,7 +176,8 @@
     "imageName": "tricep_pushdown",
     "description": "Izolacja na triceps.",
     "upDown": "UP",
-    "equipment": "machine"
+    "equipment": "machine",
+    "healthRisk": "SAFE"
   },
   {
     "name": "Burpees (Krokodylki)",
@@ -165,7 +185,8 @@
     "imageName": "burpee",
     "description": "Intensywne ćwiczenie na całe ciało.",
     "upDown": "FULL",
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "healthRisk": "CARDIO"
   },
   {
     "name": "Wyprosty tułowia (Ławeczka)",
@@ -173,6 +194,7 @@
     "imageName": "hyperextension",
     "description": "Wzmacnia prostowniki grzbietu (lędźwie).",
     "upDown": "UP",
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "healthRisk": "SAFE"
   }
 ]

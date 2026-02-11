@@ -3,23 +3,12 @@ package com.example.trainer.takeinfo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -39,121 +28,76 @@ fun MoreHealthQuest(
     onNextClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
-    var question1 by remember { mutableStateOf<String?>(null) }
-    var question2 by remember { mutableStateOf<String?>(null) }
-    var question3 by remember { mutableStateOf<String?>(null) }
-    var question4 by remember { mutableStateOf<String?>(null) }
-    var question5 by remember { mutableStateOf<String?>(null) }
+    var heartAnswer by remember { mutableStateOf<String?>(null) }
+    var jointAnswer by remember { mutableStateOf<String?>(null) }
 
-    val allAnswered = question1 != null && question2 != null && question3 != null && question4 != null && question5 != null
+    val allAnswered = heartAnswer != null && jointAnswer != null
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(
-                        LightBlue,
-                        Color.White
-                    ),
+                    colors = listOf(LightBlue, Color.White),
                     startY = 0f,
                     endY = Float.POSITIVE_INFINITY
                 )
             )
-            .safeDrawingPadding()
+            .systemBarsPadding()
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .weight(1f)
                 .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp)
         ) {
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-            ) {
-                Text(
-                    text = "Poznajmy Twój stan zdrowia",
-                    modifier = Modifier.padding(top = 40.dp, bottom = 16.dp),
-                    color = Color.Black,
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Start,
-                    lineHeight = 32.sp
-                )
-
-                Text(
-                    text = "Odpowiedz na poniższe pytania, abyśmy mogli dobrać bezpieczne ćwiczenia.",
-                    modifier = Modifier.padding(bottom = 32.dp),
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                    lineHeight = 20.sp
-                )
-
-                QuestionSection(
-                    question = "Choroby przewlekłe (cukrzyca, nadciśnienie)?",
-                    options = listOf("Nie", "Łagodne", "Poważne"),
-                    selectedOption = question1,
-                    onOptionSelected = { question1 = it }
-                )
-
-                QuestionSection(
-                    question = "Bóle stawów/pleców lub niedawne urazy?",
-                    options = listOf("Nie", "Czasami", "Poważne lub niedawne"),
-                    selectedOption = question2,
-                    onOptionSelected = { question2 = it }
-                )
-
-                QuestionSection(
-                    question = "Choroby serca i układu krążenia?",
-                    options = listOf("Nie", "Łagodne", "Poważne"),
-                    selectedOption = question3,
-                    onOptionSelected = { question3 = it }
-                )
-
-                QuestionSection(
-                    question = "Czy lekarz zaleca unikanie pewnych czynności?",
-                    options = listOf("Nie", "Częściowo", "Całkowicie"),
-                    selectedOption = question4,
-                    onOptionSelected = { question4 = it }
-                )
-
-                QuestionSection(
-                    question = "Jak często odczuwasz zmęczenie podczas codziennych czynności?",
-                    options = listOf("Rzadko", "Często", "Bardzo często"),
-                    selectedOption = question5,
-                    onOptionSelected = { question5 = it }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            NavigationButtons(
-                onBackClick = onBackClick,
-                onNextClick = {
-                    fun parse(answer: String?): Int {
-                        return when (answer) {
-                            "Nie", "Rzadko" -> 0
-                            "Niewielkie", "Czasami", "Łagodne", "Częściowe", "Często" -> 1
-                            else -> 3
-                        }
-                    }
-
-                    viewModel?.calculateHealthRisks(
-                        chronic = parse(question1),
-                        injuries = parse(question2),
-                        heart = parse(question3),
-                        restrictions = parse(question4),
-                        fatigue = parse(question5)
-                    )
-                    onNextClick()
-                },
-                nextEnabled = allAnswered,
+            Text(
+                text = "Twój stan zdrowia",
+                modifier = Modifier.padding(top = 40.dp, bottom = 16.dp),
+                color = Color.Black,
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Start,
+                lineHeight = 32.sp
             )
-            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "Te informacje są kluczowe, aby wykluczyć niebezpieczne ćwiczenia.",
+                modifier = Modifier.padding(bottom = 32.dp),
+                color = Color.Black,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                lineHeight = 20.sp
+            )
+
+            QuestionSection(
+                question = "1. Czy masz problemy z sercem lub nadciśnieniem?",
+                options = listOf("Nie", "Tak"),
+                selectedOption = heartAnswer,
+                onOptionSelected = { heartAnswer = it }
+            )
+
+            QuestionSection(
+                question = "2. Czy masz problemy z kręgosłupem lub stawami?",
+                options = listOf("Nie", "Tak"),
+                selectedOption = jointAnswer,
+                onOptionSelected = { jointAnswer = it }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
+
+        NavigationButtons(
+            onBackClick = onBackClick,
+            onNextClick = {
+                val hasHeartIssues = heartAnswer == "Tak"
+                val hasJointIssues = jointAnswer == "Tak"
+
+                viewModel?.setHealthConditions(hasHeartIssues, hasJointIssues)
+                onNextClick()
+            },
+            nextEnabled = allAnswered,
+        )
     }
 }
 
@@ -173,24 +117,25 @@ fun QuestionSection(
             text = question,
             modifier = Modifier.padding(bottom = 12.dp),
             color = Color.Black,
-            fontSize = 16.sp,
+            fontSize = 18.sp,
             fontWeight = FontWeight.Medium,
-            lineHeight = 20.sp
+            lineHeight = 22.sp
         )
 
         options.forEach { option ->
+            val isSelected = selectedOption == option
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp)
                     .height(50.dp)
                     .background(
-                        color = if (selectedOption == option) Color(0xFF2196F3) else Color.White,
+                        color = if (isSelected) Color(0xFF2196F3) else Color.White,
                         shape = RoundedCornerShape(8.dp)
                     )
                     .border(
                         width = 1.dp,
-                        color = Color.Gray,
+                        color = if (isSelected) Color(0xFF2196F3) else Color.Gray,
                         shape = RoundedCornerShape(8.dp)
                     )
                     .clickable { onOptionSelected(option) }
@@ -198,7 +143,7 @@ fun QuestionSection(
                 Text(
                     text = option,
                     modifier = Modifier.align(Alignment.Center),
-                    color = if (selectedOption == option) Color.White else Color.Black,
+                    color = if (isSelected) Color.White else Color.Black,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )

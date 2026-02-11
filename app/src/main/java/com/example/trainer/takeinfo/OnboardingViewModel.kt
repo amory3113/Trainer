@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.trainer.Logic.ActivityAnalyzer
-import com.example.trainer.Logic.HealthAssessor
 import com.example.trainer.Logic.Models.ActivityLevel
 import com.example.trainer.Logic.Models.Gender
 import com.example.trainer.Logic.Models.Goal
@@ -69,9 +68,17 @@ class OnboardingViewModel(
         _healthResult.value = HealthResult(HealthStatus.GOOD, null)
     }
 
-    fun calculateHealthRisks(chronic: Int, injuries: Int, heart: Int, restrictions: Int, fatigue: Int) {
-        val result = HealthAssessor.evaluate(chronic, injuries, heart, restrictions, fatigue)
-        _healthResult.value = result
+    private var hasHeartIssues: Boolean = false
+    private var hasJointIssues: Boolean = false
+
+    fun setHealthConditions(heart: Boolean, joints: Boolean) {
+        hasHeartIssues = heart
+        hasJointIssues = joints
+        if (heart || joints) {
+            _healthResult.value = HealthResult(HealthStatus.MODERATE, "Ograniczenia zdrowotne")
+        } else {
+            _healthResult.value = HealthResult(HealthStatus.GOOD, null)
+        }
     }
 
     fun calculateNutrition() {
@@ -105,6 +112,10 @@ class OnboardingViewModel(
                     goal = _userGoal.value!!,
                     activityLevel = _activityLevelResult.value,
                     healthResult = _healthResult.value,
+
+                    hasHeartIssues = hasHeartIssues,
+                    hasJointIssues = hasJointIssues,
+
                     workoutLocation = _workoutLocation.value ?: WorkoutLocation.HOME,
                     workoutFrequency = _workoutFrequency.value,
                     nutritionPlan = _nutritionPlan.value!!
@@ -117,6 +128,10 @@ class OnboardingViewModel(
                     height = userHeight,
                     goal = _userGoal.value!!.name,
                     activityLevel = _activityLevelResult.value.name,
+
+                    hasHeartIssues = hasHeartIssues,
+                    hasJointIssues = hasJointIssues,
+
                     healthStatus = "UNKNOWN",
                     healthWarning = null,
                     workoutLocation = _workoutLocation.value?.name ?: "HOME",
@@ -125,7 +140,13 @@ class OnboardingViewModel(
                 )
 
                 val allExercises = exerciseDao.getAllExercises().first()
-                val generatedPlan = WorkoutGenerator.generate(tempUserForGenerator, allExercises)
+
+                val generatedPlan = WorkoutGenerator.generate(
+                    tempUserForGenerator,
+                    allExercises,
+                    hasHeartIssues,
+                    hasJointIssues
+                )
 
                 val tempToRealIdMap = mutableMapOf<Long, Int>()
 

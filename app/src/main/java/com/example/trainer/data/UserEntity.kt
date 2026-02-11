@@ -15,6 +15,9 @@ data class UserEntity(
     val goal: String,
     val activityLevel: String,
 
+    val hasHeartIssues: Boolean,
+    val hasJointIssues: Boolean,
+
     val healthStatus: String,
     val healthWarning: String?,
 

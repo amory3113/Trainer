@@ -19,12 +19,27 @@ object WorkoutGenerator {
         val schedule: Map<Int, Long>
     )
 
-    fun generate(user: com.example.trainer.data.UserEntity, allExercises: List<ExerciseEntity>): GeneratedPlan {
+    fun generate(
+        user: com.example.trainer.data.UserEntity,
+        allExercises: List<ExerciseEntity>,
+        hasHeartIssues: Boolean,
+        hasJointIssues: Boolean
+    ): GeneratedPlan {
+
+        var filteredExercises = allExercises
+
+        if (hasHeartIssues) {
+            filteredExercises = filteredExercises.filter { it.healthRisk != "CARDIO" }
+        }
+
+        if (hasJointIssues) {
+            filteredExercises = filteredExercises.filter { it.healthRisk != "JOINTS" }
+        }
 
         val validExercises = if (user.workoutLocation == WorkoutLocation.HOME.name) {
-            allExercises.filter { it.equipment == "bodyweight" || it.equipment == "dumbbells" }
+            filteredExercises.filter { it.equipment == "bodyweight" || it.equipment == "dumbbells" }
         } else {
-            allExercises
+            filteredExercises
         }
 
         val (sets, reps) = when (user.goal) {

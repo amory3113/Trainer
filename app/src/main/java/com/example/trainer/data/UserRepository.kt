@@ -13,6 +13,9 @@ class UserRepository(private val userDao: UserDao) {
         goal: Goal,
         activityLevel: ActivityLevel,
         healthResult: HealthResult?,
+        hasHeartIssues: Boolean,
+        hasJointIssues: Boolean,
+
         workoutLocation: WorkoutLocation,
         workoutFrequency: Int,
         nutritionPlan: NutritionPlan
@@ -24,6 +27,9 @@ class UserRepository(private val userDao: UserDao) {
             height = height,
             goal = goal.name,
             activityLevel = activityLevel.name,
+
+            hasHeartIssues = hasHeartIssues,
+            hasJointIssues = hasJointIssues,
 
             healthStatus = healthResult?.status?.name ?: "UNKNOWN",
             healthWarning = healthResult?.warningMessage,
