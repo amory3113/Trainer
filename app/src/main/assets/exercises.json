@@ -27,13 +27,22 @@
     "healthRisk": "SAFE"
   },
   {
-    "name": "Pompki na poręczach (Dips)",
-    "muscleGroup": "ARMS",
-    "imageName": "dips",
-    "description": "Świetne na triceps i dolną część klatki.",
+    "name": "Rozpiętki z hantlami",
+    "muscleGroup": "CHEST",
+    "imageName": "dumbbell_flys",
+    "description": "Ćwiczenie rozciągające klatkę piersiową.",
     "upDown": "UP",
-    "equipment": "bodyweight",
-    "healthRisk": "JOINTS"
+    "equipment": "dumbbells",
+    "healthRisk": "SAFE"
+  },
+  {
+    "name": "Wyciskanie hantli na skosie это не сделал",
+    "muscleGroup": "CHEST",
+    "imageName": "incline_press",
+    "description": "Angażuje górną część klatki piersiowej.",
+    "upDown": "UP",
+    "equipment": "dumbbells",
+    "healthRisk": "SAFE"
   },
   {
     "name": "Przysiady (ciężar własny)",
@@ -54,6 +63,15 @@
     "healthRisk": "JOINTS"
   },
   {
+    "name": "Przysiad z hantlem (Goblet Squat) это не сделал",
+    "muscleGroup": "LEGS",
+    "imageName": "goblet_squat",
+    "description": "Świetne dla początkujących, bezpieczne dla pleców.",
+    "upDown": "DOWN",
+    "equipment": "dumbbells",
+    "healthRisk": "SAFE"
+  },
+  {
     "name": "Wykroki z hantlami",
     "muscleGroup": "LEGS",
     "imageName": "lunges",
@@ -72,7 +90,25 @@
     "healthRisk": "SAFE"
   },
   {
-    "name": "Wspięcia na palce",
+    "name": "Rumuński martwy ciąg это не сделал",
+    "muscleGroup": "LEGS",
+    "imageName": "rdl",
+    "description": "Kluczowe ćwiczenie na dwugłowe uda i pośladki.",
+    "upDown": "DOWN",
+    "equipment": "barbell",
+    "healthRisk": "JOINTS"
+  },
+  {
+    "name": "Mostek biodrowy (Glute Bridge)",
+    "muscleGroup": "LEGS",
+    "imageName": "glute_bridge",
+    "description": "Izolacja pośladków bez obciążania kręgosłupa.",
+    "upDown": "DOWN",
+    "equipment": "bodyweight",
+    "healthRisk": "SAFE"
+  },
+  {
+    "name": "Wspięcia na palce это не сделал",
     "muscleGroup": "LEGS",
     "imageName": "calf_raises",
     "description": "Izolacja na łydki.",
@@ -117,6 +153,15 @@
     "healthRisk": "JOINTS"
   },
   {
+    "name": "Wyprosty tułowia (Ławeczka)",
+    "muscleGroup": "BACK",
+    "imageName": "hyperextension",
+    "description": "Wzmacnia prostowniki grzbietu (lędźwie).",
+    "upDown": "UP",
+    "equipment": "bodyweight",
+    "healthRisk": "SAFE"
+  },
+  {
     "name": "Wyciskanie hantli siedząc",
     "muscleGroup": "SHOULDERS",
     "imageName": "shoulder_press",
@@ -126,10 +171,28 @@
     "healthRisk": "JOINTS"
   },
   {
+    "name": "Wyciskanie żołnierskie (stojąc)",
+    "muscleGroup": "SHOULDERS",
+    "imageName": "overhead_press",
+    "description": "Buduje siłę całego pasa barkowego.",
+    "upDown": "UP",
+    "equipment": "barbell",
+    "healthRisk": "JOINTS"
+  },
+  {
     "name": "Wznosy hantli bokiem",
     "muscleGroup": "SHOULDERS",
     "imageName": "lateral_raises",
     "description": "Izolacja na środkowy akton barków (szerokość).",
+    "upDown": "UP",
+    "equipment": "dumbbells",
+    "healthRisk": "SAFE"
+  },
+  {
+    "name": "Wznosy hantli w przód",
+    "muscleGroup": "SHOULDERS",
+    "imageName": "front_raises",
+    "description": "Izolacja przedniej części barków.",
     "upDown": "UP",
     "equipment": "dumbbells",
     "healthRisk": "SAFE"
@@ -153,6 +216,24 @@
     "healthRisk": "SAFE"
   },
   {
+    "name": "Wznosy nóg w leżeniu",
+    "muscleGroup": "ABS",
+    "imageName": "leg_raises",
+    "description": "Angażuje dolną część brzucha.",
+    "upDown": "UP",
+    "equipment": "bodyweight",
+    "healthRisk": "SAFE"
+  },
+  {
+    "name": "Rosyjskie skręty (Russian Twist)",
+    "muscleGroup": "ABS",
+    "imageName": "russian_twist",
+    "description": "Ćwiczenie na mięśnie skośne brzucha.",
+    "upDown": "UP",
+    "equipment": "bodyweight",
+    "healthRisk": "JOINTS"
+  },
+  {
     "name": "Uginanie ramion z hantlami",
     "muscleGroup": "ARMS",
     "imageName": "bicep_curl",
@@ -162,13 +243,13 @@
     "healthRisk": "SAFE"
   },
   {
-    "name": "Uginanie młotkowe",
+    "name": "Uginanie sztangi na stojąco",
     "muscleGroup": "ARMS",
-    "imageName": "hammer_curl",
+    "imageName": "barbell_curl",
     "description": "Angażuje biceps i mięsień ramienny.",
     "upDown": "UP",
     "equipment": "dumbbells",
-    "healthRisk": "SAFE"
+    "healthRisk": "JOINTS"
   },
   {
     "name": "Prostowanie ramion na wyciągu",
@@ -180,6 +261,24 @@
     "healthRisk": "SAFE"
   },
   {
+    "name": "Wyciskanie francuskie",
+    "muscleGroup": "ARMS",
+    "imageName": "skullcrushers",
+    "description": "Mocne ćwiczenie na triceps (uwaga na łokcie).",
+    "upDown": "UP",
+    "equipment": "barbell",
+    "healthRisk": "JOINTS"
+  },
+  {
+    "name": "Pompki na poręczach (Dips)",
+    "muscleGroup": "ARMS",
+    "imageName": "dips",
+    "description": "Świetne na triceps i dolną część klatki.",
+    "upDown": "UP",
+    "equipment": "bodyweight",
+    "healthRisk": "JOINTS"
+  },
+  {
     "name": "Burpees (Krokodylki)",
     "muscleGroup": "CARDIO",
     "imageName": "burpee",
@@ -189,12 +288,30 @@
     "healthRisk": "CARDIO"
   },
   {
-    "name": "Wyprosty tułowia (Ławeczka)",
-    "muscleGroup": "BACK",
-    "imageName": "hyperextension",
-    "description": "Wzmacnia prostowniki grzbietu (lędźwie).",
+    "name": "Pajacyki (Jumping Jacks)",
+    "muscleGroup": "CARDIO",
+    "imageName": "jumping_jacks",
+    "description": "Podstawowe ćwiczenie kardio na rozgrzewkę.",
+    "upDown": "FULL",
+    "equipment": "bodyweight",
+    "healthRisk": "CARDIO"
+  },
+  {
+    "name": "Wspinaczka (Mountain Climbers)",
+    "muscleGroup": "CARDIO",
+    "imageName": "mountain_climbers",
+    "description": "Dynamiczne ćwiczenie na kondycję i brzuch.",
+    "upDown": "DOWN",
+    "equipment": "bodyweight",
+    "healthRisk": "CARDIO"
+  },
+  {
+    "name": "Bieg w miejscu (Wysokie kolana)",
+    "muscleGroup": "CARDIO",
+    "imageName": "high_knees",
+    "description": "Intensywny bieg w miejscu.",
     "upDown": "UP",
     "equipment": "bodyweight",
-    "healthRisk": "SAFE"
+    "healthRisk": "CARDIO"
   }
 ]
