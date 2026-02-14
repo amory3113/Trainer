@@ -36,7 +36,7 @@
     "healthRisk": "SAFE"
   },
   {
-    "name": "Wyciskanie hantli na skosie это не сделал",
+    "name": "Wyciskanie na ławce skośnej",
     "muscleGroup": "CHEST",
     "imageName": "incline_press",
     "description": "Angażuje górną część klatki piersiowej.",
@@ -63,7 +63,7 @@
     "healthRisk": "JOINTS"
   },
   {
-    "name": "Przysiad z hantlem (Goblet Squat) это не сделал",
+    "name": "Przysiad z hantlem (Goblet Squat)",
     "muscleGroup": "LEGS",
     "imageName": "goblet_squat",
     "description": "Świetne dla początkujących, bezpieczne dla pleców.",
@@ -90,7 +90,7 @@
     "healthRisk": "SAFE"
   },
   {
-    "name": "Rumuński martwy ciąg это не сделал",
+    "name": "Rumuński martwy ciąg",
     "muscleGroup": "LEGS",
     "imageName": "rdl",
     "description": "Kluczowe ćwiczenie na dwugłowe uda i pośladki.",
@@ -108,7 +108,7 @@
     "healthRisk": "SAFE"
   },
   {
-    "name": "Wspięcia na palce это не сделал",
+    "name": "Wspięcia na palce",
     "muscleGroup": "LEGS",
     "imageName": "calf_raises",
     "description": "Izolacja na łydki.",
@@ -279,6 +279,15 @@
     "healthRisk": "JOINTS"
   },
   {
+    "name": "Wyciskanie bicepsa na skosie",
+    "muscleGroup": "ARMS",
+    "imageName": "biceps",
+    "description": "Świetne na biceps.",
+    "upDown": "UP",
+    "equipment": "machine",
+    "healthRisk": "SAFE"
+  },
+  {
     "name": "Burpees (Krokodylki)",
     "muscleGroup": "CARDIO",
     "imageName": "burpee",
@@ -306,11 +315,11 @@
     "healthRisk": "CARDIO"
   },
   {
-    "name": "Bieg w miejscu (Wysokie kolana)",
+    "name": "Bieganie",
     "muscleGroup": "CARDIO",
-    "imageName": "high_knees",
-    "description": "Intensywny bieg w miejscu.",
-    "upDown": "UP",
+    "imageName": "running",
+    "description": "Intensywny bieg.",
+    "upDown": "DOWN",
     "equipment": "bodyweight",
     "healthRisk": "CARDIO"
   }
