@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.trainer.ui.theme.OpenSans
 
 @Composable
 fun AddFoodDialog(
@@ -20,13 +21,13 @@ fun AddFoodDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Dodaj posiłek") },
+        title = { Text("Dodaj posiłek", fontFamily = OpenSans) },
         text = {
             Column {
                 OutlinedTextField(
                     value = calories,
                     onValueChange = { calories = it },
-                    label = { Text("Kalorie (kcal)") },
+                    label = { Text("Kalorie (kcal)", fontFamily = OpenSans) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
@@ -37,7 +38,7 @@ fun AddFoodDialog(
                     OutlinedTextField(
                         value = protein,
                         onValueChange = { protein = it },
-                        label = { Text("Białko") },
+                        label = { Text("Białko", fontFamily = OpenSans) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
                         modifier = Modifier.weight(1f)
@@ -45,7 +46,7 @@ fun AddFoodDialog(
                     OutlinedTextField(
                         value = fat,
                         onValueChange = { fat = it },
-                        label = { Text("Tłuszcz") },
+                        label = { Text("Tłuszcz", fontFamily = OpenSans) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
                         modifier = Modifier.weight(1f)
@@ -53,7 +54,7 @@ fun AddFoodDialog(
                     OutlinedTextField(
                         value = carbs,
                         onValueChange = { carbs = it },
-                        label = { Text("Węglowodany") },
+                        label = { Text("Węglowodany", fontFamily = OpenSans) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
                         modifier = Modifier.weight(1f)
@@ -73,12 +74,12 @@ fun AddFoodDialog(
                     }
                 }
             ) {
-                Text("Dodaj")
+                Text("Dodaj", fontFamily = OpenSans)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Anuluj")
+                Text("Anuluj", fontFamily = OpenSans)
             }
         }
     )

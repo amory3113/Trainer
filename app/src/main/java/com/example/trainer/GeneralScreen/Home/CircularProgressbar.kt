@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.trainer.ui.theme.OpenSans
 
 @Composable
 fun CircularProgressbar(
@@ -76,12 +77,12 @@ fun CircularProgressbar(
             )
             Text(
                 text = "Pozostało",
-                fontSize = 16.sp,
+                fontSize = 16.sp, fontFamily = OpenSans,
                 color = Color.Gray
             )
             Text(
                 text = " $calories kalorii",
-                fontSize = 14.sp,
+                fontSize = 14.sp, fontFamily = OpenSans,
                 color = Color.Gray
             )
         }

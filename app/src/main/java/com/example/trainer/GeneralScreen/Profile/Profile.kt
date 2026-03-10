@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trainer.ui.theme.GradientBackground
 import com.example.trainer.data.UserEntity
+import com.example.trainer.ui.theme.OpenSans
 
 @Composable
 fun Profile(
@@ -160,7 +161,7 @@ fun Profile(
                 ) {
                     Icon(imageVector = Icons.Outlined.Logout, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Zresetuj postęp i wyjdź")
+                    Text("Zresetuj postęp i wyjdź", fontFamily = OpenSans)
                 }
 
                 Spacer(modifier = Modifier.height(100.dp))
@@ -191,7 +192,7 @@ fun Profile(
 fun AboutAppDialog(onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Informacje o projekcie", fontWeight = FontWeight.Bold)},
+        title = { Text("Informacje o projekcie", fontWeight = FontWeight.Bold, fontFamily = OpenSans)},
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 AboutRow(label = "Temat:", value = "Projekt i wykonanie aplikacji mobilnej typu „trener personalny”")
@@ -203,7 +204,7 @@ fun AboutAppDialog(onDismiss: () -> Unit) {
         },
         confirmButton = {
             Button(onClick = onDismiss) {
-                Text("Zamknij")
+                Text("Zamknij", fontFamily = OpenSans)
             }
         }
     )
@@ -212,8 +213,8 @@ fun AboutAppDialog(onDismiss: () -> Unit) {
 @Composable
 fun AboutRow(label: String, value: String) {
     Column {
-        Text(text = label, fontSize = 12.sp, color = Color.Gray)
-        Text(text = value, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = Color.White)
+        Text(text = label, fontSize = 12.sp, color = Color.Gray, fontFamily = OpenSans)
+        Text(text = value, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = Color.White, fontFamily = OpenSans)
     }
 }
 
@@ -243,7 +244,7 @@ fun EditProfileDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(title, fontWeight = FontWeight.Bold) },
+        title = { Text(title, fontWeight = FontWeight.Bold, fontFamily = OpenSans) },
         text = {
             Column {
                 if (type == EditType.GOAL) {
@@ -269,7 +270,7 @@ fun EditProfileDialog(
                                 onClick = null
                             )
                             Spacer(Modifier.width(8.dp))
-                            Text(text = label)
+                            Text(text = label, fontFamily = OpenSans)
                         }
                     }
 
@@ -296,7 +297,7 @@ fun EditProfileDialog(
                                 onClick = null
                             )
                             Spacer(Modifier.width(8.dp))
-                            Text(text = label)
+                            Text(text = label, fontFamily = OpenSans)
                         }
                     }
 
@@ -317,12 +318,12 @@ fun EditProfileDialog(
             Button(
                 onClick = { onConfirm(selectedValue) },
             ) {
-                Text("Zapisz")
+                Text("Zapisz", fontFamily = OpenSans)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Anuluj")
+                Text("Anuluj", fontFamily = OpenSans)
             }
         }
     )
@@ -355,7 +356,7 @@ fun ProfileHeader(user: UserEntity) {
         Text(
             text = "Użytkownik",
             fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Bold, fontFamily = OpenSans,
             color = Color.Black
         )
     }
@@ -366,7 +367,7 @@ fun SectionTitle(text: String) {
     Text(
         text = text,
         fontSize = 18.sp,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.Bold, fontFamily = OpenSans,
         color = Color.Black.copy(alpha = 0.7f),
         modifier = Modifier
             .fillMaxWidth()
@@ -415,7 +416,7 @@ fun ProfileOptionItem(
             Text(
                 text = title,
                 fontSize = 16.sp,
-                color = Color.Black
+                color = Color.Black, fontFamily = OpenSans
             )
         }
 
@@ -424,7 +425,7 @@ fun ProfileOptionItem(
                 text = value,
                 fontSize = 14.sp,
                 color = Color.Gray,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium, fontFamily = OpenSans
             )
             if (showArrow) {
                 Spacer(modifier = Modifier.width(8.dp))

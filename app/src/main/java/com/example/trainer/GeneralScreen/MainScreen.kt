@@ -38,6 +38,7 @@ import com.example.trainer.GeneralScreen.Stats.StatsViewModelFactory
 import com.example.trainer.GeneralScreen.Workout.WorkoutScreen
 import com.example.trainer.data.UserRepository
 import com.example.trainer.navigation.Routes
+import com.example.trainer.ui.theme.OpenSans
 
 sealed class BottomBarScreen(
     val route: String,
@@ -72,7 +73,7 @@ fun MainScreen(repository: UserRepository, navController: androidx.navigation.Na
                     val isSelected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
 
                     NavigationBarItem(
-                        label = { Text(text = screen.title) },
+                        label = { Text(text = screen.title, fontFamily = OpenSans) },
                         icon = {
                             Icon(
                                 imageVector = screen.icon,

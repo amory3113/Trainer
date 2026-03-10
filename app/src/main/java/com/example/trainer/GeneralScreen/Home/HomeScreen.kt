@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.trainer.R
 import com.example.trainer.ui.theme.GradientBackground
+import com.example.trainer.ui.theme.OpenSans
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -66,12 +67,12 @@ fun HomeScreen(
                         Text(
                             text = getGreeting(),
                             fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.Bold, fontFamily = OpenSans,
                             color = Color.Black
                         )
                         Text(
                             text = getCurrentDate(),
-                            fontSize = 16.sp,
+                            fontSize = 16.sp, fontFamily = OpenSans,
                             color = Color.Gray
                         )
                     }
@@ -147,7 +148,7 @@ fun HomeScreen(
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Dodaj")
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Dodaj jedzenie", fontWeight = FontWeight.Bold)
+                Text(text = "Dodaj jedzenie", fontWeight = FontWeight.Bold, fontFamily = OpenSans)
             }
         }
     }
@@ -170,7 +171,7 @@ fun HomeScreen(
                 Text(
                     text = uiState.todayWorkoutName ?: "Trening",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp
+                    fontSize = 22.sp, fontFamily = OpenSans
                 )
             },
             text = {
@@ -208,12 +209,12 @@ fun HomeScreen(
                                 Text(
                                     text = item.exercise.name,
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp
+                                    fontSize = 16.sp, fontFamily = OpenSans
                                 )
                                 Text(
                                     text = "${item.sets} serie x ${item.reps} powt.",
                                     color = Color(0xFF2196F3),
-                                    fontWeight = FontWeight.Medium
+                                    fontWeight = FontWeight.Medium, fontFamily = OpenSans
                                 )
                             }
                         }
@@ -223,7 +224,7 @@ fun HomeScreen(
             },
             confirmButton = {
                 Button(onClick = { showWorkoutDialog = false }) {
-                    Text("Zamknij")
+                    Text("Zamknij", fontFamily = OpenSans)
                 }
             }
         )
@@ -290,8 +291,8 @@ fun WorkoutCard(workoutName: String, onClick: () -> Unit) {
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = "Dzisiaj", fontSize = 14.sp, color = Color.Gray)
-                Text(text = workoutName, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(text = "Dzisiaj", fontSize = 14.sp, color = Color.Gray, fontFamily = OpenSans)
+                Text(text = workoutName, fontSize = 20.sp, fontWeight = FontWeight.Bold, fontFamily = OpenSans)
             }
 
             Box(
@@ -340,8 +341,8 @@ fun RestDayCard() {
             Spacer(modifier = Modifier.width(16.dp))
 
             Column {
-                Text(text = "Dzień odpoczynku", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Text(text = "Odpoczynek jest kluczowy dla regeneracji mięśni.", fontSize = 14.sp, color = Color.Gray)
+                Text(text = "Dzień odpoczynku", fontSize = 20.sp, fontWeight = FontWeight.Bold, fontFamily = OpenSans)
+                Text(text = "Odpoczynek jest kluczowy dla regeneracji mięśni.", fontSize = 14.sp, color = Color.Gray, fontFamily = OpenSans)
             }
         }
     }

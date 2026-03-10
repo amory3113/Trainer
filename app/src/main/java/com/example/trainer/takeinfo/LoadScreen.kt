@@ -26,17 +26,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.trainer.ui.theme.LightBlue
+import com.example.trainer.ui.theme.GradientBackground
 import com.example.trainer.ui.theme.TrainerTheme
 import com.example.trainer.Logic.Models.Goal
 import com.example.trainer.Logic.Models.WorkoutLocation
+import com.example.trainer.ui.theme.OpenSans
 import kotlinx.coroutines.delay
 
 @Composable
@@ -68,23 +68,10 @@ fun LoadScreen(
         isLoading = false
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        LightBlue,
-                        Color.White
-                    ),
-                    startY = 0f,
-                    endY = Float.POSITIVE_INFINITY
-                )
-            )
-    ) {
+    GradientBackground {
         if (isLoading) {
             Column(
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -100,7 +87,7 @@ fun LoadScreen(
                     text = if (currentStep < loadingTexts.size) loadingTexts[currentStep] else loadingTexts.last(),
                     color = Color.Black,
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.Medium, fontFamily = OpenSans,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 32.dp)
                 )
@@ -118,14 +105,15 @@ fun LoadScreen(
                     Text(
                         text = "Twój plan jest gotowy!",
                         fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
+                        lineHeight = 38.sp,
+                        fontWeight = FontWeight.Bold, fontFamily = OpenSans,
                         color = Color.Black,
                         modifier = Modifier.padding(bottom = 24.dp)
                     )
 
                     Text(
                         text = "Oto Twój spersonalizowany plan treningowy.",
-                        fontSize = 16.sp,
+                        fontSize = 16.sp, fontFamily = OpenSans,
                         color = Color.Black,
                         lineHeight = 22.sp,
                         modifier = Modifier.padding(bottom = 32.dp)
@@ -185,7 +173,7 @@ fun LoadScreen(
                     Text(
                         text = "Pokaż mój plan",
                         color = Color.White,
-                        fontSize = 18.sp,
+                        fontSize = 18.sp, fontFamily = OpenSans,
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -204,12 +192,14 @@ fun InfoRow(label: String, value: String) {
             text = label,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
+            fontFamily = OpenSans,
             color = Color.Gray
         )
         Text(
             text = value,
             fontSize = 17.sp,
             fontWeight = FontWeight.Bold,
+            fontFamily = OpenSans,
             color = Color.Black
         )
     }

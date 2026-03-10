@@ -29,6 +29,7 @@ import com.example.trainer.data.Exercise.WorkoutRepository
 import com.example.trainer.data.Exercise.WorkoutTemplateEntity
 import com.example.trainer.data.Exercise.WorkoutWithExercises
 import com.example.trainer.ui.theme.GradientBackground
+import com.example.trainer.ui.theme.OpenSans
 
 
 @Composable
@@ -62,7 +63,7 @@ fun WorkoutScreen(onNavigateToCreate: (Int) -> Unit) {
                     Tab(
                         selected = selectedTab == index,
                         onClick = { selectedTab = index },
-                        text = { Text(title, fontWeight = FontWeight.Bold) }
+                        text = { Text(title, fontWeight = FontWeight.Bold, fontFamily = OpenSans) }
                     )
                 }
             }
@@ -91,8 +92,8 @@ fun MyProgramsTab(
     if (showDeleteDialog && workoutToDelete != null) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Usunąć trening?") },
-            text = { Text("Czy na pewno chcesz usunąć \"${workoutToDelete?.name}\"? Tej czynności nie można cofnąć.") },
+            title = { Text("Usunąć trening?", fontFamily = OpenSans) },
+            text = { Text("Czy na pewno chcesz usunąć \"${workoutToDelete?.name}\"? Tej czynności nie można cofnąć.", fontFamily = OpenSans) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -101,10 +102,10 @@ fun MyProgramsTab(
                         workoutToDelete = null
                     },
                     colors = ButtonDefaults.textButtonColors(contentColor = Color.Red)
-                ) { Text("Usunąć") }
+                ) { Text("Usunąć", fontFamily = OpenSans) }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text("Cofnij") }
+                TextButton(onClick = { showDeleteDialog = false }) { Text("Cofnij", fontFamily = OpenSans) }
             }
         )
     }
@@ -113,7 +114,7 @@ fun MyProgramsTab(
         if (templates.isEmpty()) {
             Text(
                 text = "Nie masz jeszcze żadnych treningów.\nKliknij +, aby stworzyć pierwszy.",
-                color = Color.Gray,
+                color = Color.Gray, fontFamily = OpenSans,
                 modifier = Modifier.align(Alignment.Center)
             )
         } else {
@@ -174,7 +175,7 @@ fun WorkoutCard(
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(item.template.name, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(item.template.name, fontSize = 18.sp, fontWeight = FontWeight.Bold, fontFamily = OpenSans)
 
                 Spacer(modifier = Modifier.height(4.dp))
 
@@ -183,11 +184,11 @@ fun WorkoutCard(
                     Text(
                         text = exercisesList,
                         fontSize = 14.sp,
-                        color = Color.Gray,
+                        color = Color.Gray, fontFamily = OpenSans,
                         lineHeight = 20.sp
                     )
                 } else {
-                    Text("Brak ćwiczeń", fontSize = 14.sp, color = Color.Gray)
+                    Text("Brak ćwiczeń", fontSize = 14.sp, color = Color.Gray, fontFamily = OpenSans)
                 }
             }
 
@@ -224,7 +225,7 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("Wybierz trening na ${daysOfWeek[selectedDayIndex]}") },
+            title = { Text("Wybierz trening na ${daysOfWeek[selectedDayIndex]}", fontFamily = OpenSans) },
             text = {
                 LazyColumn {
                     item {
@@ -238,7 +239,7 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
                                 }
                                 .padding(12.dp),
                             color = Color.White,
-                            fontSize = 18.sp
+                            fontSize = 18.sp, fontFamily = OpenSans
                         )
                         HorizontalDivider()
                     }
@@ -252,7 +253,7 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
                                     showDialog = false
                                 }
                                 .padding(12.dp),
-                            fontSize = 18.sp
+                            fontSize = 18.sp, fontFamily = OpenSans
                         )
                         HorizontalDivider()
                     }
@@ -260,7 +261,7 @@ fun ScheduleTab(viewModel: WorkoutViewModel) {
             },
             confirmButton = {},
             dismissButton = {
-                TextButton(onClick = { showDialog = false }) { Text("Anuluj") }
+                TextButton(onClick = { showDialog = false }) { Text("Anuluj", fontFamily = OpenSans) }
             }
         )
     }
@@ -304,7 +305,9 @@ fun ScheduleDayCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(dayName, fontWeight = FontWeight.Medium, fontSize = 16.sp)
+            Text(dayName, fontWeight = FontWeight.Medium, fontSize = 16.sp, fontFamily = OpenSans)
+
+            Spacer(modifier = Modifier.weight(1f))
 
             if (item != null && item.workoutName != null) {
                 Text(
@@ -313,8 +316,16 @@ fun ScheduleDayCard(
                     fontWeight = FontWeight.Bold
                 )
             } else {
-                Text("Odpoczynek / Zaplanuj", color = Color.Gray, fontSize = 14.sp)
+                Text("Odpoczynek / Zaplanuj", color = Color.Gray, fontSize = 14.sp, fontFamily = OpenSans)
             }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = "Redagować",
+                tint = Color(0xFF2196F3)
+            )
         }
     }
 }

@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trainer.ui.theme.GradientBackground
 import com.example.trainer.ui.theme.NavigationButtons
+import com.example.trainer.ui.theme.OpenSans
 import com.example.trainer.ui.theme.TrainerTheme
 
 @Composable
@@ -41,140 +42,146 @@ fun ActivityLevel(
             fatigueLevel != null
 
     GradientBackground {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .safeDrawingPadding()
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
             ) {
-                Text(
-                    text = "Twoja aktywność",
-                    modifier = Modifier.padding(top = 40.dp, bottom = 16.dp),
-                    color = Color.Black,
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Start
-                )
-
-                Text(
-                    text = "Proszę odpowiedzieć na wszystkie pytania, abyśmy mogli dokładnie obliczyć Twoje zapotrzebowanie kaloryczne.",
-                    modifier = Modifier.padding(bottom = 32.dp),
-                    color = Color.DarkGray,
-                    fontSize = 16.sp
-                )
-
-                ActivityQuestionSection(
-                    question = "1. Jaka jest Twoja praca lub główne codzienne zajęcie?",
-                    options = listOf(
-                        "Siedzący tryb życia, mało ruchu",
-                        "Praca \"stojąca\", lekka aktywność",
-                        "Praca fizyczna, dużo ruchu"
-                    ),
-                    selectedOption = workActivity,
-                    onOptionSelected = { workActivity = it }
-                )
-
-                ActivityQuestionSection(
-                    question = "2. Jak często ćwiczysz?",
-                    options = listOf(
-                        "Rzadko lub nigdy",
-                        "Kilka razy w tygodniu",
-                        "Prawie codziennie"
-                    ),
-                    selectedOption = sportsFrequency,
-                    onOptionSelected = { sportsFrequency = it }
-                )
-
-                ActivityQuestionSection(
-                    question = "3. Jak długo zazwyczaj trwa Twoja aktywność?",
-                    options = listOf(
-                        "Mniej niż 30 minut",
-                        "30 - 60 minut",
-                        "Ponad godzinę"
-                    ),
-                    selectedOption = sessionDuration,
-                    onOptionSelected = { sessionDuration = it }
-                )
-
-                Text(
-                    text = "Samopoczucie",
-                    modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
-                    color = Color.Black,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                ActivityQuestionSection(
-                    question = "4. Jaka jest Twoja aktualna kondycja fizyczna?",
-                    options = listOf(
-                        "Niska (szybko się męczę)",
-                        "Przeciętna (regularny ruch)",
-                        "Wysoka (mam dobrą kondycję)"
-                    ),
-                    selectedOption = physicalCondition,
-                    onOptionSelected = { physicalCondition = it }
-                )
-
-                ActivityQuestionSection(
-                    question = "5. Zmęczenie pod koniec dnia?",
-                    options = listOf(
-                        "Często (brak energii pod koniec dnia)",
-                        "Czasami",
-                        "Rzadko (dużo energii)"
-                    ),
-                    selectedOption = fatigueLevel,
-                    onOptionSelected = { fatigueLevel = it }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            NavigationButtons(
-                onBackClick = onBackClick,
-                onNextClick = {
-                    val jobScore = when(workActivity) {
-                        "Siedzący tryb życia, mało ruchu" -> 1
-                        "Pracuj \"na stojąco\", ale bez stresu" -> 2
-                        else -> 3
-                    }
-                    val freqScore = when(sportsFrequency) {
-                        "Rzadko lub nigdy" -> 1
-                        "Kilka razy w tygodniu" -> 2
-                        else -> 3
-                    }
-                    val durScore = when(sessionDuration) {
-                        "Mniej niż 30 minut" -> 1
-                        "30 - 60 minut" -> 2
-                        else -> 3
-                    }
-                    val condScore = when(physicalCondition) {
-                        "Słaby (szybko się męczy)" -> 1
-                        "Średni (potrafię biegać)" -> 2
-                        else -> 3
-                    }
-                    val fatScore = when(fatigueLevel) {
-                        "Często (spadam z nóg)" -> 1
-                        "Czasami" -> 2
-                        else -> 3
-                    }
-
-                    viewModel?.calculateActivityLevel(
-                        job = jobScore,
-                        sport = freqScore,
-                        duration = durScore,
-                        condition = condScore,
-                        fatigue = fatScore
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
+                ) {
+                    Text(
+                        text = "Twoja aktywność",
+                        modifier = Modifier.padding(top = 40.dp, bottom = 16.dp),
+                        color = Color.Black,
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold, fontFamily = OpenSans,
+                        textAlign = TextAlign.Start
                     )
-                    onNextClick()
-                },
-                nextEnabled = allAnswered
-            )
 
-            Spacer(modifier = Modifier.height(24.dp))
+                    Text(
+                        text = "Proszę odpowiedzieć na wszystkie pytania, abyśmy mogli dokładnie obliczyć Twoje zapotrzebowanie kaloryczne.",
+                        modifier = Modifier.padding(bottom = 32.dp),
+                        color = Color.DarkGray,
+                        fontSize = 16.sp, fontFamily = OpenSans
+                    )
+
+                    ActivityQuestionSection(
+                        question = "1. Jaka jest Twoja praca lub główne codzienne zajęcie?",
+                        options = listOf(
+                            "Siedzący tryb życia, mało ruchu",
+                            "Praca \"stojąca\", lekka aktywność",
+                            "Praca fizyczna, dużo ruchu"
+                        ),
+                        selectedOption = workActivity,
+                        onOptionSelected = { workActivity = it }
+                    )
+
+                    ActivityQuestionSection(
+                        question = "2. Jak często ćwiczysz?",
+                        options = listOf(
+                            "Rzadko lub nigdy",
+                            "Kilka razy w tygodniu",
+                            "Prawie codziennie"
+                        ),
+                        selectedOption = sportsFrequency,
+                        onOptionSelected = { sportsFrequency = it }
+                    )
+
+                    ActivityQuestionSection(
+                        question = "3. Jak długo zazwyczaj trwa Twoja aktywność?",
+                        options = listOf(
+                            "Mniej niż 30 minut",
+                            "30 - 60 minut",
+                            "Ponad godzinę"
+                        ),
+                        selectedOption = sessionDuration,
+                        onOptionSelected = { sessionDuration = it }
+                    )
+
+                    Text(
+                        text = "Samopoczucie",
+                        modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
+                        color = Color.Black,
+                        fontSize = 24.sp, fontFamily = OpenSans,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    ActivityQuestionSection(
+                        question = "4. Jaka jest Twoja aktualna kondycja fizyczna?",
+                        options = listOf(
+                            "Niska (szybko się męczę)",
+                            "Przeciętna (regularny ruch)",
+                            "Wysoka (mam dobrą kondycję)"
+                        ),
+                        selectedOption = physicalCondition,
+                        onOptionSelected = { physicalCondition = it }
+                    )
+
+                    ActivityQuestionSection(
+                        question = "5. Zmęczenie pod koniec dnia?",
+                        options = listOf(
+                            "Często (brak energii pod koniec dnia)",
+                            "Czasami",
+                            "Rzadko (dużo energii)"
+                        ),
+                        selectedOption = fatigueLevel,
+                        onOptionSelected = { fatigueLevel = it }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                NavigationButtons(
+                    onBackClick = onBackClick,
+                    onNextClick = {
+                        val jobScore = when (workActivity) {
+                            "Siedzący tryb życia, mało ruchu" -> 1
+                            "Pracuj \"na stojąco\", ale bez stresu" -> 2
+                            else -> 3
+                        }
+                        val freqScore = when (sportsFrequency) {
+                            "Rzadko lub nigdy" -> 1
+                            "Kilka razy w tygodniu" -> 2
+                            else -> 3
+                        }
+                        val durScore = when (sessionDuration) {
+                            "Mniej niż 30 minut" -> 1
+                            "30 - 60 minut" -> 2
+                            else -> 3
+                        }
+                        val condScore = when (physicalCondition) {
+                            "Słaby (szybko się męczy)" -> 1
+                            "Średni (potrafię biegać)" -> 2
+                            else -> 3
+                        }
+                        val fatScore = when (fatigueLevel) {
+                            "Często (spadam z nóg)" -> 1
+                            "Czasami" -> 2
+                            else -> 3
+                        }
+
+                        viewModel?.calculateActivityLevel(
+                            job = jobScore,
+                            sport = freqScore,
+                            duration = durScore,
+                            condition = condScore,
+                            fatigue = fatScore
+                        )
+                        onNextClick()
+                    },
+                    nextEnabled = allAnswered
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
     }
 }
@@ -196,7 +203,7 @@ fun ActivityQuestionSection(
             modifier = Modifier.padding(bottom = 12.dp),
             color = Color.Black,
             fontSize = 18.sp,
-            fontWeight = FontWeight.Medium,
+            fontWeight = FontWeight.Medium, fontFamily = OpenSans,
             lineHeight = 22.sp
         )
 
@@ -223,7 +230,7 @@ fun ActivityQuestionSection(
                     modifier = Modifier.align(Alignment.Center),
                     color = if (isSelected) Color.White else Color.Black,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.Medium, fontFamily = OpenSans,
                     textAlign = TextAlign.Center
                 )
             }

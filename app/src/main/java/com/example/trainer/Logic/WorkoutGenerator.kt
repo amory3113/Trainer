@@ -60,13 +60,10 @@ object WorkoutGenerator {
     ): GeneratedPlan {
         val workouts = mutableListOf<GeneratedWorkout>()
         val schedule = mutableMapOf<Int, Long>()
-
         val wA = createWorkout("Całe ciało A", selectExercisesForFullBody(exercises, "A"), sets, reps)
         val wB = createWorkout("Całe ciało B", selectExercisesForFullBody(exercises, "B"), sets, reps)
-
         workouts.add(GeneratedWorkout(1L, wA.first, wA.second))
         workouts.add(GeneratedWorkout(2L, wB.first, wB.second))
-
         if (freq == 1) {
             schedule[0] = 1L
         } else if (freq == 2) {
@@ -74,7 +71,6 @@ object WorkoutGenerator {
         } else {
             schedule[0] = 1L; schedule[2] = 2L; schedule[4] = 1L
         }
-
         return GeneratedPlan(workouts, schedule)
     }
 
@@ -103,25 +99,21 @@ object WorkoutGenerator {
     ): GeneratedPlan {
         val workouts = mutableListOf<GeneratedWorkout>()
         val schedule = mutableMapOf<Int, Long>()
-
         val wChest = createWorkout("Klatka Piersiowa", exercises.filter { it.muscleGroup == "CHEST" }.shuffled().take(5), sets, reps)
         val wBack = createWorkout("Plecy", exercises.filter { it.muscleGroup == "BACK" }.shuffled().take(5), sets, reps)
         val wLegs = createWorkout("Nogi i Brzuch", exercises.filter { it.muscleGroup == "LEGS" || it.muscleGroup == "ABS" }.shuffled().take(6), sets, reps)
         val wShoulders = createWorkout("Barki", exercises.filter { it.muscleGroup == "SHOULDERS" }.shuffled().take(5), sets, reps)
         val wArms = createWorkout("Ramiona", exercises.filter { it.muscleGroup == "ARMS" }.shuffled().take(6), sets, reps)
-
         workouts.add(GeneratedWorkout(31L, wChest.first, wChest.second))
         workouts.add(GeneratedWorkout(32L, wBack.first, wBack.second))
         workouts.add(GeneratedWorkout(33L, wLegs.first, wLegs.second))
         workouts.add(GeneratedWorkout(34L, wShoulders.first, wShoulders.second))
         workouts.add(GeneratedWorkout(35L, wArms.first, wArms.second))
-
         schedule[0] = 31L
         schedule[1] = 32L
         schedule[2] = 33L
         schedule[3] = 34L
         schedule[4] = 35L
-
         return GeneratedPlan(workouts, schedule)
     }
 

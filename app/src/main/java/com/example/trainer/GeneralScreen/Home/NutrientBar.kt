@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.trainer.ui.theme.OpenSans
 
 @Composable
 fun NutrientBar(
@@ -29,7 +30,7 @@ fun NutrientBar(
     Column(modifier = modifier.padding(horizontal = 8.dp)) {
         Text(
             text = name,
-            fontSize = 16.sp,
+            fontSize = 16.sp, fontFamily = OpenSans,
             fontWeight = FontWeight.Medium,
             color = Color.Black
         )
@@ -48,7 +49,7 @@ fun NutrientBar(
 
         Text(
             text = "$current / $target g",
-            fontSize = 12.sp,
+            fontSize = 12.sp, fontFamily = OpenSans,
             color = Color.Gray
         )
     }

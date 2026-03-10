@@ -114,7 +114,7 @@ fun NavigationButtons(
             Text(
                 text = "Powrót",
                 color = Color(0xFF2196F3),
-                fontSize = 26.sp,
+                fontSize = 26.sp, fontFamily = OpenSans,
                 fontWeight = FontWeight.Medium
             )
         }
@@ -138,7 +138,7 @@ fun NavigationButtons(
                     nextText.length > 5 -> 18.sp
                     else -> 26.sp
                 },
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium, fontFamily = OpenSans
             )
         }
     }

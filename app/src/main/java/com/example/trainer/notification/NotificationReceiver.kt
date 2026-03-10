@@ -16,25 +16,19 @@ class NotificationReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val type = intent.getStringExtra("TYPE") ?: "WORKOUT"
-
         val pendingResult = goAsync()
-
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val db = AppDatabase.getDatabase(context)
-
                 var title = ""
                 var text = ""
                 var notificationId = 1001
-
                 when (type) {
                     "WORKOUT" -> {
                         val calendar = Calendar.getInstance()
                         val javaDay = calendar.get(Calendar.DAY_OF_WEEK)
                         val appDay = if (javaDay == Calendar.SUNDAY) 6 else javaDay - 2
-
                         val scheduleItem = db.workoutDao().getScheduleForDay(appDay)
-
                         if (scheduleItem != null && !scheduleItem.workoutName.isNullOrEmpty()) {
                             title = "Dzisiejszy trening: ${scheduleItem.workoutName} 💪"
                             text = "Plan jest gotowy. Czekamy na Ciebie!"
@@ -64,7 +58,6 @@ class NotificationReceiver : BroadcastReceiver() {
                         notificationId = 300
                     }
                 }
-
                 showNotification(context, title, text, notificationId)
             } catch (e: Exception) {
                 e.printStackTrace()

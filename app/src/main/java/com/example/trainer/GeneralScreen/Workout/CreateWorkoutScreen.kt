@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import com.example.trainer.R
 import com.example.trainer.ui.theme.ButtonBlue
 import com.example.trainer.ui.theme.GradientBackground
+import com.example.trainer.ui.theme.OpenSans
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +54,7 @@ fun CreateWorkoutScreen(
                 containerColor = Color.Transparent,
                 topBar = {
                     TopAppBar(
-                        title = { Text(if (workoutName.isEmpty()) "Nowy trening" else "Edycja treningu") },
+                        title = { Text(if (workoutName.isEmpty()) "Nowy trening" else "Edycja treningu", fontFamily = OpenSans) },
                         navigationIcon = {
                             IconButton(onClick = onBack) {
                                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
@@ -83,7 +84,7 @@ fun CreateWorkoutScreen(
                     OutlinedTextField(
                         value = workoutName,
                         onValueChange = { viewModel.onNameChange(it) },
-                        label = { Text("Nazwa treningu") },
+                        label = { Text("Nazwa treningu", fontFamily = OpenSans) },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
@@ -105,7 +106,7 @@ fun CreateWorkoutScreen(
                     ) {
                         Text(
                             text = "Ćwiczenia (${selectedExercises.size})",
-                            fontSize = 18.sp,
+                            fontSize = 18.sp, fontFamily = OpenSans,
                             fontWeight = FontWeight.Bold
                         )
                         IconButton(onClick = { showExerciseSelector = true }) {
@@ -170,10 +171,10 @@ fun ExerciseItem(
             )
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(item.exercise.name, fontWeight = FontWeight.Medium)
+                Text(item.exercise.name, fontWeight = FontWeight.Medium, fontFamily = OpenSans)
                 Text(
                     text = "${item.sets} serie x ${item.reps} powt.",
-                    fontSize = 14.sp,
+                    fontSize = 14.sp, fontFamily = OpenSans,
                     color = Color(0xFF2196F3)
                 )
             }
@@ -203,20 +204,20 @@ fun EditSetsRepsDialog(
         title = { Text(text = item.exercise.name) },
         text = {
             Column {
-                Text("Dostosuj trening:")
+                Text("Dostosuj trening:", fontFamily = OpenSans)
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = sets,
                         onValueChange = { sets = it },
-                        label = { Text("Serie") },
+                        label = { Text("Serie", fontFamily = OpenSans) },
                         modifier = Modifier.weight(1f),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                     OutlinedTextField(
                         value = reps,
                         onValueChange = { reps = it },
-                        label = { Text("Powt.") },
+                        label = { Text("Powt.", fontFamily = OpenSans) },
                         modifier = Modifier.weight(1f),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
@@ -229,11 +230,11 @@ fun EditSetsRepsDialog(
                 val r = reps.toIntOrNull() ?: 12
                 onConfirm(s, r)
             }) {
-                Text("OK")
+                Text("OK", fontFamily = OpenSans)
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Anuluj") }
+            TextButton(onClick = onDismiss) { Text("Anuluj", fontFamily = OpenSans) }
         }
     )
 }
@@ -250,8 +251,11 @@ fun ExerciseSelectorScreen(
     var selectedIds by remember { mutableStateOf(setOf<Int>()) }
 
     GradientBackground {
-        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-            Text("Wybierz ćwiczenia", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Column(modifier = Modifier.fillMaxSize()
+            .padding(16.dp)
+            .safeDrawingPadding()
+        ) {
+            Text("Wybierz ćwiczenia", fontSize = 22.sp, fontWeight = FontWeight.Bold, fontFamily = OpenSans)
             Spacer(modifier = Modifier.height(16.dp))
 
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -259,14 +263,14 @@ fun ExerciseSelectorScreen(
                     FilterChip(
                         selected = selectedCategory == null,
                         onClick = { selectedCategory = null },
-                        label = { Text("Wszystkie") }
+                        label = { Text("Wszystkie", fontFamily = OpenSans) }
                     )
                 }
                 items(categories) { cat ->
                     FilterChip(
                         selected = selectedCategory == cat,
                         onClick = { selectedCategory = cat },
-                        label = { Text(translateCategory(cat)) }
+                        label = { Text(translateCategory(cat), fontFamily = OpenSans) }
                     )
                 }
             }
@@ -319,8 +323,8 @@ fun ExerciseSelectorScreen(
                                 modifier = Modifier.size(40.dp).padding(end = 12.dp)
                             )
                             Column {
-                                Text(exercise.name, fontWeight = FontWeight.Bold)
-                                Text(translateCategory(exercise.muscleGroup), fontSize = 12.sp, color = Color.Gray)
+                                Text(exercise.name, fontWeight = FontWeight.Bold, fontFamily = OpenSans)
+                                Text(translateCategory(exercise.muscleGroup), fontSize = 12.sp, color = Color.Gray, fontFamily = OpenSans)
                             }
                         }
                     }
@@ -334,7 +338,7 @@ fun ExerciseSelectorScreen(
                     onClick = onClose,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Anuluj")
+                    Text("Anuluj", fontFamily = OpenSans)
                 }
 
                 Button(
@@ -346,7 +350,7 @@ fun ExerciseSelectorScreen(
                     modifier = Modifier.weight(1f),
                     enabled = selectedIds.isNotEmpty()
                 ) {
-                    Text(if (selectedIds.isEmpty()) "Dodaj" else "Dodaj (${selectedIds.size})")
+                    Text(if (selectedIds.isEmpty()) "Dodaj" else "Dodaj (${selectedIds.size})", fontFamily = OpenSans)
                 }
             }
         }

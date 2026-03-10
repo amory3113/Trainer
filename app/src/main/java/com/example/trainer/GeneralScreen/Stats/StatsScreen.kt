@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trainer.data.NutritionEntity
 import com.example.trainer.ui.theme.GradientBackground
+import com.example.trainer.ui.theme.OpenSans
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,7 +34,7 @@ fun StatsScreen(viewModel: StatsViewModel) {
             Text(
                 text = "Moje postępy",
                 fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Bold, fontFamily = OpenSans,
                 modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
             )
             TabRow(
@@ -52,7 +53,7 @@ fun StatsScreen(viewModel: StatsViewModel) {
                     Tab(
                         selected = selectedTabIndex == index,
                         onClick = { selectedTabIndex = index },
-                        text = { Text(title, fontWeight = FontWeight.Medium) }
+                        text = { Text(title, fontWeight = FontWeight.Medium, fontFamily = OpenSans) }
                     )
                 }
             }
@@ -84,11 +85,11 @@ fun WeightTabContent(viewModel: StatsViewModel) {
                     elevation = CardDefaults.cardElevation(2.dp)
                 ) {
                     Column(modifier = Modifier.padding(24.dp)) {
-                        Text("Aktualna waga", color = Color.Gray)
+                        Text("Aktualna waga", color = Color.Gray, fontFamily = OpenSans)
                         Text(
                             text = "${user!!.weight} kg",
                             fontSize = 36.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.Bold, fontFamily = OpenSans,
                             color = Color(0xFF2196F3)
                         )
                     }
@@ -102,16 +103,17 @@ fun WeightTabContent(viewModel: StatsViewModel) {
                     elevation = CardDefaults.cardElevation(2.dp)
                 ) {
                     Column(modifier = Modifier.padding(24.dp)) {
-                        Text("Wskaźnik masy ciała (BMI)", fontWeight = FontWeight.Bold, color = Color.Gray)
+                        Text("Wskaźnik masy ciała (BMI)", fontWeight = FontWeight.Bold, color = Color.Gray, fontFamily = OpenSans)
                         Text(
                             text = String.format("%.1f", bmi),
                             fontSize = 24.sp,
-                            color = Color.Gray
+                            color = Color.Gray,
+                            fontFamily = OpenSans
                         )
                         Text(
                             text = viewModel.getBmiStatus(bmi),
                             fontSize = 14.sp,
-                            color = Color.Gray,
+                            color = Color.Gray, fontFamily = OpenSans,
                             modifier = Modifier.padding(vertical = 4.dp)
                         )
                         BmiGauge(bmi = bmi)
@@ -120,11 +122,11 @@ fun WeightTabContent(viewModel: StatsViewModel) {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Text("Historia pomiarów", fontWeight = FontWeight.Bold)
+                Text("Historia pomiarów", fontWeight = FontWeight.Bold, fontFamily = OpenSans)
                 Spacer(modifier = Modifier.height(8.dp))
 
                 if (weightHistory.isEmpty()) {
-                    Text("Brak danych.", color = Color.Gray)
+                    Text("Brak danych.", color = Color.Gray, fontFamily = OpenSans)
                 } else {
                     LineChart(dataPoints = weightHistory)
                 }
@@ -158,7 +160,7 @@ fun NutritionTabContent(viewModel: StatsViewModel) {
 
     if (nutritionList.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Historia żywności jest pusta", color = Color.Gray)
+            Text("Historia żywności jest pusta", color = Color.Gray, fontFamily = OpenSans)
         }
     } else {
         LazyColumn(
@@ -192,7 +194,7 @@ fun NutritionHistoryItem(item: NutritionEntity) {
         ) {
             Text(
                 text = dateFormat.format(Date(item.date)),
-                color = Color.Gray,
+                color = Color.Gray, fontFamily = OpenSans,
                 fontSize = 14.sp
             )
 
@@ -200,12 +202,12 @@ fun NutritionHistoryItem(item: NutritionEntity) {
                 Text(
                     text = "${item.calories} kcal",
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Bold, fontFamily = OpenSans,
                     color = Color(0xFF2196F3)
                 )
                 Text(
                     text = "B:${item.protein}  T:${item.fat}  W:${item.carbs}",
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall, fontFamily = OpenSans,
                     color = Color.Black.copy(alpha = 0.6f)
                 )
             }
@@ -219,16 +221,16 @@ fun AddWeightDialog(onDismiss: () -> Unit, onConfirm: (Float) -> Unit) {
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Nowy pomiar") },
+        title = { Text("Nowy pomiar", fontFamily = OpenSans) },
         text = {
             Column {
-                Text("Wprowadź swoją aktualną wagę:")
+                Text("Wprowadź swoją aktualną wagę:", fontFamily = OpenSans)
                 OutlinedTextField(
                     value = text,
                     onValueChange = { text = it },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,
-                    label = { Text("Kg") }
+                    label = { Text("Kg", fontFamily = OpenSans) }
                 )
             }
         },
@@ -237,12 +239,12 @@ fun AddWeightDialog(onDismiss: () -> Unit, onConfirm: (Float) -> Unit) {
                 val weight = text.toFloatOrNull()
                 if (weight != null) onConfirm(weight)
             }) {
-                Text("Zapisz")
+                Text("Zapisz", fontFamily = OpenSans)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Anuluj")
+                Text("Anuluj", fontFamily = OpenSans)
             }
         }
     )

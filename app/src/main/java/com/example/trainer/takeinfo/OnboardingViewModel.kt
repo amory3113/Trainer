@@ -161,7 +161,8 @@ class OnboardingViewModel(
                     val entities = generatedWorkout.exercises.map {
                         it.copy(workoutId = realId, id = 0)
                     }
-                    workoutRepository.updateWorkout(realId, generatedWorkout.template.name, entities)
+                    workoutRepository.updateWorkout(realId,
+                        generatedWorkout.template.name, entities)
                 }
 
 

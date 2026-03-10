@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trainer.ui.theme.LightBlue
 import com.example.trainer.ui.theme.NavigationButtons
+import com.example.trainer.ui.theme.OpenSans
 import com.example.trainer.ui.theme.TrainerTheme
 
 @Composable
@@ -58,7 +59,7 @@ fun MoreHealthQuest(
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start,
-                lineHeight = 32.sp
+                lineHeight = 32.sp, fontFamily = OpenSans
             )
 
             Text(
@@ -67,7 +68,7 @@ fun MoreHealthQuest(
                 color = Color.Black,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal,
-                lineHeight = 20.sp
+                lineHeight = 20.sp, fontFamily = OpenSans
             )
 
             QuestionSection(
@@ -119,7 +120,7 @@ fun QuestionSection(
             color = Color.Black,
             fontSize = 18.sp,
             fontWeight = FontWeight.Medium,
-            lineHeight = 22.sp
+            lineHeight = 22.sp, fontFamily = OpenSans
         )
 
         options.forEach { option ->
@@ -145,7 +146,7 @@ fun QuestionSection(
                     modifier = Modifier.align(Alignment.Center),
                     color = if (isSelected) Color.White else Color.Black,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium, fontFamily = OpenSans
                 )
             }
         }
