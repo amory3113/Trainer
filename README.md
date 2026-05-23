@@ -18,7 +18,7 @@ An advanced, fully native Android application developed as an engineering thesis
 
 * Local Notification System: Utilizes system alarms to handle daily dietary and workout reminders entirely offline, eliminating the need for cloud-based push notifications.
 
-# 🛠 Tech Stack (Modern Android Development)
+## 🛠 Tech Stack (Modern Android Development)
 Language: Kotlin (100% Native)
 
 * UI Framework: Jetpack Compose (Declarative UI with Material Design 3 guidelines)
@@ -33,7 +33,7 @@ Language: Kotlin (100% Native)
 
 * Build System: Gradle (Kotlin DSL).
 
-# 📐 Database Architecture
+## 📐 Database Architecture
 The local database scheme consists of 7 normalized tables managed via Room:
 
 1  user_profile — stores anthropometric data, medical flags, and nutritional goals.
@@ -50,7 +50,7 @@ The local database scheme consists of 7 normalized tables managed via Room:
 
 7  weight_history — archives body mass measurements indexed by timestamp.
 
-# 💡 Technical Highlights for Recruiters
+## 💡 Technical Highlights for Recruiters
 Advanced Async BroadcastReceiver: To query the Room database safely within a system broadcast handler (where the onReceive lifecycle is extremely short), the notification system implements the goAsync() API. This shifts database processing to Dispatchers.IO and explicitly completes the pending result upon delivery, avoiding ANRs and process death.
 
 Shared ViewModel Pattern: Multi-step onboarding and medical survey screens are grouped into a nested navigation graph (ONBOARDING_GRAPH). They securely share a single instance of OnboardingViewModel scoped to the graph's lifecycle using navController.getBackStackEntry(), preventing data loss across state transitions.
